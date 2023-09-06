@@ -1,14 +1,14 @@
-#ifndef MALLOC_ANSI_H
-#define MALLOC_ANSI_H
+#ifndef MALLOC_TC_H
+#define MALLOC_TC_H
 #include "MallocBase.h"
 
 namespace sablin{
 
-class MallocAnsi final: public MallocBase{
+class MallocTC final: public MallocBase{
 private:
 public:
-    MallocAnsi();
-    virtual ~MallocAnsi() override;
+    MallocTC();
+    virtual ~MallocTC() override;
 
     virtual void* Malloc(std::size_t size, uint32_t alignment) override;
     virtual void* TryMalloc(std::size_t size, uint32_t alignment) override;

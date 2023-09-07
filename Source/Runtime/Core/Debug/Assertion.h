@@ -5,13 +5,16 @@
 
 namespace sablin{
 
-class Assert{
-public:
-    [[noreturn]] static void NoImplementAssert(const std::string& classname, const std::string& function_name){
-        std::cout << "NoImplementAssert: " << classname << "::" << function_name << " Doesn't Have Any Implement!" << std::endl;
-        assert(false);
-    }
-};
+#define NO_IMPLEMENT_ASSERT(classname, function_name)\
+    std::cout << "NoImplementAssert: " << #classname << "::" <<\
+    #function_name << " Doesn't Have Any Implement!" << std::endl;\
+    assert(false);
+
+#define ASSERT_WITH_STRING(condition, string)\
+    assert(condition && string);
+
+#define ASSERT_NO_STRING(condition)\
+    assert(condition);
 
 }
 #endif

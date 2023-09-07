@@ -21,17 +21,17 @@ void UseSystemMallocForNew::operator delete[](void* ptr){
 }
 
 void* MallocBase::TryMalloc(std::size_t size, uint32_t alignment){
-    Assert::NoImplementAssert("MallocBase", "TryMalloc");
+    NO_IMPLEMENT_ASSERT(MallocBase, TryMalloc)
     return nullptr;
 }
 
 void* MallocBase::Realloc(void* ptr, std::size_t new_size, uint32_t alignment){
-    Assert::NoImplementAssert("MallocBase", "Realloc");
+    NO_IMPLEMENT_ASSERT(MallocBase, Realloc)
     return nullptr;
 }
 
 void* MallocBase::TryRealloc(void* ptr, std::size_t new_size, uint32_t alignment){
-    Assert::NoImplementAssert("MallocBase", "TryRealloc");
+    NO_IMPLEMENT_ASSERT(MallocBase, TryRealloc);
     return nullptr;
 }
 

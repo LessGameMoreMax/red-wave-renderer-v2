@@ -35,7 +35,7 @@ public:
         return kPlatformType == WINDOWS_PLATFORM_INDEX;
     }
     constexpr static bool IsLinux(){
-        return kPlatformType == WINDOWS_PLATFORM_INDEX;
+        return kPlatformType == LINUX_PLATFORM_INDEX;
     }
     constexpr static bool IsArch32(){
         return kPlatformArch == PLATFORM_ARCH_32;
@@ -43,9 +43,14 @@ public:
     constexpr static bool IsArch64(){
         return kPlatformArch == PLATFORM_ARCH_64;
     }
+
+    static void DebugInfo(){
+        std::cout << MACRO_TO_STRING(PLATFORM_TYPE) << std::endl;
+    }
 };
 
-#define INCLUDE_PLATFORM_HEADER(file) 
+#define INCLUDE_PLATFORM_HEADER(RELATIVE_PATH, NAME) \
+    MACRO_TO_STRING(MACRO_LINK(RELATIVE_PATH/PLATFORM_TYPE/PLATFORM_TYPE, NAME))
 
 }
 #endif

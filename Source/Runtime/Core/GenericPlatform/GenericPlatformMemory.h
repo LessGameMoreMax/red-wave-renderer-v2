@@ -3,8 +3,18 @@
 
 namespace sablin{
 
-class GenericPlatformMemory{
+class MallocBase;
 
+class GenericPlatformMemory{
+private:
+public:
+    GenericPlatformMemory() = default;
+    virtual ~GenericPlatformMemory() = default;
+    
+    static void Initialize();
+    static MallocBase* CreateMallocBase();
+
+    static void DebugInfo();
 };
 
 }

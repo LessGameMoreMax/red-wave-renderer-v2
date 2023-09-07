@@ -1,5 +1,9 @@
 #include "WindowsPlatformMemory.h"
 #include "../HAL/MallocTC.h"
+#include "../Misc/MacroDefine.h"
+#ifdef DEBUG
+#include <iostream>
+#endif
 
 namespace sablin{
 

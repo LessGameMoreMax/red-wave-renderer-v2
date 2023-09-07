@@ -1,4 +1,8 @@
 #include "LinuxPlatformMemory.h"
+#include "../Misc/MacroDefine.h"
+#ifdef DEBUG
+#include <iostream>
+#endif
 #include "../HAL/MallocTC.h"
 
 namespace sablin{

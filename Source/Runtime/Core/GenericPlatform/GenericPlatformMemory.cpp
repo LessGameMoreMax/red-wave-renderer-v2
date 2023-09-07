@@ -1,5 +1,6 @@
 #include "GenericPlatformMemory.h"
 #include "../HAL/MallocAnsi.h"
+#include "../Misc/MacroDefine.h"
 #ifdef DEBUG
 #include "../Misc/MacroTools.h"
 #include "../HAL/Platform.h"

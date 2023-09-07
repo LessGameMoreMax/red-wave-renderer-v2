@@ -1,6 +1,7 @@
 #include "MemoryBase.h"
 #include "../Debug/Assertion.h"
 #include "PlatformMemory.h"
+#include "../Misc/MacroDefine.h"
 namespace sablin{
 
 MallocBase* MemoryBase::kMalloc = nullptr;

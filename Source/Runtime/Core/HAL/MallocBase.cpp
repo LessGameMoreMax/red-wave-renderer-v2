@@ -1,5 +1,5 @@
 #include "MallocBase.h"
-#include "Platform.h"
+#include "../Debug/Assertion.h"
 #include <malloc.h>
 
 namespace sablin{
@@ -36,7 +36,7 @@ void* MallocBase::TryRealloc(void* ptr, std::size_t new_size, uint32_t alignment
 }
 
 std::string MallocBase::GetDescriptName() const{
-    return "Base";
+    return "MallocBase";
 }
 
 }

@@ -1,5 +1,6 @@
 #include "WindowsPlatformMemory.h"
 #include "../HAL/MallocTC.h"
+#include "../HAL/MallocAnsi.h"
 #include "../Misc/MacroDefine.h"
 #ifdef DEBUG
 #include <iostream>
@@ -12,7 +13,13 @@ void WindowsPlatformMemory::Initialize(){
 }
 
 MallocBase* WindowsPlatformMemory::CreateMallocBase(){
+#ifdef USE_ANSI_ALLOCTOR
+    return new MallocAnsi();
+#elif defined(USE_TC_ALLOCTOR)
     return new MallocTC();
+#else
+#error WindowsPlatorm Have No Memory Alloctor!
+#endif
 }
 
 void WindowsPlatformMemory::DebugInfo(){

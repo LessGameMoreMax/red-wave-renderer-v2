@@ -8,5 +8,9 @@ void MemoryManager::Initialize(){
             "Failed to Create Memory Alloctor!")
 }
 
+void MemoryManager::Exit(){
+    MemoryBase::DeleteMallocBase();
+}
+
 }
 

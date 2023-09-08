@@ -6,6 +6,7 @@ class MemoryManager final{
 private:
 public:
     static void Initialize();
+    static void Exit();
 };
 
 }

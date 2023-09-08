@@ -1,4 +1,8 @@
 #include "MallocTC.h"
+#include "../Misc/MacroDefine.h"
+#ifdef DEBUG
+#include <iostream>
+#endif
 
 namespace sablin{
 
@@ -12,6 +16,9 @@ MallocTC::~MallocTC(){
 }
 
 void* MallocTC::Malloc(std::size_t size, uint32_t alignment){
+#ifdef DEBUG
+    std::cout << "MallocTC::Malloc" << std::endl;
+#endif
     return nullptr;
 }
 
@@ -28,7 +35,9 @@ void* MallocTC::TryRealloc(void* ptr, std::size_t new_size, uint32_t alignment){
 }
 
 void MallocTC::Free(void* ptr){
-
+#ifdef DEBUG
+    std::cout << "MallocTC::Free" << std::endl;
+#endif
 }
 
 std::string MallocTC::GetDescriptName() const{

@@ -3,6 +3,7 @@
 #include "MemoryBase.h"
 #include "Platform.h"
 #include "../Misc/MacroDefine.h"
+#include INCLUDE_PLATFORM_HEADER(.., Platform.h)
 
 void* operator new(std::size_t size){
 #ifdef DEBUG

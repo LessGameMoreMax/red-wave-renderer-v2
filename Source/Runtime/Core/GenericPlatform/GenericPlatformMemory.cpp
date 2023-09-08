@@ -22,4 +22,8 @@ void GenericPlatformMemory::DebugInfo(){
 #endif
 }
 
+void GenericPlatformMemory::MemoryOverflow(){
+    throw;
+}
+
 }

@@ -13,7 +13,6 @@ public:
     MemoryBase() = default;
     ~MemoryBase() = default;
 
-    [[noreturn]] static void MemoryOverflow();
     static MallocBase* CreateMallocBase();
     static void DeleteMallocBase();
 

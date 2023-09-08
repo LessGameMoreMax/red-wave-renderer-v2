@@ -29,4 +29,7 @@ void WindowsPlatformMemory::DebugInfo(){
 #endif
 }
 
+void WindowsPlatformMemory::MemoryOverflow(){
+    GenericPlatformMemory::MemoryOverflow();
+}
 }

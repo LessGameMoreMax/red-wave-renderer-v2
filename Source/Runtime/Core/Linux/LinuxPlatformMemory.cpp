@@ -29,4 +29,7 @@ void LinuxPlatformMemory::DebugInfo(){
 #endif
 }
 
+void LinuxPlatformMemory::MemoryOverflow(){
+    GenericPlatformMemory::MemoryOverflow();
+}
 }

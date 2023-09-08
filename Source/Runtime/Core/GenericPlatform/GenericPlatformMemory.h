@@ -15,6 +15,8 @@ public:
     static MallocBase* CreateMallocBase();
 
     static void DebugInfo();
+
+    [[noreturn]] static void MemoryOverflow();
 };
 
 }

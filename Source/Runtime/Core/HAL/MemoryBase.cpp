@@ -7,9 +7,6 @@ namespace sablin{
 
 MallocBase* MemoryBase::kMalloc = nullptr;
 
-void MemoryBase::MemoryOverflow(){
-    throw;
-}
 
 MallocBase* MemoryBase::CreateMallocBase(){
 #ifdef DEBUG

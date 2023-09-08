@@ -9,9 +9,8 @@ using namespace std;
 int main(){
     MemoryManager::Initialize();
     MemoryBase::DebugInfo();
-    int* i = new int();
-    // delete i;
-    // if(i == nullptr) cout << "i is nullptr" << endl;
+    int* i = new int(1);
+    delete i;
     MemoryManager::Exit();
     return 0;
 }

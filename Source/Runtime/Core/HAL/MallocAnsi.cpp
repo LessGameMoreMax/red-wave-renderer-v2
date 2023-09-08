@@ -3,6 +3,7 @@
 #ifdef DEBUG
 #include <iostream>
 #endif
+#include "PlatformMemory.h"
 namespace sablin{
 
 MallocAnsi::MallocAnsi():
@@ -19,11 +20,14 @@ void* MallocAnsi::Malloc(std::size_t size, uint32_t alignment){
 #ifdef DEBUG
     std::cout << "MallocAnsi::Malloc" << std::endl;
 #endif
-    return malloc(size);
+    void* ptr = TryMalloc(size, alignment);
+    if(ptr == nullptr)[[unlikely]] PlatformMemory::MemoryOverflow();
+    return ptr;
 }
 
 void* MallocAnsi::TryMalloc(std::size_t size, uint32_t alignment){
-    return nullptr;
+    //TODO: Alignment!
+    return ::malloc(size);
 }
 
 void* MallocAnsi::Realloc(void* ptr, std::size_t new_size, uint32_t alignment){
@@ -35,7 +39,8 @@ void* MallocAnsi::TryRealloc(void* ptr, std::size_t new_size, uint32_t alignment
 }
 
 void MallocAnsi::Free(void* ptr){
-
+    if(ptr == nullptr)[[unlikely]] return;
+    ::free(ptr); 
 }
 
 std::string MallocAnsi::GetDescriptName() const{

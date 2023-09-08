@@ -11,14 +11,13 @@ namespace sablin{
 #define PLATFORM_ARCH_32 1
 #define PLATFORM_ARCH_64 2
 
-class PlatformInfo{
-private:
+
 //Define PLATFORM TYPE
 #if defined(WIN32) || defined(_WIN32) || defined(_WIN64) || defined(_WIN64_)
-    constexpr static uint32_t kPlatformType = WINDOWS_PLATFORM_INDEX;
+    #define PLATFORM_INDEX WINDOWS_PLATFORM_INDEX
     #define PLATFORM_TYPE Windows
-#elif defined(__linux__)
-    constexpr static uint32_t kPlatformType = LINUX_PLATFORM_INDEX;
+#elif defined(__linux__) || defined(__linux) || defined(__gnu_linux__)
+    #define PLATFORM_INDEX LINUX_PLATFORM_INDEX
     #define PLATFORM_TYPE Linux
 #else
 #error UNKNOWN PLATFORM! SUPPORTED PLATFORM: WINDOWS, LINUX
@@ -26,31 +25,32 @@ private:
 
 //Define PLATFORM ARCH
 #if defined(_WIN64) || defined(_WIN64_) || defined(__x86_64) || defined(__x86_64__)
-    constexpr static uint32_t kPlatformArch = PLATFORM_ARCH_64;
+    #define PLATFORM_ARCH PLATFORM_ARCH_64
 #else
-    constexpr static uint32_t kPlatformArch = PLATFORM_ARCH_32;
+    #define PLATFORM_ARCH PLATFORM_ARCH_32
 #endif
-public:
-    constexpr static bool IsWindows(){
-        return kPlatformType == WINDOWS_PLATFORM_INDEX;
-    }
-    constexpr static bool IsLinux(){
-        return kPlatformType == LINUX_PLATFORM_INDEX;
-    }
-    constexpr static bool IsArch32(){
-        return kPlatformArch == PLATFORM_ARCH_32;
-    }
-    constexpr static bool IsArch64(){
-        return kPlatformArch == PLATFORM_ARCH_64;
-    }
 
-    static void DebugInfo(){
+class PlatformInfo{
+private:
+public:
+    inline static void DebugInfo(){
         std::cout << MACRO_TO_STRING(PLATFORM_TYPE) << std::endl;
     }
 };
 
 #define INCLUDE_PLATFORM_HEADER(RELATIVE_PATH, NAME) \
     MACRO_TO_STRING(MACRO_LINK(RELATIVE_PATH/PLATFORM_TYPE/PLATFORM_TYPE, NAME))
+
+#if PLATFORM_ARCH == PLATFORM_ARCH_32
+#define MEMORY_ALIGNMENT_DEFAULT 8u
+#elif PLATFORM_ARCH == PLATFORM_ARCH_64
+#define MEMORY_ALIGNMENT_DEFAULT 16u
+#else
+#error PLATFORM ARCH ERROR! SUPPORTED ARCH: x86_32, amd64
+#endif
+
+#define MEMORY_ALIGNMENT_MIN 4u
+#define MEMORY_ALIGNMENT_MAX 16u
 
 }
 #endif

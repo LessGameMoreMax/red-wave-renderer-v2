@@ -11,6 +11,10 @@ int main(){
     MemoryBase::DebugInfo();
     int* i = new int(1);
     delete i;
+    int* j = new int(4);
+    delete j;
+    string* s = new string("hello");
+    delete s;
     MemoryManager::Exit();
     return 0;
 }

@@ -32,6 +32,13 @@ void* MallocAnsi::TryMalloc(std::size_t size, uint32_t alignment){
     }else{
         alignment = Max<uint32_t>(16, alignment);
     }
+
+    void* ptr = ::malloc(sizeof(std::size_t) + sizeof(void*) + alignment + size);
+    if(ptr == nullptr) return nullptr;
+    void* result = Align((uint8_t*)ptr + sizeof(std::size_t) + sizeof(void*), alignment);
+    *(void**)((uint8_t*)result - sizeof(void*)) = ptr;
+    *(std::size_t*)((uint8_t*)result - sizeof(void*) - sizeof(size_t)) = size;
+    return result;
 }
 
 void* MallocAnsi::Realloc(void* ptr, std::size_t new_size, uint32_t alignment){
@@ -44,7 +51,7 @@ void* MallocAnsi::TryRealloc(void* ptr, std::size_t new_size, uint32_t alignment
 
 void MallocAnsi::Free(void* ptr){
     if(ptr == nullptr)[[unlikely]] return;
-    ::free(ptr); 
+    ::free(*(void**)((uint8_t*)ptr - sizeof(void*))); 
 }
 
 std::string MallocAnsi::GetDescriptName() const{

@@ -48,4 +48,8 @@ bool MallocTC::IsThreadSafe() const{
     return true;
 }
 
+std::size_t MallocTC::GetAllocatedSize(void* ptr){
+    return 0;
+}
+
 }

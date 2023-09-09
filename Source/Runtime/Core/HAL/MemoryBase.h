@@ -20,6 +20,8 @@ public:
 
     static void* Malloc(std::size_t size, uint32_t alignment);
     static void Free(void* ptr);
+
+    static void Memcpy(void* dest, const void* src, std::size_t count);
 };
 
 }

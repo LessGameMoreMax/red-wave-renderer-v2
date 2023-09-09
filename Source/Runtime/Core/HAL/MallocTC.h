@@ -17,6 +17,7 @@ public:
     virtual void Free(void* ptr) override;
     virtual std::string GetDescriptName() const override;
     virtual bool IsThreadSafe() const override;
+    virtual std::size_t GetAllocatedSize(void* ptr) override;
 };
 
 }

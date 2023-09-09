@@ -33,4 +33,8 @@ void MemoryBase::Free(void* ptr){
     kMalloc->Free(ptr);
 }
 
+void MemoryBase::Memcpy(void* dest, const void* src, std::size_t count){
+    PlatformMemory::Memcpy(dest, src, count);
+}
+
 }

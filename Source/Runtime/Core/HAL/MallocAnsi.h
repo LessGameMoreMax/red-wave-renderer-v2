@@ -6,6 +6,8 @@ namespace sablin{
 
 class MallocAnsi final: public MallocBase{
 private:
+    void* AnsiMalloc(std::size_t size, uint32_t alignment);
+    void AnsiFree(void* ptr);
 public:
     MallocAnsi();
     virtual ~MallocAnsi() override;
@@ -17,6 +19,7 @@ public:
     virtual void Free(void* ptr) override;
     virtual std::string GetDescriptName() const override;
     virtual bool IsThreadSafe() const override;
+    virtual std::size_t GetAllocatedSize(void* ptr) override;
 };
 
 }

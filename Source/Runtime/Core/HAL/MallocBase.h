@@ -27,6 +27,7 @@ public:
     virtual void Free(void* ptr) = 0;
     virtual std::string GetDescriptName() const;
     virtual bool IsThreadSafe() const = 0;
+    virtual std::size_t GetAllocatedSize(void* ptr);
 };
 
 }

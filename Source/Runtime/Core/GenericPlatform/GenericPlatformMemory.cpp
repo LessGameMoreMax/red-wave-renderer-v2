@@ -5,6 +5,7 @@
 #include "../Misc/MacroTools.h"
 #include "../HAL/Platform.h"
 #endif
+#include <cstring>
 namespace sablin{
 
 void GenericPlatformMemory::Initialize(){
@@ -24,6 +25,10 @@ void GenericPlatformMemory::DebugInfo(){
 
 void GenericPlatformMemory::MemoryOverflow(){
     throw;
+}
+
+void GenericPlatformMemory::Memcpy(void* dest, const void* src, std::size_t count){
+    std::memcpy(dest, src, count);
 }
 
 }

@@ -6,5 +6,10 @@ template<typename T>
 inline static T Max(const T &lhs, const T &rhs){
     return lhs > rhs? lhs : rhs;
 }
+
+template<typename T>
+inline static T Min(const T &lhs, const T &rhs){
+    return lhs < rhs? lhs : rhs;
+}
 }
 #endif

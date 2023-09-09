@@ -4,6 +4,7 @@
 #include <iostream>
 #endif
 #include "PlatformMemory.h"
+#include "../Math/MathTools.h"
 namespace sablin{
 
 MallocAnsi::MallocAnsi():
@@ -26,8 +27,11 @@ void* MallocAnsi::Malloc(std::size_t size, uint32_t alignment){
 }
 
 void* MallocAnsi::TryMalloc(std::size_t size, uint32_t alignment){
-    //TODO: Alignment!
-    return ::malloc(size);
+    if(size < 16){
+        alignment = Max<uint32_t>(8, alignment);
+    }else{
+        alignment = Max<uint32_t>(16, alignment);
+    }
 }
 
 void* MallocAnsi::Realloc(void* ptr, std::size_t new_size, uint32_t alignment){

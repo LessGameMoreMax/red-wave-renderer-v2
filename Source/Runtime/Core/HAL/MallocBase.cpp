@@ -39,4 +39,9 @@ std::string MallocBase::GetDescriptName() const{
     return "MallocBase";
 }
 
+std::size_t MallocBase::GetAllocatedSize(void* ptr){
+    NO_IMPLEMENT_ASSERT(MallocBase, GetAllocatedSize)
+    return 0;
+}
+
 }

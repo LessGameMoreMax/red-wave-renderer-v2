@@ -1,6 +1,7 @@
 #ifndef GENERIC_PLATFORM_MEMORY_H
 #define GENERIC_PLATFORM_MEMORY_H
 #include <cstdint>
+#include <cstring>
 
 namespace sablin{
 
@@ -18,7 +19,26 @@ public:
     static void DebugInfo();
 
     [[noreturn]] static void MemoryOverflow();
-    static void Memcpy(void* dest, const void* src, std::size_t count);
+
+    static inline void* Memcpy(void* dest, const void* src, std::size_t count){
+        return memcpy(dest, src, count);
+    }
+
+    static inline void* Memmove(void* dest, const void* src, std::size_t count){
+        return memmove(dest, src, count);
+    }
+
+    static inline int32_t Memcmp(const void* lhs, const void* rhs, std::size_t count){
+        return memcmp(lhs, rhs, count);
+    }
+
+    static inline void* Memset(void* dest, uint8_t character, std::size_t count){
+        return memset(dest, character, count);
+    }
+
+    static inline void* Memzero(void* dest, std::size_t count){
+        return memset(dest, 0, count);
+    }
 };
 
 }

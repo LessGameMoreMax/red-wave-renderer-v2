@@ -27,8 +27,4 @@ void GenericPlatformMemory::MemoryOverflow(){
     throw;
 }
 
-void GenericPlatformMemory::Memcpy(void* dest, const void* src, std::size_t count){
-    std::memcpy(dest, src, count);
-}
-
 }

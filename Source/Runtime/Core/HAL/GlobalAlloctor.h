@@ -12,7 +12,11 @@ void* operator new(std::size_t size){
     if(size == 0) [[unlikely]]{
         size = 1;
     }
+#if !defined(USE_PLATFORM_ALIGNMENT) && __STDCPP_DEFAULT_NEW_ALIGNMENT__ <= 8u
+    return sablin::MemoryBase::Malloc(size, MEMORY_MIN_ALIGNMENT);
+#else
     return sablin::MemoryBase::Malloc(size, MEMORY_ALIGNMENT_DEFAULT);
+#endif
 }
 
 void* operator new[](std::size_t size){
@@ -22,7 +26,11 @@ void* operator new[](std::size_t size){
     if(size == 0) [[unlikely]]{
         size = 1;
     }
+#if !defined(USE_PLATFORM_ALIGNMENT) && __STDCPP_DEFAULT_NEW_ALIGNMENT__ <= 8u
+    return sablin::MemoryBase::Malloc(size, MEMORY_MIN_ALIGNMENT);
+#else
     return sablin::MemoryBase::Malloc(size, MEMORY_ALIGNMENT_DEFAULT);
+#endif
 }
 
 void* operator new(std::size_t size, const std::nothrow_t&) noexcept{
@@ -32,7 +40,11 @@ void* operator new(std::size_t size, const std::nothrow_t&) noexcept{
     if(size == 0) [[unlikely]]{
         size = 1;
     }
+#if !defined(USE_PLATFORM_ALIGNMENT) && __STDCPP_DEFAULT_NEW_ALIGNMENT__ <= 8u
+    return sablin::MemoryBase::Malloc(size, MEMORY_MIN_ALIGNMENT);
+#else
     return sablin::MemoryBase::Malloc(size, MEMORY_ALIGNMENT_DEFAULT);
+#endif
 }
 
 void* operator new[](std::size_t size, const std::nothrow_t&) noexcept{
@@ -42,7 +54,11 @@ void* operator new[](std::size_t size, const std::nothrow_t&) noexcept{
     if(size == 0) [[unlikely]]{
         size = 1;
     }
+#if !defined(USE_PLATFORM_ALIGNMENT) && __STDCPP_DEFAULT_NEW_ALIGNMENT__ <= 8u
+    return sablin::MemoryBase::Malloc(size, MEMORY_MIN_ALIGNMENT);
+#else
     return sablin::MemoryBase::Malloc(size, MEMORY_ALIGNMENT_DEFAULT);
+#endif
 }
 //------------------------
 

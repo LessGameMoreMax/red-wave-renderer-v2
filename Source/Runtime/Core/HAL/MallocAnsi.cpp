@@ -42,10 +42,10 @@ void* MallocAnsi::Malloc(std::size_t size, uint32_t alignment){
 }
 
 void* MallocAnsi::TryMalloc(std::size_t size, uint32_t alignment){
-    if(size < 16){
-        alignment = Max<uint32_t>(8, alignment);
+    if(size < MEMORY_MIN_ALIGNMENT_SIZE){
+        alignment = MEMORY_MIN_ALIGNMENT;
     }else{
-        alignment = Max<uint32_t>(16, alignment);
+        alignment = Max<uint32_t>(MEMORY_ALIGNMENT_DEFAULT, alignment);
     }
     return AnsiMalloc(size, alignment);
 }
@@ -60,10 +60,10 @@ void* MallocAnsi::Realloc(void* ptr, std::size_t new_size, uint32_t alignment){
 }
 
 void* MallocAnsi::TryRealloc(void* ptr, std::size_t new_size, uint32_t alignment){
-    if(new_size < 16){
-        alignment = Max<uint32_t>(8, alignment);
+    if(new_size < MEMORY_MIN_ALIGNMENT_SIZE){
+        alignment = MEMORY_MIN_ALIGNMENT;
     }else{
-        alignment = Max<uint32_t>(16, alignment);
+        alignment = Max<uint32_t>(MEMORY_ALIGNMENT_DEFAULT, alignment);
     }
     if(ptr != nullptr)[[likely]]{
         if(new_size != 0){

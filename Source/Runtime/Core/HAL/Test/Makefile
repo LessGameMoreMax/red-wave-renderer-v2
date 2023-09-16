@@ -1,4 +1,4 @@
-OBJ_S = PlatformMemoryTest.o \
+OBJ_S =	TCSizeMapTest.o \
 		../MallocAnsi.o \
 		../MallocBase.o \
 		../MallocTC.o \
@@ -7,6 +7,8 @@ OBJ_S = PlatformMemoryTest.o \
 		../../GenericPlatform/GenericPlatformMemory.o \
 		../../Linux/LinuxPlatformMemory.o \
 		../../Windows/WindowsPlatformMemory.o \
+		../TCSizeMap.o \
+		../TCSizeTools.o \
 
 main : ${OBJ_S}
 	g++ -Wall -o main.out $(OBJ_S)

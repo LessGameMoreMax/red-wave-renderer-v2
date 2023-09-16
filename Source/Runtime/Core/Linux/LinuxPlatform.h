@@ -11,8 +11,8 @@ namespace sablin{
 #error PLATFORM ARCH ERROR! SUPPORTED ARCH: x86_32, amd64
 #endif
 
-#define MEMORY_ALIGNMENT_MIN 4u
-#define MEMORY_ALIGNMENT_MAX 16u
+#define MEMORY_MIN_ALIGNMENT 8u
+#define MEMORY_MIN_ALIGNMENT_SIZE 16u
 
 #endif
 

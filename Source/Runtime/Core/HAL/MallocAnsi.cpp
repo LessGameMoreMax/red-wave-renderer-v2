@@ -42,7 +42,7 @@ void* MallocAnsi::Malloc(std::size_t size, uint32_t alignment){
 }
 
 void* MallocAnsi::TryMalloc(std::size_t size, uint32_t alignment){
-    if(size < MEMORY_MIN_ALIGNMENT_SIZE){
+    if(size < MEMORY_FORCE_MIN_ALIGNMENT_SIZE){
         alignment = MEMORY_MIN_ALIGNMENT;
     }else{
         alignment = Max<uint32_t>(MEMORY_ALIGNMENT_DEFAULT, alignment);
@@ -60,7 +60,7 @@ void* MallocAnsi::Realloc(void* ptr, std::size_t new_size, uint32_t alignment){
 }
 
 void* MallocAnsi::TryRealloc(void* ptr, std::size_t new_size, uint32_t alignment){
-    if(new_size < MEMORY_MIN_ALIGNMENT_SIZE){
+    if(new_size < MEMORY_FORCE_MIN_ALIGNMENT_SIZE){
         alignment = MEMORY_MIN_ALIGNMENT;
     }else{
         alignment = Max<uint32_t>(MEMORY_ALIGNMENT_DEFAULT, alignment);

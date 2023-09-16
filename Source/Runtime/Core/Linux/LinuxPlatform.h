@@ -12,7 +12,7 @@ namespace sablin{
 #endif
 
 #define MEMORY_MIN_ALIGNMENT 8u
-#define MEMORY_MIN_ALIGNMENT_SIZE 16u
+#define MEMORY_FORCE_MIN_ALIGNMENT_SIZE 8u
 
 #endif
 

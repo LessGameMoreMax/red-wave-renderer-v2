@@ -1,0 +1,2 @@
+1. HAL/TCThreadCache.cpp: Steal Cache!
+2. HAL/TCThreadCache.cpp: Lock lock unclaimed_cache_size_!

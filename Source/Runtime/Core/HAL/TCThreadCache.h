@@ -2,6 +2,7 @@
 #define TC_THREAD_CACHE_H
 #include "TCCommon.h"
 #include "TCSizeClasses.h"
+#include "../Debug/Assertion.h"
 namespace sablin{
 
 class TCThreadCache{
@@ -52,6 +53,31 @@ private:
                 ptr_header_ = GetNextPtr(ptr_header_);
                 --length_;
                 return result;
+            }
+
+            void PushBatch(int32_t count, void** batch){
+#ifdef DEBUG
+                ASSERT_WITH_STRING(count > 0, "TCThreadCache::TCFreeList::PushBatch: count <= 0!")
+#endif
+                for(int32_t i = 0;i != count-1; ++i){
+                    SetNextPtr(batch[i], batch[i+1]);
+                }
+                SetNextPtr(batch[count-1], ptr_header_);
+                ptr_header_ = batch[0];
+                length_ += count;
+            }
+
+            void PopBatch(int32_t count, void** batch){
+#ifdef DEBUG
+                ASSERT_WITH_STRING(count <= length_, "TCThreadCache::TCFreeList::PopBatch: count > length_!")
+#endif
+                void* temp = ptr_header_;
+                for(int32_t i = 0;i != count; ++i){
+                    batch[i] = temp;
+                    temp = GetNextPtr(temp);
+                }
+                ptr_header_ = temp;
+                length_ -= count;
             }
     };
 private:

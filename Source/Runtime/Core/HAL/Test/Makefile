@@ -1,4 +1,4 @@
-OBJ_S =	TCThreadCacheTest.o \
+OBJ_S =	TCFreeList.o \
 		../MallocAnsi.o \
 		../MallocBase.o \
 		../MallocTC.o \

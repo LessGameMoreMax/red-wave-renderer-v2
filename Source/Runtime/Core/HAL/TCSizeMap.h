@@ -25,6 +25,7 @@ public:
     TCSizeMap() = default;
     ~TCSizeMap() = default;
     bool Initialize();
+    void Clear();
 
     static inline uint16_t IndexOfSizeToClass(std::size_t size){
 #ifdef DEBUG

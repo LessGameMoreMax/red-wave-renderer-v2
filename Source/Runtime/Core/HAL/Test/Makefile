@@ -1,4 +1,4 @@
-OBJ_S =	TCSizeMapTest.o \
+OBJ_S =	TCThreadCacheTest.o \
 		../MallocAnsi.o \
 		../MallocBase.o \
 		../MallocTC.o \
@@ -9,6 +9,8 @@ OBJ_S =	TCSizeMapTest.o \
 		../../Windows/WindowsPlatformMemory.o \
 		../TCSizeMap.o \
 		../TCSizeTools.o \
+		../TCGlobals.o \
+		../TCThreadCache.o \
 
 main : ${OBJ_S}
 	g++ -Wall -o main.out $(OBJ_S)

@@ -25,4 +25,8 @@ bool TCSizeMap::Initialize(){
     return true;
 }
 
+void TCSizeMap::Clear(){
+
+}
+
 }

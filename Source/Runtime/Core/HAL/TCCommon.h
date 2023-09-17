@@ -19,14 +19,16 @@ namespace sablin{
     inline constexpr std::size_t kMinThreadCacheSize = 512 * 1024;
     inline constexpr std::size_t kMaxThreadCacheSize = 4096 * 1024;
     // inline constexpr std::size_t kMaxCpuCacheSize = 1.5f * 1024 * 1024;
-    inline constexpr std::size_t kOverThreadcacheSize = 8u * kMaxThreadCacheSize;
+    inline constexpr std::size_t kOverThreadCacheSize = 8u * kMaxThreadCacheSize;
+    inline constexpr std::size_t kStealSize = 64 * 1024;
 #elif TC_MALLOC_PAGE_SHIFT == 18
     inline constexpr std::size_t kPageShift = 18;
     inline constexpr std::size_t kMaxSize = 256 * 1024;
     inline constexpr std::size_t kMinThreadCacheSize = 512 * 1024;
     inline constexpr std::size_t kMaxThreadCacheSize = 4096 * 1024;
     // inline constexpr std::size_t kMaxCpuCacheSize = 1.5f * 1024 * 1024;
-    inline constexpr std::size_t kOverThreadcacheSize = 8u * kMaxThreadCacheSize;
+    inline constexpr std::size_t kOverThreadCacheSize = 8u * kMaxThreadCacheSize;
+    inline constexpr std::size_t kStealSize = 64 * 1024;
 #else
     #error "NO DEFAULT TC_MALLOC_PAGE_SHIFT INITIALIZE"
 #endif

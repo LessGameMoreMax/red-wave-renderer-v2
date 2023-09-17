@@ -6,6 +6,7 @@ class TCGlobals{
 public:
     static class TCSizeMap size_map_;
     static thread_local class TCThreadCache thread_local_cache_;
+    static class TCCentralCache central_cache_;
 public:
     TCGlobals() = default;
     ~TCGlobals() = default;

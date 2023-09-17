@@ -8,6 +8,7 @@ bool TCSizeMap::Initialize(){
 #endif
     for(uint8_t i = 0;i != kBucketNum; ++i){
         class_to_size_[i] = kSizeClassInfoArray[i].size_;
+        move_num_[i] = kSizeClassInfoArray[i].move_num_;
     }
 
     uint32_t size = 1;

@@ -34,6 +34,9 @@ namespace sablin{
 #endif
 
     inline constexpr std::size_t kPageSize = 1 << kPageShift;
+    inline constexpr std::size_t kMaxOverages = 3;
     inline constexpr std::size_t kMaxDynamicFreeListLength = 8192;
+    inline constexpr std::size_t kMinMoveNum = 2;
+    inline constexpr std::size_t kMaxMoveNum = 128;
 }
 #endif

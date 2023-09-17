@@ -12,6 +12,7 @@ private:
             void* ptr_header_;
             uint32_t length_;
             uint32_t max_length_ ;
+            uint32_t overages_length_;
         private:
             inline static void* GetNextPtr(void* ptr){
                 return *(reinterpret_cast<void**>(ptr));
@@ -36,6 +37,14 @@ private:
 
             inline void SetMaxLength(const uint32_t max_length){
                 max_length_ = max_length;
+            }
+
+            inline uint32_t GetOveragesLength() const{
+                return overages_length_;
+            }
+
+            inline void SetOveragesLength(uint32_t new_length){
+                overages_length_ = new_length;
             }
 
             inline bool IsEmpty() const{
@@ -102,6 +111,13 @@ public:
 
     void Initialize();
     void Clear();
+
+    void* Allocate(std::size_t size);
+    void Deallocate(void* ptr, std::size_t size);
+
+    void* FetchFromCentralCache(uint8_t bucket_num, std::size_t size);
+    void ListTooLong(TCFreeList* free_list, uint8_t bucket_num);
+    void ReleaseToCentralCache(TCFreeList* free_list, uint8_t bucket_num, uint32_t move_num);
 };
 }
 #endif

@@ -5,11 +5,7 @@
 namespace sablin{
 
 class TCThreadCache{
-#ifdef DEBUG
-public:
-#else
 private:
-#endif
     class TCFreeList{
         private:
             void* ptr_header_;
@@ -53,7 +49,7 @@ private:
 
             inline void* Pop(){
                 void* result = ptr_header_;
-                SetNextPtr(ptr_header_, GetNextPtr(ptr_header_));
+                ptr_header_ = GetNextPtr(ptr_header_);
                 --length_;
                 return result;
             }
@@ -70,6 +66,9 @@ private:
 #ifdef DEBUG
 public:
     bool has_initialized_ = false;
+    inline TCFreeList* GetFreeList(uint8_t bucket_num){
+        return &free_list_[bucket_num];
+    }
 #endif
 public:
     TCThreadCache() = default;

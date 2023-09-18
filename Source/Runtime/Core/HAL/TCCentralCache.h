@@ -3,7 +3,6 @@
 #include <cstdint>
 namespace sablin{
 
-template<typename T>
 class TCSpan;
     
 class TCCentralCache{
@@ -16,7 +15,7 @@ public:
     void Clear();
 
     uint32_t RemoveRange(uint8_t bucket_index, void** batch, uint32_t move_num);
-    void InsertRange(uint8_t bucket_index, TCSpan<void*> span);
+    void InsertRange(uint8_t bucket_index, void** batch, uint32_t move_num);
 };
 }
 #endif

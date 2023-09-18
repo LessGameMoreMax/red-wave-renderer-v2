@@ -1,4 +1,4 @@
-OBJ_S =	TCFreeListTest.o \
+OBJ_S =	TCSpanListTest.o \
 		../MallocAnsi.o \
 		../MallocBase.o \
 		../MallocTC.o \
@@ -13,6 +13,7 @@ OBJ_S =	TCFreeListTest.o \
 		../TCThreadCache.o \
 		../TCCentralCache.o \
 		../TCSpan.o \
+		../TCSpanList.o \
 
 main : ${OBJ_S}
 	g++ -Wall -o main.out $(OBJ_S)

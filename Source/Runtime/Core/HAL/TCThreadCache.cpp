@@ -4,7 +4,6 @@
 #include "TCSizeMap.h"
 #include "../Math/MathTools.h"
 #include "TCCentralCache.h"
-#include "TCSpan.h"
 namespace sablin{
 
 void TCThreadCache::TCFreeList::Initialize(){
@@ -105,11 +104,11 @@ void TCThreadCache::ReleaseToCentralCache(TCFreeList* free_list, uint8_t bucket_
     int32_t batch_size = TCGlobals::size_map_.GetMoveNum(bucket_num);
     while(move_num > batch_size){
         free_list_->PopBatch(batch_size, batch);
-        // TCGlobals::central_cache_.InsertRange(bucket_num, TCSpan<void*>(batch, batch_size));
+        TCGlobals::central_cache_.InsertRange(bucket_num, batch, batch_size);
         move_num -= batch_size;
     }
     free_list->PopBatch(move_num, batch);
-    // TCGlobals::central_cache_.InsertRange(bucket_num, TCSpan<void*>(batch, move_num));
+    TCGlobals::central_cache_.InsertRange(bucket_num, batch, move_num);
     size_ -= delta_size;
 }
 

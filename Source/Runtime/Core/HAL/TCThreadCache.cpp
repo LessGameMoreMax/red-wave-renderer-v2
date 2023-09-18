@@ -3,6 +3,8 @@
 #include "TCGlobals.h"
 #include "TCSizeMap.h"
 #include "../Math/MathTools.h"
+#include "TCCentralCache.h"
+#include "TCSpan.h"
 namespace sablin{
 
 void TCThreadCache::TCFreeList::Initialize(){
@@ -12,30 +14,15 @@ void TCThreadCache::TCFreeList::Initialize(){
     overages_length_ = 0;
 }
 
-std::size_t TCThreadCache::over_thread_cache_size_ = kOverThreadCacheSize;
-std::size_t TCThreadCache::unclaimed_cache_size_ = kOverThreadCacheSize;
+// std::size_t TCThreadCache::over_thread_cache_size_ = kOverThreadCacheSize;
 
 
 void TCThreadCache::Initialize(){
 #ifdef DEBUG
     ASSERT_WITH_STRING(!has_initialized_, "TCThreadCache::Initialize: Initialize Thread Cache Multi!")
-    std::cout << "unclaimed_cache_size_: " << unclaimed_cache_size_ << std::endl;
     has_initialized_ = true;
 #endif
-    size_ = max_size_ = 0;
-//TODO: Implement Steal Cache From Other Thread!
-
-    if(unclaimed_cache_size_ < kStealSize){
-        //Just Give The Minimum Size
-        max_size_ += kMinThreadCacheSize;
-//TODO: Lock Lock unclaimed_cache_size_!
-        unclaimed_cache_size_ -= kMinThreadCacheSize;
-    }else{
-        //Steal Cache From UnclaimedCache
-        max_size_ += kStealSize;
-        unclaimed_cache_size_ -= kStealSize;
-    }
-
+    size_ = 0;
     next_thread_cache_ = last_thread_cache_ = nullptr;
 
     for(uint8_t i = 0;i != kBucketNum; ++i)
@@ -58,7 +45,6 @@ void* TCThreadCache::Allocate(std::size_t size){
 }
 
 void TCThreadCache::Deallocate(void* ptr, std::size_t size){
-//TODO: What the size represent?
     size_ += size;
     const uint8_t bucket_index = TCGlobals::size_map_.GetSizeToClass(size);
     TCFreeList* free_list = free_list_ + bucket_index;
@@ -66,10 +52,6 @@ void TCThreadCache::Deallocate(void* ptr, std::size_t size){
     if(free_list_->GetLength() >= free_list_->GetMaxLength()){
         ListTooLong(free_list, bucket_index);
     }
-//TODO: Implement Scavenge!
-    // if(size_ >= max_size_){
-    //     Scavenge();
-    // }
 }
 
 void* TCThreadCache::FetchFromCentralCache(uint8_t bucket_index, std::size_t size){
@@ -77,11 +59,11 @@ void* TCThreadCache::FetchFromCentralCache(uint8_t bucket_index, std::size_t siz
 #ifdef DEBUG
     ASSERT_WITH_STRING(free_list->IsEmpty(), "TCThreadCache::FetchFromCentralCache: free_list Is Not Empty!")
 #endif
-    const int32_t batch_size = TCGlobals::size_map_.GetMoveNum(bucket_index);
-    const int32_t move_num = Min<uint32_t>(batch_size, free_list->GetMaxLength());
+    const uint32_t batch_size = TCGlobals::size_map_.GetMoveNum(bucket_index);
+    const uint32_t move_num = Min<uint32_t>(batch_size, free_list->GetMaxLength());
 
     void* batch[kMaxMoveNum];
-    int32_t moved_num = TCGlobals::central_cache_.RemoveRange(bucket_index, batch, move_num);
+    uint32_t moved_num = TCGlobals::central_cache_.RemoveRange(bucket_index, batch, move_num);
     if(moved_num == 0) return nullptr;
     --moved_num;
     if(moved_num > 0){
@@ -115,8 +97,20 @@ void TCThreadCache::ListTooLong(TCFreeList* free_list, uint8_t bucket_num){
     }
 }
 
-void TCThreadCache::ReleaseToCentralCache(TCFreeList* free_list, uint8_t bucket_num, uint8_t move_num){
+void TCThreadCache::ReleaseToCentralCache(TCFreeList* free_list, uint8_t bucket_num, uint32_t move_num){
+    move_num = Min<uint32_t>(move_num, free_list->GetLength());
+    std::size_t delta_size = move_num * TCGlobals::size_map_.GetClassToSize(bucket_num);
 
+    void* batch[kMaxMoveNum];
+    int32_t batch_size = TCGlobals::size_map_.GetMoveNum(bucket_num);
+    while(move_num > batch_size){
+        free_list_->PopBatch(batch_size, batch);
+        // TCGlobals::central_cache_.InsertRange(bucket_num, TCSpan<void*>(batch, batch_size));
+        move_num -= batch_size;
+    }
+    free_list->PopBatch(move_num, batch);
+    // TCGlobals::central_cache_.InsertRange(bucket_num, TCSpan<void*>(batch, move_num));
+    size_ -= delta_size;
 }
 
 

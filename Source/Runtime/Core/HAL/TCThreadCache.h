@@ -90,11 +90,9 @@ private:
             }
     };
 private:
-    static std::size_t over_thread_cache_size_;
-    static std::size_t unclaimed_cache_size_;
+    // static std::size_t over_thread_cache_size_;
 private:
     std::size_t size_;
-    std::size_t max_size_;
     TCThreadCache* next_thread_cache_;
     TCThreadCache* last_thread_cache_;
     TCFreeList free_list_[kBucketNum];

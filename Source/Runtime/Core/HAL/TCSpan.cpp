@@ -1,4 +1,6 @@
 #include "TCSpan.h"
+#include "TCGlobals.h"
+#include "TCSizeMap.h"
 namespace sablin{
 
 void TCSpan::Initialize(PageId first_page_id, uintptr_t pages_num){
@@ -11,4 +13,11 @@ void TCSpan::Initialize(PageId first_page_id, uintptr_t pages_num){
     free_list_ = nullptr;
 }
 
+void TCSpan::SetObjectSize(std::size_t object_size){
+    object_size_ = object_size;
+#ifdef DEBUG
+    ASSERT_WITH_STRING(GetSpanSize() % object_size_ == 0, "TCSpan::SetObjectSize: Span Size Can Not Divide By Object Size!")
+#endif
+    max_allocated_num_ = GetSpanSize() / object_size_;
+}
 }

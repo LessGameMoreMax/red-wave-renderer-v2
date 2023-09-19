@@ -14,6 +14,7 @@ private:
 
     uint8_t size_to_class_[kClassArraySize] = {0};
     uint32_t class_to_size_[kBucketNum] = {0};
+    uint8_t pages_num_[kBucketNum] = {0};
     uint32_t move_num_[kBucketNum] = {0};
 
     static inline uint32_t AlignmentForSize(std::size_t size){
@@ -57,6 +58,13 @@ public:
         ASSERT_WITH_STRING(class_size < kBucketNum, "TCSizeMap::GetMoveNum: class_size >= kBucketNum!")
 #endif
         return move_num_[class_size];
+    }
+
+    inline uint8_t GetPagesNum(uint8_t class_size) const{
+#ifdef DEBUG
+        ASSERT_WITH_STRING(class_size < kBucketNum, "TCSizeMap::GetPagesNum: class_size >= kBucketNum!")
+#endif
+        return pages_num_[class_size];
     }
 };
 

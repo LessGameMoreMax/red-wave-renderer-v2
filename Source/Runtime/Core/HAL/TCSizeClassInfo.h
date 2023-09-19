@@ -5,7 +5,7 @@ namespace sablin{
 
 struct TCSizeClassInfo{
     std::size_t size_ = 0;
-    // std::size_t pages_ = 0;
+    std::size_t pages_num_ = 0;
     std::size_t move_num_ = 0;
 };
 

@@ -29,7 +29,11 @@ void TCThreadCache::Initialize(){
 }
 
 void TCThreadCache::Clear(){
-
+    for(uint8_t i = 0;i != kBucketNum; ++i){
+        if(!free_list_[i].IsEmpty()){
+            ReleaseToCentralCache(&free_list_[i], i, free_list_[i].GetLength());
+        }
+    }
 }
 
 void* TCThreadCache::Allocate(std::size_t size){

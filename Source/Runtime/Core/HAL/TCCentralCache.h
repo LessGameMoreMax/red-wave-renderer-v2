@@ -1,12 +1,13 @@
 #ifndef TC_CENTRAL_CACHE_H
 #define TC_CENTRAL_CACHE_H
 #include <cstdint>
+#include "TCSpanList.h"
+#include "TCSizeClasses.h"
 namespace sablin{
 
-class TCSpan;
-    
 class TCCentralCache{
 private:
+    TCSpanList span_list_[kBucketNum];
 public:
     TCCentralCache() = default;
     ~TCCentralCache() = default;

@@ -22,20 +22,31 @@ public:
     //     return span_head_;
     // }
 
-    // void PushFront(TCSpan* span);
-    // void PushBack(TCSpan* span);
+    void PushFront(TCSpan* span);
+    void PushBack(TCSpan* span);
     // TCSpan* TryPopFront();
     // TCSpan* TryPopBack();
     
     // void Insert(TCSpan* position, TCSpan* new_span);
     void Erase(TCSpan* position);
 
-    void Push(TCSpan* span);
+    // void Push(TCSpan* span);
     TCSpan* TryPop();
+
+    inline TCSpan* Begin(){
+        return span_head_->next_;
+    }
+
+    inline bool IsEmpty(){
+        return span_head_->next_ == span_head_;
+    }
 
     inline bool TryLock();
     inline void Lock();
     inline void UnLock();
+
+    uint32_t RemoveRange(void** batch, uint32_t move_num);
+    void InsertRange(void** batch, uint32_t move_num);
 };
 
 inline bool TCSpanList::TryLock(){

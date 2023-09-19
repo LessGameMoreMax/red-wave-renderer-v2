@@ -2,6 +2,7 @@
 #define TC_COMMON_H
 #include <cstdint>
 #include "../Misc/MacroDefine.h"
+#include "Platform.h"
 namespace sablin{
 #ifndef TC_MALLOC_PAGE_SHIFT
 #ifdef TC_MALLOC_32K_PAGES
@@ -38,5 +39,11 @@ namespace sablin{
     inline constexpr std::size_t kMaxDynamicFreeListLength = 8192;
     inline constexpr std::size_t kMinMoveNum = 2;
     inline constexpr std::size_t kMaxMoveNum = 128;
+
+#if PLATFORM_ARCH == PLATFORM_ARCH_32
+    inline constexpr uint32_t kAddressBits = 8 * sizeof(void*);
+#else
+    inline constexpr uint32_t kAddressBits = 48;
+#endif
 }
 #endif

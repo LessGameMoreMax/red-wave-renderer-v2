@@ -1,0 +1,75 @@
+#ifndef TC_PAGE_MAP_H
+#define TC_PAGE_MAP_H
+#include <cstdint>
+#include "TCCommon.h"
+#include "TCSpan.h"
+#include "MallocBase.h"
+#include "MemoryBase.h"
+namespace sablin{
+
+template <uint32_t BITS>
+class TCPageMap2{
+private:
+    static constexpr uint32_t kLeafBits = 15;
+    static constexpr uint32_t kLeafLength = 1 << kLeafBits;
+    static constexpr uint32_t kRootBits = BITS - kLeafBits;
+    static constexpr uint32_t kRootLength = 1 << kRootBits;
+
+    struct Leaf: UseSystemMallocForNew{
+        TCSpan* span_[kLeafLength];
+    };
+
+    Leaf* root_[kRootLength];
+public:
+    constexpr TCPageMap2(): root_{} {}
+
+    inline void Initialize(){}
+    inline void Clear(){
+        for(uintptr_t i = 0; i != kRootLength; ++i)
+            if(root_[i] != nullptr) delete root_[i];
+    }
+
+    inline TCSpan* GetSpan(uintptr_t addr) const{
+        const uintptr_t level_1 = addr >> kLeafBits;
+        const uintptr_t level_2 = addr & (kLeafLength - 1);
+#ifdef DEBUG
+        ASSERT_WITH_STRING((addr >> BITS) < 0, "TCPageMap2::GetSpan: Addr Smaller Than Platform Bits!")
+#endif
+        if(root_[level_1] == nullptr) return nullptr;
+        return root_[level_1]->span_[level_2];
+    }
+
+    inline void SetSpan(uintptr_t addr, TCSpan *span){
+#ifdef DEBUG
+        ASSERT_WITH_STRING(addr >> BITS == 0, "TCPageMap2::SetSpan: Addr Is Not BITS Length!")
+#endif
+        const uintptr_t level_1 = addr >> kLeafBits;
+        const uintptr_t level_2 = addr & (kLeafLength - 1);
+        root_[level_1]->span_[level_2] = span;
+    }
+
+    bool Ensure(uintptr_t start, std::size_t count);
+};
+
+class TCPageMap{
+private:
+    TCPageMap2<kAddressBits - kPageShift> page_map_;
+public:
+    constexpr TCPageMap(): page_map_(){}
+
+    inline void Initialize(){}
+
+    inline void Clear(){
+        page_map_.Clear();
+    }
+
+    void SetSpan(PageId page_id, TCSpan* span){
+        page_map_.SetSpan(page_id.GetIndex(), span);
+    }
+
+    bool Ensure(PageId page_id, std::size_t length){
+        return page_map_.Ensure(page_id.GetIndex(), length);
+    }
+};
+}
+#endif

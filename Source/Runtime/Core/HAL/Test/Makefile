@@ -16,6 +16,7 @@ OBJ_S =	TCSpanListTest.o \
 		../TCSpanList.o \
 		../TCPageCache.o \
 		../TCPageMap.o \
+		../TCSystemMalloc.o \
 
 main : ${OBJ_S}
 	g++ -Wall -o main.out $(OBJ_S)

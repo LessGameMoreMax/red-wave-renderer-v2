@@ -39,6 +39,8 @@ namespace sablin{
     inline constexpr std::size_t kMaxDynamicFreeListLength = 8192;
     inline constexpr std::size_t kMinMoveNum = 2;
     inline constexpr std::size_t kMaxMoveNum = 128;
+    inline constexpr std::size_t kMaxPages = 1 << (20 - kPageShift);
+    inline constexpr std::size_t kMinSystemMalloc = 2 << 20;
 
 #if PLATFORM_ARCH == PLATFORM_ARCH_32
     inline constexpr uint32_t kAddressBits = 8 * sizeof(void*);

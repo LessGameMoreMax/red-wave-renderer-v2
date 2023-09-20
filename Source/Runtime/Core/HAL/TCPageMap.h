@@ -70,6 +70,10 @@ public:
     bool Ensure(PageId page_id, std::size_t length){
         return page_map_.Ensure(page_id.GetIndex(), length);
     }
+
+    TCSpan* GetSpan(PageId page_id){
+        return page_map_.GetSpan(page_id.GetIndex());
+    }
 };
 }
 #endif

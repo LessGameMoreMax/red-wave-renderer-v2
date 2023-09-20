@@ -64,6 +64,9 @@ public:
     }
 
     void SetObjectSize(std::size_t object_size);
+    inline std::size_t GetObjectSize() const{
+        return object_size_;
+    }
 };
 
 inline PageId TCSpan::GetFirstPageId() const{

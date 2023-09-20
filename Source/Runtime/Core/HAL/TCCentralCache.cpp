@@ -43,7 +43,7 @@ uint32_t TCCentralCache::RemoveRange(uint8_t bucket_index, void** batch, uint32_
     if(span == nullptr){
         uintptr_t pages_num = TCGlobals::size_map_.GetPagesNum(bucket_index);
         uint32_t object_size = TCGlobals::size_map_.GetClassToSize(bucket_index);
-        span = TCGlobals::page_cache_.AllocateSpan(bucket_index, pages_num);
+        span = TCGlobals::page_cache_.AllocateSpan(pages_num);
         span->SetObjectSize(object_size);
 
         char* start_ptr = static_cast<char*>(span->GetStartAddr());

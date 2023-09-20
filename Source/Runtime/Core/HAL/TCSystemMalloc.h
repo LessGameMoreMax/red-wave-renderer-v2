@@ -12,6 +12,8 @@ public:
 public:
     static std::pair<void*, std::size_t> Malloc(std::size_t size, std::size_t alignment);
 
+    static void Release(void* ptr, std::size_t size);
+
     static std::pair<void*, std::size_t> SystemMalloc(std::size_t size, std::size_t alignment);
 };
 

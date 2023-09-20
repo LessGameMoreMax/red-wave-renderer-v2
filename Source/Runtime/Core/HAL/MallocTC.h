@@ -6,6 +6,8 @@ namespace sablin{
 
 class MallocTC final: public MallocBase{
 private:
+    void* TCMalloc(std::size_t size, uint32_t alignment);
+    void TCFree(void* ptr);
 public:
     MallocTC();
     virtual ~MallocTC() override;

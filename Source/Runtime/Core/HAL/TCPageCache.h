@@ -11,6 +11,7 @@ class TCPageCache{
 private:
     TCPageMap page_map_;
     TCSpanList span_list_[kMaxPages + 1];
+    std::mutex page_cache_lock_;
 public:
     TCPageCache() = default;
     ~TCPageCache() = default;
@@ -18,8 +19,8 @@ public:
     void Initialize();
     void Clear();
 
-    TCSpan* AllocateSpan(uint8_t bucket_index, uintptr_t pages_num);
-    void DeallocateSpan(uint8_t bucket_index, TCSpan* span);
+    TCSpan* AllocateSpan(uintptr_t pages_num);
+    void DeallocateSpan(TCSpan* span);
     TCSpan* MapObjectToSpan(void* object_ptr);
     bool GrowHeap(uintptr_t pages_num);
     TCSpan* SearchSpanList(uintptr_t pages_num);
@@ -27,7 +28,7 @@ public:
     TCSpan* Carve(TCSpan* span, uintptr_t pages_num);
 
     TCSpan* AllocBig(std::size_t size);
-    void FreeBig(void* ptr, TCSpan* span);
+    void FreeBig(TCSpan* span);
 
     TCSpan* AllocLarge(uintptr_t pages_num);
     void RecordSpan(TCSpan* span);

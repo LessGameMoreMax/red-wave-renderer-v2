@@ -1,7 +1,9 @@
 #include "TCPageCache.h"
 #include "../Debug/Assertion.h"
 #include "../Misc/MacroDefine.h"
+#include "TCSystemMalloc.h"
 namespace sablin{
+//TODO: Smaller Lock!
 
 void TCPageCache::Initialize(){
 
@@ -9,17 +11,28 @@ void TCPageCache::Initialize(){
 
 void TCPageCache::Clear(){
     page_map_.Clear();
+//TODO: Clear the Span List!
 }
 
-TCSpan* TCPageCache::AllocateSpan(uint8_t bucket_index, uintptr_t pages_num){
+TCSpan* TCPageCache::AllocateSpan(uintptr_t pages_num){
 #ifdef DEBUG
     ASSERT_WITH_STRING(pages_num > 0, "TCPageCache::AllocateSpan: Pages Number Is Smaller One!")
 #endif
-    return nullptr;
+    page_cache_lock_.lock();
+    TCSpan* result = SearchSpanList(pages_num);
+    if(result != nullptr) return result;
+    if(!GrowHeap(pages_num)){
+        return nullptr;
+    }
+    result = SearchSpanList(pages_num);
+    page_cache_lock_.unlock();
+    return result;
 }
 
-void TCPageCache::DeallocateSpan(uint8_t bucket_index, TCSpan* span){
-
+void TCPageCache::DeallocateSpan(TCSpan* span){
+    page_cache_lock_.lock();
+    MergeIntoSpanList(span);
+    page_cache_lock_.unlock();
 }
 
 //TODO: Use MapObjectToSpans To Reduce Function Calls And Speed!
@@ -32,7 +45,20 @@ TCSpan* TCPageCache::MapObjectToSpan(void* object_ptr){
 }
 
 bool TCPageCache::GrowHeap(uintptr_t pages_num){
-
+    auto [ptr, actual_size] = TCSystemMalloc::Malloc(pages_num * kPageSize, kPageSize);
+    if(ptr == nullptr) return false;
+    pages_num = actual_size >> kPageShift;
+    PageId page_id = PtrToPageId(ptr);
+    if(page_map_.Ensure(page_id-1, pages_num+2))[[likely]]{
+        TCSpan* span = new TCSpan();
+        span->Initialize(page_id, pages_num);
+        RecordSpan(span);
+        MergeIntoSpanList(span);
+        return true;
+    }else{
+        TCSystemMalloc::Release(ptr, actual_size);
+        return false;
+    }
 }
 
 TCSpan* TCPageCache::SearchSpanList(uintptr_t pages_num){
@@ -89,11 +115,15 @@ TCSpan* TCPageCache::Carve(TCSpan* span, uintptr_t pages_num){
 }
 
 TCSpan* TCPageCache::AllocBig(std::size_t size){
-
+    size = RoundUp(size, kPageSize);
+    std::size_t page_num = size >> kPageShift;
+    TCSpan* result = AllocateSpan(page_num);
+    result->SetObjectSize(size);
+    return result;
 }
 
-void TCPageCache::FreeBig(void* ptr, TCSpan* span){
-
+void TCPageCache::FreeBig(TCSpan* span){
+    DeallocateSpan(span);
 }
 
 TCSpan* TCPageCache::AllocLarge(uintptr_t pages_num){

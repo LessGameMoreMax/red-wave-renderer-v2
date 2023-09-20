@@ -15,7 +15,11 @@ std::pair<void*, std::size_t> TCSystemMalloc::Malloc(std::size_t size, std::size
     return {result, actual_size};
 }
 
-//mmap Just Linux and mmap need test and need better abstract!
+void TCSystemMalloc::Release(void* ptr, std::size_t){
+
+}
+
+//TODO: mmap Just Linux and mmap need test and need better abstract!
 std::pair<void*, std::size_t> TCSystemMalloc::SystemMalloc(std::size_t size, std::size_t alignment){
     std::size_t actual_size = RoundUp(size, kMinSystemMalloc);
     if(actual_size < size) return {nullptr, 0};

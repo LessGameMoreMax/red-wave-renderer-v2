@@ -2,6 +2,7 @@
 #define GENERIC_PLATFORM_MEMORY_H
 #include <cstdint>
 #include <cstring>
+#include "../Debug/Assertion.h"
 
 namespace sablin{
 
@@ -39,7 +40,20 @@ public:
     static inline void* Memzero(void* dest, std::size_t count){
         return memset(dest, 0, count);
     }
+
+    static std::pair<void*, std::size_t> BaseMalloc(std::size_t size, std::size_t alignment){
+        NO_IMPLEMENT_ASSERT(GenericPlatformMemory, BaseMalloc)
+    }
+
+    static void BaseFree(void* ptr, std::size_t size){
+        NO_IMPLEMENT_ASSERT(GenericPlatformMemory, BaseFree)
+    }
 };
+
+template <typename T>
+inline constexpr T Align(T address, uint32_t alignment){
+    return (T)(((uint64_t)address + (uint64_t)alignment - 1) & ~((uint64_t)alignment - 1));
+}
 
 }
 #endif

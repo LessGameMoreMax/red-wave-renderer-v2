@@ -11,7 +11,15 @@ void TCPageCache::Initialize(){
 
 void TCPageCache::Clear(){
     page_map_.Clear();
-//TODO: Clear the Span List!
+    for(uint32_t i = 0;i != kMaxPages + 1; ++i){
+        while(!span_list_[i].IsEmpty()){
+            TCSpan* span = span_list_[i].TryPop();
+#ifdef DEBUG
+            ASSERT_WITH_STRING(span != nullptr, "TCPageCache::Clear: Span Pointer Is Nullptr!")
+#endif
+            TCSystemMalloc::Release(span->GetStartAddr(), span->GetSpanSize());
+        }
+    }
 }
 
 TCSpan* TCPageCache::AllocateSpan(uintptr_t pages_num){

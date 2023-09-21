@@ -20,6 +20,17 @@ TCSpanList::~TCSpanList(){
     span_head_ = nullptr;
 }
 
+void TCSpanList::Clear(){
+    TCSpan* ptr = span_head_->next_;
+    while(ptr != span_head_){
+        TCSpan* next = ptr->next_;
+        delete ptr;
+        ptr = next;
+    }
+    delete span_head_;
+    span_head_ = nullptr;
+}
+
 void TCSpanList::PushFront(TCSpan* span){
 #ifdef DEBUG
     ASSERT_WITH_STRING(span != nullptr, "TCSpanList::PushFront: Span Is Nullptr!")

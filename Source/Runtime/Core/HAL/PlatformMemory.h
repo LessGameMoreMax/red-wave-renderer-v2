@@ -5,11 +5,6 @@
 namespace sablin{
 
 template <typename T>
-inline constexpr T Align(T address, uint32_t alignment){
-    return (T)(((uint64_t)address + (uint64_t)alignment - 1) & ~((uint64_t)alignment - 1));
-}
-
-template <typename T>
 inline constexpr T RoundDown(T size, T alignment){
     return (size) & ~(alignment-1);
 }

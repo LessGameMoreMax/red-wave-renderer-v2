@@ -11,6 +11,8 @@ public:
     TCSpanList();
     ~TCSpanList();
 
+    void Clear();
+
     TCSpanList(const TCSpanList&) = delete;
     TCSpanList& operator=(const TCSpanList&) = delete;
 

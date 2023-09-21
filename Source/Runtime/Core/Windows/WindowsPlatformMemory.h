@@ -1,11 +1,18 @@
 #ifndef WINDOWS_PLATFORM_MEMORY_H
 #define WINDOWS_PLATFORM_MEMORY_H
 #include "../GenericPlatform/GenericPlatformMemory.h"
+#include <map>
+#include <cstdint>
 
 namespace sablin{
 
 class WindowsPlatformMemory final: public GenericPlatformMemory{
 private:
+    struct RawPtrSize{
+        void* raw_ptr_;
+	std::size_t raw_size_;
+    };
+    static std::map<void*, RawPtrSize> ptr_map_;
 public:
     WindowsPlatformMemory() = default;
     virtual ~WindowsPlatformMemory() = default;

@@ -43,6 +43,7 @@ public:
 
     static std::pair<void*, std::size_t> BaseMalloc(std::size_t size, std::size_t alignment){
         NO_IMPLEMENT_ASSERT(GenericPlatformMemory, BaseMalloc)
+	return {nullptr, 0};
     }
 
     static void BaseFree(void* ptr, std::size_t size){

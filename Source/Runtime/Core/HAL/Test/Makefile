@@ -5,7 +5,6 @@ OBJ_S =	TCSpanListTest.o \
 		../MemoryBase.o \
 		../MemoryManager.o \
 		../../GenericPlatform/GenericPlatformMemory.o \
-		../../Linux/LinuxPlatformMemory.o \
 		../../Windows/WindowsPlatformMemory.o \
 		../TCSizeMap.o \
 		../TCSizeTools.o \

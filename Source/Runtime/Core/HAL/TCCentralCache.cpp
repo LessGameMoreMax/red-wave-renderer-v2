@@ -89,7 +89,7 @@ void TCCentralCache::InsertRange(uint8_t bucket_index, void** batch, uint32_t mo
         span_list.Erase(span);
         span->Push(ptr);
         if(span->IsEmpty()){
-            TCGlobals::page_cache_.DeallocateSpan(bucket_index, span);
+            TCGlobals::page_cache_.DeallocateSpan(span);
         }else{
             span_list.PushFront(span);
         }

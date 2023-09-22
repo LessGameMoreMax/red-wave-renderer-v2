@@ -56,6 +56,11 @@ public:
         --allocated_num_;
     }
 
+    inline void InitializePush(void* ptr){
+        SetNextPtr(ptr, free_list_);
+        free_list_ = ptr;
+    }
+
     inline void* Pop(){
         void* result = free_list_;
         free_list_ = GetNextPtr(free_list_);

@@ -16,7 +16,7 @@ std::pair<void*, std::size_t> TCSystemMalloc::Malloc(std::size_t size, std::size
     alignment = Max<std::size_t>(alignment, kPageSize);
 
     TCSystemMalloc::system_malloc_lock_.lock();
-    auto [result, result_size] = PlatformMemory::BaseMalloc(size, alignment);
+    auto [result, result_size] = PlatformMemory::BaseMalloc(actual_size, alignment);
     TCSystemMalloc::system_malloc_lock_.unlock();
     return {result, result_size};
 }

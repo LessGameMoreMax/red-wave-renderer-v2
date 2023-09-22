@@ -33,7 +33,7 @@ public:
         const uintptr_t level_1 = addr >> kLeafBits;
         const uintptr_t level_2 = addr & (kLeafLength - 1);
 #ifdef DEBUG
-        ASSERT_WITH_STRING((addr >> BITS) < 0, "TCPageMap2::GetSpan: Addr Smaller Than Platform Bits!")
+        ASSERT_WITH_STRING((addr >> BITS) == 0, "TCPageMap2::GetSpan: Addr Is Smaller BITS Length!")
 #endif
         if(root_[level_1] == nullptr) return nullptr;
         return root_[level_1]->span_[level_2];

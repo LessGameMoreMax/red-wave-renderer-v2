@@ -1,11 +1,11 @@
-OBJ_S =	TCSpanListTest.o \
+OBJ_S =	PlatformMemoryTest.o \
 		../MallocAnsi.o \
 		../MallocBase.o \
 		../MallocTC.o \
 		../MemoryBase.o \
 		../MemoryManager.o \
 		../../GenericPlatform/GenericPlatformMemory.o \
-		../../Windows/WindowsPlatformMemory.o \
+		../../Linux/LinuxPlatformMemory.o \
 		../TCSizeMap.o \
 		../TCSizeTools.o \
 		../TCGlobals.o \

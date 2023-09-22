@@ -17,10 +17,10 @@ OBJ_S =	PlatformMemoryTest.o \
 		../TCPageMap.o \
 		../TCSystemMalloc.o \
 
-main : ${OBJ_S}
+main : ${OBJ_S} $(HEADER_S)
 	g++ -Wall -o main.out $(OBJ_S)
-	
-$(OBJ_S) : $(HEADER_S)
+
+$(OBJ_S): $(HEADER_S)
 
 .PHONY : clean
 clean:

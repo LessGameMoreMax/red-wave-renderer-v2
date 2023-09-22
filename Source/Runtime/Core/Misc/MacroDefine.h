@@ -1,4 +1,5 @@
 #define DEBUG
 #define USE_TC_ALLOCTOR
+// #define USE_ANSI_ALLOCTOR
 #define USE_PLATFORM_ALIGNMENT
 #define TC_MALLOC_32K_PAGES

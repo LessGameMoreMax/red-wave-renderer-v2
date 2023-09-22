@@ -13,6 +13,10 @@ void TCCentralCache::Clear(){
 #ifdef DEBUG
     for(uint8_t i = 0;i != kBucketNum; ++i){
         TCSpanList& span_list = span_list_[i];
+        // while(!span_list.IsEmpty()){
+        //     TCSpan* span = span_list.TryPop();
+        //     std::cout << span->GetAllocatedSize() << std::endl;
+        // }
         ASSERT_WITH_STRING(span_list.IsEmpty(), "TCCentralCache::Clear: TCCentralCache Is Not Clear!")
     }
 #endif
@@ -48,9 +52,6 @@ uint32_t TCCentralCache::RemoveRange(uint8_t bucket_index, void** batch, uint32_
 
         char* start_ptr = static_cast<char*>(span->GetStartAddr());
         const char* end_ptr = static_cast<char*>(span->GetEndAddr());
-#ifdef DEBUG
-        ASSERT_WITH_STRING(span->GetSpanSize() % object_size == 0, "TCCentralCache::RemoveRange: Span Size Can Not Be Devided By Object Size Perfectly!")
-#endif
         while(start_ptr < end_ptr){
             span->InitializePush(start_ptr);
             start_ptr += object_size;
@@ -88,11 +89,6 @@ void TCCentralCache::InsertRange(uint8_t bucket_index, void** batch, uint32_t mo
         span_list.Lock();
         span_list.Erase(span);
         span->Push(ptr);
-        // std::cout << span->GetFirstPageId().GetStartAddr() << std::endl;
-        // std::cout << span->GetLastPageId().GetStartAddr() << std::endl;
-        // std::cout << span->GetObjectSize() << std::endl;
-        // std::cout << span->GetAllocatedSize() << std::endl;
-        // std::cout << span->GetSpanSize() << std::endl;
         if(span->IsEmpty()){
             TCGlobals::page_cache_.DeallocateSpan(span);
         }else{

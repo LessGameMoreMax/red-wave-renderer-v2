@@ -28,8 +28,12 @@ TCSpan* TCPageCache::AllocateSpan(uintptr_t pages_num){
 #endif
     page_cache_lock_.lock();
     TCSpan* result = SearchSpanList(pages_num);
-    if(result != nullptr) return result;
+    if(result != nullptr) {
+        page_cache_lock_.unlock();
+        return result;
+    }
     if(!GrowHeap(pages_num)){
+        page_cache_lock_.unlock();
         return nullptr;
     }
     result = SearchSpanList(pages_num);
@@ -39,6 +43,7 @@ TCSpan* TCPageCache::AllocateSpan(uintptr_t pages_num){
 
 void TCPageCache::DeallocateSpan(TCSpan* span){
     page_cache_lock_.lock();
+    RemoveFromSpanList(span);
     MergeIntoSpanList(span);
     page_cache_lock_.unlock();
 }
@@ -71,10 +76,11 @@ bool TCPageCache::GrowHeap(uintptr_t pages_num){
 
 TCSpan* TCPageCache::SearchSpanList(uintptr_t pages_num){
 //TODO: Normal and Returned?
-    for(uintptr_t i = pages_num-1;i != kMaxPages; ++i){
+    for(uintptr_t i = pages_num-1;i < kMaxPages; ++i){
         TCSpanList& span_list = span_list_[i];
-        if(!span_list.IsEmpty()) 
+        if(!span_list.IsEmpty()){
             return Carve(span_list.TryPop(), pages_num);
+        }
     }
     return AllocLarge(pages_num);
 }
@@ -83,7 +89,7 @@ void TCPageCache::MergeIntoSpanList(TCSpan* span){
     const PageId page_id = span->GetFirstPageId();
     const uintptr_t pages_num = span->GetPageNum();
     TCSpan* prev = page_map_.GetSpan(page_id - 1);
-    if(prev != nullptr){
+    if(prev != nullptr && prev->IsEmpty()){
         const uintptr_t len = prev->GetPageNum();
         RemoveFromSpanList(prev);
         delete prev;
@@ -93,7 +99,7 @@ void TCPageCache::MergeIntoSpanList(TCSpan* span){
     }
 
     TCSpan* next = page_map_.GetSpan(page_id + pages_num);
-    if(next != nullptr){
+    if(next != nullptr && next->IsEmpty()){
         const uintptr_t len = next->GetPageNum();
         RemoveFromSpanList(next);
         delete next;
@@ -104,7 +110,7 @@ void TCPageCache::MergeIntoSpanList(TCSpan* span){
 }
 
 TCSpan* TCPageCache::Carve(TCSpan* span, uintptr_t pages_num){
-    const uintptr_t extra = span->GetPageNum() - pages_num;
+    const int64_t extra = span->GetPageNum() - pages_num;
     if(extra > 0){        
         TCSpan* left_over = new TCSpan();
         if(page_map_.GetSpan(span->GetFirstPageId()-1) == nullptr && page_map_.GetSpan(span->GetLastPageId()+1) != nullptr){
@@ -119,7 +125,7 @@ TCSpan* TCPageCache::Carve(TCSpan* span, uintptr_t pages_num){
         span->SetPageNum(pages_num);
         page_map_.SetSpan(span->GetLastPageId(), span);
     }
-    return span;
+    return extra < 0? nullptr : span;
 }
 
 TCSpan* TCPageCache::AllocBig(std::size_t size){
@@ -136,13 +142,15 @@ void TCPageCache::FreeBig(TCSpan* span){
 
 TCSpan* TCPageCache::AllocLarge(uintptr_t pages_num){
     if(span_list_[kMaxPages].IsEmpty()) return nullptr;
-    return Carve(span_list_[kMaxPages].TryPop(), pages_num);
+    TCSpan* span = span_list_[kMaxPages].TryPop();
+    TCSpan* result = Carve(span, pages_num);
+    if(result == nullptr) span_list_[kMaxPages].PushFront(span);
+    return result;
 }
 
 void TCPageCache::RecordSpan(TCSpan* span){
-    page_map_.SetSpan(span->GetFirstPageId(), span);
-    if(span->GetPageNum() > 1)
-        page_map_.SetSpan(span->GetLastPageId(), span);
+    for(PageId i = span->GetFirstPageId();i != span->GetLastPageId() + 1; ++i)
+        page_map_.SetSpan(i, span);
 }
 
 void TCPageCache::AddToSpanList(TCSpan* span){

@@ -94,6 +94,7 @@ void* MallocTC::TryRealloc(void* ptr, std::size_t new_size, uint32_t alignment){
 }
 
 void MallocTC::Free(void* ptr){
+    std::cout << "MallocTC::Free" << std::endl;
     TCFree(ptr);
 }
 

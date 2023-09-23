@@ -2,6 +2,7 @@
 #define TC_PAGE_ID_H
 #include <cstdint>
 #include "TCCommon.h"
+#include "../Debug/Assertion.h"
 namespace sablin{
 
 class PageId{

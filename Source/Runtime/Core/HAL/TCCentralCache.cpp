@@ -13,11 +13,9 @@ void TCCentralCache::Clear(){
 #ifdef DEBUG
     for(uint8_t i = 0;i != kBucketNum; ++i){
         TCSpanList& span_list = span_list_[i];
-        // while(!span_list.IsEmpty()){
-        //     TCSpan* span = span_list.TryPop();
-        //     std::cout << span->GetAllocatedSize() << std::endl;
-        // }
-        ASSERT_WITH_STRING(span_list.IsEmpty(), "TCCentralCache::Clear: TCCentralCache Is Not Clear!")
+        while(!span_list.IsEmpty()){
+            TCGlobals::page_cache_.DeallocateSpan(span_list.TryPop());
+        }
     }
 #endif
 }
@@ -31,7 +29,8 @@ uint32_t TCCentralCache::RemoveRange(uint8_t bucket_index, void** batch, uint32_
         if(span_list.IsEmpty()){
             break;
         }else{
-            TCSpan* begin_span = span_list_->Begin();
+//Just One Word's Wrong: TCSpan* begin_span = span_list_->Begin();
+            TCSpan* begin_span = span_list.Begin();
             if(begin_span->TryLock()){
                 if(begin_span->IsFull()){
                     begin_span->UnLock();

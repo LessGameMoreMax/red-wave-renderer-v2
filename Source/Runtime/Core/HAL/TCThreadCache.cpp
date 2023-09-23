@@ -107,7 +107,9 @@ void TCThreadCache::ReleaseToCentralCache(TCFreeList* free_list, uint8_t bucket_
     void* batch[kMaxMoveNum];
     int32_t batch_size = TCGlobals::size_map_.GetMoveNum(bucket_num);
     while(move_num > batch_size){
-        free_list_->PopBatch(batch_size, batch);
+//Just One Character's Wrong: free_list_->PopBatch(batch_size, batch);
+//Local Var Name Don Not Same With Class Member Var Name!
+        free_list->PopBatch(batch_size, batch);
         TCGlobals::central_cache_.InsertRange(bucket_num, batch, batch_size);
         move_num -= batch_size;
     }

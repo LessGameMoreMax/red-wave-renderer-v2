@@ -35,6 +35,10 @@ void* MallocTC::TCMalloc(std::size_t size, uint32_t alignment){
 
 void MallocTC::TCFree(void* ptr){
     TCSpan* span = TCGlobals::page_cache_.MapObjectToSpan(ptr);
+#ifdef DEBUG
+        // std::cout << span->GetFirstPageId().GetIndex() << std::endl;
+        ASSERT_WITH_STRING(span->GetFirstPageId().GetIndex() >> 33 == 0, "")
+#endif
     std::size_t size = span->GetObjectSize();
     if(size > kMaxSize){
         TCGlobals::page_cache_.FreeBig(span);

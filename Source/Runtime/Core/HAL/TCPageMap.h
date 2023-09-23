@@ -15,7 +15,7 @@ private:
     static constexpr uint32_t kRootBits = BITS - kLeafBits;
     static constexpr uint32_t kRootLength = 1 << kRootBits;
 
-    struct Leaf: UseSystemMallocForNew{
+    struct Leaf: public UseSystemMallocForNew{
         TCSpan* span_[kLeafLength];
     };
 
@@ -33,8 +33,10 @@ public:
         const uintptr_t level_1 = addr >> kLeafBits;
         const uintptr_t level_2 = addr & (kLeafLength - 1);
 #ifdef DEBUG
-        ASSERT_WITH_STRING((addr >> BITS) == 0, "TCPageMap2::GetSpan: Addr Is Smaller BITS Length!")
+        // std::cout << (addr >> BITS) << std::endl;
+        // ASSERT_WITH_STRING((addr >> BITS) == 0, "TCPageMap2::GetSpan: Addr Is Smaller BITS Length!")
 #endif
+        if((addr >> BITS) > 0) return nullptr;
         if(root_[level_1] == nullptr) return nullptr;
         return root_[level_1]->span_[level_2];
     }

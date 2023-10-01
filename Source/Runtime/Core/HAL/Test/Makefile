@@ -1,4 +1,4 @@
-OBJ_S =	PlatformMemoryTest.o \
+OBJ_S =	TCBenchMarkTest.o \
 		../MallocAnsi.o \
 		../MallocBase.o \
 		../MallocTC.o \

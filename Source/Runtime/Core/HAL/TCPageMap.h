@@ -5,6 +5,7 @@
 #include "TCSpan.h"
 #include "MallocBase.h"
 #include "MemoryBase.h"
+#include <mutex>
 namespace sablin{
 
 template <uint32_t BITS>
@@ -32,10 +33,6 @@ public:
     inline TCSpan* GetSpan(uintptr_t addr) const{
         const uintptr_t level_1 = addr >> kLeafBits;
         const uintptr_t level_2 = addr & (kLeafLength - 1);
-#ifdef DEBUG
-        // std::cout << (addr >> BITS) << std::endl;
-        // ASSERT_WITH_STRING((addr >> BITS) == 0, "TCPageMap2::GetSpan: Addr Is Smaller BITS Length!")
-#endif
         if((addr >> BITS) > 0) return nullptr;
         if(root_[level_1] == nullptr) return nullptr;
         return root_[level_1]->span_[level_2];
@@ -83,11 +80,13 @@ public:
     }
 
     bool Ensure(PageId page_id, std::size_t length){
-        return page_map_.Ensure(page_id.GetIndex(), length);
+        bool result = page_map_.Ensure(page_id.GetIndex(), length);
+        return result;
     }
 
     TCSpan* GetSpan(PageId page_id){
-        return page_map_.GetSpan(page_id.GetIndex());
+        TCSpan* result = page_map_.GetSpan(page_id.GetIndex());
+        return result;
     }
 };
 }

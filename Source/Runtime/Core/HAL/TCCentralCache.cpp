@@ -24,24 +24,33 @@ uint32_t TCCentralCache::RemoveRange(uint8_t bucket_index, void** batch, uint32_
     TCSpanList &span_list = span_list_[bucket_index];
     TCSpan* span = nullptr;
 
+// Need More Smaller Lock!
     span_list.Lock();
-    while(true){
-        if(span_list.IsEmpty()){
-            break;
-        }else{
-//Just One Word's Wrong: TCSpan* begin_span = span_list_->Begin();
-            TCSpan* begin_span = span_list.Begin();
-            if(begin_span->TryLock()){
-                if(begin_span->IsFull()){
-                    begin_span->UnLock();
-                }else{
-                    span = span_list.TryPop();
-                }
-                break;
-            }
-        }
+//     while(true){
+//         if(span_list.IsEmpty()){
+//             break;
+//         }else{
+// //Just One Word's Wrong: TCSpan* begin_span = span_list_->Begin();
+//             TCSpan* begin_span = span_list.Begin();
+//             // if(begin_span->TryLock()){
+//                 if(begin_span->IsFull()){
+//                     // begin_span->UnLock();
+//                 }else{
+//                     span = span_list.TryPop();
+//                 }
+//                 break;
+//             // }
+//         }
+//     }
+    // span_list.UnLock();
+
+//----------------
+    if(!span_list.IsEmpty()){
+        TCSpan* begin_span = span_list.Begin();
+        if(!begin_span->IsFull())
+            span = span_list.TryPop();
     }
-    span_list.UnLock();
+//---------------
 
     if(span == nullptr){
         uintptr_t pages_num = TCGlobals::size_map_.GetPagesNum(bucket_index);
@@ -55,7 +64,7 @@ uint32_t TCCentralCache::RemoveRange(uint8_t bucket_index, void** batch, uint32_
             span->InitializePush(start_ptr);
             start_ptr += object_size;
         }
-        span->Lock();
+        // span->Lock();
     }
 
     uint32_t result = 0;
@@ -65,13 +74,13 @@ uint32_t TCCentralCache::RemoveRange(uint8_t bucket_index, void** batch, uint32_
         ++result;
     }
     
-    span_list.Lock();
+    // span_list.Lock();
     if(span->IsFull()){
         span_list.PushBack(span);
     }else{
         span_list.PushFront(span);
     }
-    span->UnLock();
+    // span->UnLock();
     span_list.UnLock();
 
     return result;
@@ -80,12 +89,10 @@ uint32_t TCCentralCache::RemoveRange(uint8_t bucket_index, void** batch, uint32_
 void TCCentralCache::InsertRange(uint8_t bucket_index, void** batch, uint32_t move_num){ 
     TCSpanList& span_list = span_list_[bucket_index];
     
+    span_list.Lock();
     for(uint32_t i = 0;i != move_num; ++i){
         void* ptr = batch[i];
         TCSpan* span = TCGlobals::page_cache_.MapObjectToSpan(ptr);
-        span->Lock();
-//TODO: Reduce the times of lock and unlock by cache!
-        span_list.Lock();
         span_list.Erase(span);
         span->Push(ptr);
         if(span->IsEmpty()){
@@ -93,9 +100,8 @@ void TCCentralCache::InsertRange(uint8_t bucket_index, void** batch, uint32_t mo
         }else{
             span_list.PushFront(span);
         }
-        span_list.UnLock();
-        span->UnLock();
     }
+    span_list.UnLock();
 }
 
 

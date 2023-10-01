@@ -41,7 +41,7 @@ void* TCThreadCache::Allocate(std::size_t size){
     std::size_t allocated_size = TCGlobals::size_map_.GetClassToSize(bucket_index);
     TCFreeList* free_list = free_list_ + bucket_index;
     if(!free_list->IsEmpty()) {
-        size -= allocated_size;
+        size_ -= allocated_size;
         return free_list->Pop();
     }
     return FetchFromCentralCache(bucket_index, allocated_size);

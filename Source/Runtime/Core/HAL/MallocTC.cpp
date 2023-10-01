@@ -11,6 +11,7 @@
 #include "TCThreadCache.h"
 #include "TCPageCache.h"
 
+#include <thread>
 namespace sablin{
 
 MallocTC::MallocTC():
@@ -29,28 +30,21 @@ void* MallocTC::TCMalloc(std::size_t size, uint32_t alignment){
         TCSpan* span = TCGlobals::page_cache_.AllocBig(size);
         return span->GetFirstPageId().GetStartAddr();
     }else{
-        return TCGlobals::thread_local_cache_.Allocate(size);
+        return TCGlobals::thread_local_cache_->Allocate(size);
     }
 }
 
 void MallocTC::TCFree(void* ptr){
     TCSpan* span = TCGlobals::page_cache_.MapObjectToSpan(ptr);
-#ifdef DEBUG
-        // std::cout << span->GetFirstPageId().GetIndex() << std::endl;
-        ASSERT_WITH_STRING(span->GetFirstPageId().GetIndex() >> 33 == 0, "")
-#endif
     std::size_t size = span->GetObjectSize();
     if(size > kMaxSize){
         TCGlobals::page_cache_.FreeBig(span);
     }else{
-        TCGlobals::thread_local_cache_.Deallocate(ptr, size);
+        TCGlobals::thread_local_cache_->Deallocate(ptr, size);
     }
 }
 
 void* MallocTC::Malloc(std::size_t size, uint32_t alignment){
-#ifdef DEBUG
-    std::cout << "MallocTC::Malloc" << std::endl;
-#endif
     void* ptr = TryMalloc(size, alignment);
     if(ptr == nullptr)[[unlikely]] PlatformMemory::MemoryOverflow();
     return ptr;
@@ -66,9 +60,6 @@ void* MallocTC::TryMalloc(std::size_t size, uint32_t alignment){
 }
 
 void* MallocTC::Realloc(void* ptr, std::size_t new_size, uint32_t alignment){
-#ifdef DEBUG
-    std::cout << "MallocTC::Realloc" << std::endl;
-#endif
     void* result = TryRealloc(ptr, new_size, alignment);
     if(result == nullptr && new_size != 0)[[unlikely]] PlatformMemory::MemoryOverflow();
     return result;
@@ -98,7 +89,6 @@ void* MallocTC::TryRealloc(void* ptr, std::size_t new_size, uint32_t alignment){
 }
 
 void MallocTC::Free(void* ptr){
-    std::cout << "MallocTC::Free" << std::endl;
     TCFree(ptr);
 }
 

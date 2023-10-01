@@ -52,7 +52,7 @@ void TCPageCache::DeallocateSpan(TCSpan* span){
 TCSpan* TCPageCache::MapObjectToSpan(void* object_ptr){
     TCSpan* result = page_map_.GetSpan(PtrToPageId(object_ptr));
 #ifdef DEBUG
-    ASSERT_WITH_STRING(result != nullptr, "TCPageCache::MapObjectToSpan: Object Ptr TCSpan Is Nullptr!")
+    // ASSERT_WITH_STRING(result != nullptr, "TCPageCache::MapObjectToSpan: Object Ptr TCSpan Is Nullptr!")
 #endif
     return result;
 }

@@ -3,9 +3,10 @@
 #include "TCCommon.h"
 #include "TCSizeClasses.h"
 #include "../Debug/Assertion.h"
+#include "MallocBase.h"
 namespace sablin{
 
-class TCThreadCache{
+class TCThreadCache: public UseSystemMallocForNew{
 private:
     class TCFreeList{
         private:

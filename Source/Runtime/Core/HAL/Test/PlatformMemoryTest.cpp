@@ -12,9 +12,9 @@ int main(){
     MemoryManager::Initialize();
     {
         MemoryBase::DebugInfo();
-        uint64_t result = (1 << 18) + (1 << 10);
+        // uint64_t result = (1 << 18) + (1 << 10);
         // uint64_t result = (1 << 18);
-        // uint64_t result = 1 << 19;
+        uint64_t result = 1 << 20;
         // void* temp[result];
         list<char*> lt;
         for(uint64_t i = 0;i != result; ++i){

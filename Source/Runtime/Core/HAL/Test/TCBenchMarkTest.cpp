@@ -79,15 +79,15 @@ int main(){
             cout << i << endl;
             vector<void*> ptr_vec;
             for(size_t j = 0;j != 100000; ++j){
-                std::cout << j << endl;
-                ptr_vec.push_back(new char[48]);
-                for(int k = 0;k != 48; ++k){
+                // std::cout << j << endl;
+                ptr_vec.push_back(new char[1024]);
+                for(int k = 0;k != 1024; ++k){
                     char* temp = (char*)ptr_vec[j] + k;
                     *temp = 'a';
                 }
             }
             for(size_t j = 0;j != 100000; ++j){
-                delete[] ptr_vec[i];
+                delete[] ptr_vec[j];
             }
         }
     }

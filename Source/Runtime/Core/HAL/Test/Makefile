@@ -55,15 +55,16 @@ DEBUG_S = TCBenchMarkTest.o \
 		TCPageMap.o \
 		TCSystemMalloc.o \
 
-main: ${OBJ_S} $(HEADER_S)
-	g++ -Wall -o main.out $(OBJ_S)
+# main: ${OBJ_S} $(HEADER_S)
+# 	g++ -Wall -o main.out $(OBJ_S)
 
-# main: ${DEBUG_S} $(HEADER_S)
-# 	g++ -Wall -g -o TCBenchMarkTest.out $(DEBUG_S)
-#
-# $(OBJ_S): $(HEADER_S)
-# 	g++ -g -c $(CPP_S)
+main: ${DEBUG_S} $(HEADER_S)
+	g++ -Wall -g -o TCBenchMarkTest.out $(DEBUG_S)
+
+$(OBJ_S): $(HEADER_S)
+	g++ -g -c $(CPP_S)
 
 .PHONY : clean
 clean:
-	rm main.out $(OBJ_S)
+	# rm main.out $(OBJ_S)
+	rm *.o *.out

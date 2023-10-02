@@ -43,6 +43,9 @@ public:
 #endif
         const uintptr_t level_1 = addr >> kLeafBits;
         const uintptr_t level_2 = addr & (kLeafLength - 1);
+#ifdef DEBUG
+        ASSERT_NO_STRING(root_[level_1] != nullptr)
+#endif
         root_[level_1]->span_[level_2] = span;
     }
 

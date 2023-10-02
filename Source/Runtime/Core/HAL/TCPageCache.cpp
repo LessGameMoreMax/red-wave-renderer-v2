@@ -29,6 +29,7 @@ TCSpan* TCPageCache::AllocateSpan(uintptr_t pages_num){
     page_cache_lock_.lock();
     TCSpan* result = SearchSpanList(pages_num);
     if(result != nullptr) {
+        result->SetInUse(true);
         page_cache_lock_.unlock();
         return result;
     }
@@ -37,13 +38,14 @@ TCSpan* TCPageCache::AllocateSpan(uintptr_t pages_num){
         return nullptr;
     }
     result = SearchSpanList(pages_num);
+    result->SetInUse(true);
     page_cache_lock_.unlock();
     return result;
 }
 
 void TCPageCache::DeallocateSpan(TCSpan* span){
     page_cache_lock_.lock();
-    // RemoveFromSpanList(span);
+    span->SetInUse(false);
     MergeIntoSpanList(span);
     page_cache_lock_.unlock();
 }
@@ -85,7 +87,7 @@ void TCPageCache::MergeIntoSpanList(TCSpan* span){
     const uintptr_t pages_num = span->GetPageNum();
 
     TCSpan* prev = page_map_.GetSpan(page_id - 1);
-    if(prev != nullptr && prev->IsEmpty()){
+    if(prev != nullptr && !prev->IsInUse()){
         const uintptr_t len = prev->GetPageNum();
         RemoveFromSpanList(prev);
         delete prev;
@@ -95,7 +97,7 @@ void TCPageCache::MergeIntoSpanList(TCSpan* span){
     }
 
     TCSpan* next = page_map_.GetSpan(page_id + pages_num);
-    if(next != nullptr && next->IsEmpty()){
+    if(next != nullptr && !next->IsInUse()){
         const uintptr_t len = next->GetPageNum();
         RemoveFromSpanList(next);
         delete next;
@@ -128,9 +130,7 @@ void* TCPageCache::AllocBig(std::size_t size){
     size = RoundUp(size, kPageSize);
     std::size_t page_num = size >> kPageShift;
     TCSpan* result = AllocateSpan(page_num);
-    result->SetObjectSize(size);
-    result->InitializePush(result->GetStartAddr());
-    return result->Pop();
+    return result->GetStartAddr();
 }
 
 void TCPageCache::FreeBig(TCSpan* span){

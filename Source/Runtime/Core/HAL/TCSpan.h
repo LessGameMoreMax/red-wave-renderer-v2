@@ -18,6 +18,7 @@ private:
     std::size_t allocated_num_;
     void* free_list_;
     std::mutex lock_;
+    bool in_use_;
 public:
     TCSpan* prev_;
     TCSpan* next_;
@@ -47,6 +48,13 @@ public:
 
     inline bool IsFull() const;
     inline bool IsEmpty() const;
+
+    inline bool IsInUse() const{
+        return in_use_;
+    }
+    inline void SetInUse(bool in_use){
+        in_use_ = in_use;
+    }
 
     void Initialize(PageId first_page_id, uintptr_t pages_num);
 

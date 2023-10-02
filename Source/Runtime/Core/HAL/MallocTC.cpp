@@ -37,10 +37,7 @@ void MallocTC::TCFree(void* ptr){
     TCSpan* span = TCGlobals::page_cache_.MapObjectToSpan(ptr);
     std::size_t size = span->GetObjectSize();
     if(size > kMaxSize){
-        span->Push(ptr);
-        if(span->IsEmpty()){
-            TCGlobals::page_cache_.FreeBig(span);
-        }
+        TCGlobals::page_cache_.FreeBig(span);
     }else{
         TCGlobals::thread_local_cache_->Deallocate(ptr, size);
     }

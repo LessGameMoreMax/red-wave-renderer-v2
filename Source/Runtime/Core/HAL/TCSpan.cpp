@@ -11,6 +11,7 @@ void TCSpan::Initialize(PageId first_page_id, uintptr_t pages_num){
     pages_num_ = pages_num;
     allocated_num_ = 0;
     free_list_ = nullptr;
+    in_use_ = false;
 }
 
 void TCSpan::SetObjectSize(std::size_t object_size){

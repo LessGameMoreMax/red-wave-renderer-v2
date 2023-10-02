@@ -70,27 +70,27 @@ void BenchMarkMalloc(size_t times, size_t works, size_t rounds){
 
 int main(){
     MemoryManager::Initialize();
-    // for(int i = 0;i != 1000; ++i){
-    //     cout << i << endl;
-    //     BenchMarkMalloc(10000, 10, 10);
-    // }
-    {
-        for(int i = 0;i != 1000; ++i){
-            cout << i << endl;
-            vector<void*> ptr_vec;
-            for(size_t j = 0;j != 100000; ++j){
-                // std::cout << j << endl;
-                ptr_vec.push_back(new char[1024]);
-                for(int k = 0;k != 1024; ++k){
-                    char* temp = (char*)ptr_vec[j] + k;
-                    *temp = 'a';
-                }
-            }
-            for(size_t j = 0;j != 100000; ++j){
-                delete[] ptr_vec[j];
-            }
-        }
+    for(int i = 0;i != 1000; ++i){
+        cout << i << endl;
+        BenchMarkMalloc(10000, 10, 10);
     }
+    // {
+    //     for(int i = 0;i != 1000; ++i){
+    //         cout << i << endl;
+    //         vector<void*> ptr_vec;
+    //         for(size_t j = 0;j != 100000; ++j){
+    //             // std::cout << j << endl;
+    //             ptr_vec.push_back(new char[1024]);
+    //             for(int k = 0;k != 1024; ++k){
+    //                 char* temp = (char*)ptr_vec[j] + k;
+    //                 *temp = 'a';
+    //             }
+    //         }
+    //         for(size_t j = 0;j != 100000; ++j){
+    //             delete[] ptr_vec[j];
+    //         }
+    //     }
+    // }
     MemoryManager::Exit();
 }
 

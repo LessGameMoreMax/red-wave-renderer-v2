@@ -27,7 +27,7 @@ public:
     void MergeIntoSpanList(TCSpan* span);
     TCSpan* Carve(TCSpan* span, uintptr_t pages_num);
 
-    TCSpan* AllocBig(std::size_t size);
+    void* AllocBig(std::size_t size);
     void FreeBig(TCSpan* span);
 
     TCSpan* AllocLarge(uintptr_t pages_num);

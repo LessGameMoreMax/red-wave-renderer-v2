@@ -52,7 +52,9 @@ void TCThreadCache::Deallocate(void* ptr, std::size_t size){
     const uint8_t bucket_index = TCGlobals::size_map_.GetSizeToClass(size);
     TCFreeList* free_list = free_list_ + bucket_index;
     free_list->Push(ptr);
-    if(free_list_->GetLength() >= free_list_->GetMaxLength()){
+//Just One Character's Wrong: free_list_->GetLength() >= free_list_->GetMaxLength();
+//Local Var Name Don Not Same With Class Member Var Name!
+    if(free_list->GetLength() >= free_list->GetMaxLength()){
         ListTooLong(free_list, bucket_index);
     }
 }
@@ -77,8 +79,11 @@ void* TCThreadCache::FetchFromCentralCache(uint8_t bucket_index, std::size_t siz
     if(free_list->GetMaxLength() < batch_size){
         free_list->SetMaxLength(free_list->GetMaxLength() + 1);
     }else{
-        int32_t new_length = Min<int32_t>(free_list_->GetMaxLength() + batch_size, kMaxDynamicFreeListLength);
+//Just One Character's Wrong: free_list_->GetMaxLength();
+//Local Var Name Don Not Same With Class Member Var Name!
+        int32_t new_length = Min<int32_t>(free_list->GetMaxLength() + batch_size, kMaxDynamicFreeListLength);
         new_length -= new_length % batch_size;
+        ASSERT_NO_STRING(new_length % batch_size == 0)
         free_list->SetMaxLength(new_length);
     }
     return batch[0];
@@ -88,14 +93,18 @@ void TCThreadCache::ListTooLong(TCFreeList* free_list, uint8_t bucket_num){
     const int32_t move_num = TCGlobals::size_map_.GetMoveNum(bucket_num);
     ReleaseToCentralCache(free_list, bucket_num, move_num);
 
-    uint32_t list_max_length = free_list_->GetMaxLength();
+//Just One Character's Wrong: free_list_->GetMaxLength();
+//Local Var Name Don Not Same With Class Member Var Name!
+    uint32_t list_max_length = free_list->GetMaxLength();
     if(list_max_length < move_num){
         free_list->SetMaxLength(list_max_length + 1);
     }else if(list_max_length > move_num){
         free_list->SetOveragesLength(free_list_->GetOveragesLength() + 1);
-        if(free_list_->GetOveragesLength() > kMaxOverages){
-            free_list_->SetMaxLength(free_list_->GetMaxLength() - move_num);
-            free_list_->SetOveragesLength(0);
+//Just One Character's Wrong: free_list_->GetOveragesLength();
+//Local Var Name Don Not Same With Class Member Var Name!
+        if(free_list->GetOveragesLength() > kMaxOverages){
+            free_list->SetMaxLength(free_list->GetMaxLength() - move_num);
+            free_list->SetOveragesLength(0);
         }
     }
 }

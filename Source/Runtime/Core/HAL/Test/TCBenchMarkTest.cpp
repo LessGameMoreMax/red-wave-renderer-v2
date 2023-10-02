@@ -11,40 +11,6 @@
 
 using namespace sablin;
 using namespace std;
-struct Element16{
-    int16_t e1;
-};
-
-struct Element32{
-    int32_t e1;
-};
-
-struct Element48{
-    int32_t e2;
-    int16_t e1;
-};
-
-struct Element128{
-    int64_t e1;
-    int64_t e2;
-};
-
-struct Element256{
-    Element128 e1;
-    Element128 e2;
-};
-
-struct Element384{
-    Element256 e2;
-    Element128 e1;
-};
-
-struct Element1024{
-    Element256 e1;
-    Element256 e2;
-    Element256 e3;
-    Element256 e4;
-};
 
 struct Para{
     size_t times;
@@ -63,12 +29,12 @@ void* WorkFunc(void* arg){
             vector<void*> ptr_vec;
             size_t begin1 = clock();
             for(size_t i = 0;i != times; ++i){
-                ptr_vec.push_back(new Element384());
+                ptr_vec.push_back(new char[1024]);
             }
             size_t end1 = clock();
             size_t begin2 = clock();
             for(size_t i = 0;i != times; ++i){
-                delete ptr_vec[i];
+                delete[] ptr_vec[i];
             }
             size_t end2 = clock();
             malloc_time.fetch_add(end1 - begin1);
@@ -85,8 +51,10 @@ void BenchMarkMalloc(size_t times, size_t works, size_t rounds){
     vector<Para*> para_list;
     for(size_t k = 0;k != works; ++k){
         tid_list.push_back(0);
-        para_list.push_back(new Para{times, rounds});
-        pthread_create(&tid_list[k], NULL, WorkFunc, (void*)para_list[k]);
+        Para* temp = new Para{times, rounds};
+        assert(temp != nullptr);
+        para_list.push_back(temp);
+        assert(pthread_create(&tid_list[k], NULL, WorkFunc, (void*)para_list[k]) == 0);
     }
 
     for(size_t k = 0;k != works; ++k){
@@ -102,10 +70,26 @@ void BenchMarkMalloc(size_t times, size_t works, size_t rounds){
 
 int main(){
     MemoryManager::Initialize();
-    for(int i = 0;i != 1000; ++i){
-        cout << i << endl;
-        // BenchMarkMalloc(10000, 10, 10);
-        BenchMarkMalloc(1, 16, 1);
+    // for(int i = 0;i != 1000; ++i){
+    //     cout << i << endl;
+    //     BenchMarkMalloc(10000, 10, 10);
+    // }
+    {
+        for(int i = 0;i != 1000; ++i){
+            cout << i << endl;
+            vector<void*> ptr_vec;
+            for(size_t j = 0;j != 100000; ++j){
+                std::cout << j << endl;
+                ptr_vec.push_back(new char[48]);
+                for(int k = 0;k != 48; ++k){
+                    char* temp = (char*)ptr_vec[j] + k;
+                    *temp = 'a';
+                }
+            }
+            for(size_t j = 0;j != 100000; ++j){
+                delete[] ptr_vec[i];
+            }
+        }
     }
     MemoryManager::Exit();
 }

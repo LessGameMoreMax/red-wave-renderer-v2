@@ -60,6 +60,8 @@ private:
 
             inline void* Pop(){
                 void* result = ptr_header_;
+                // std::cout << ptr_header_ << std::endl;
+                // std::cout << GetNextPtr(ptr_header_) << std::endl;
                 ptr_header_ = GetNextPtr(ptr_header_);
                 --length_;
                 return result;

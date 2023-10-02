@@ -5,16 +5,15 @@
 #include "TCSpan.h"
 #include "MallocBase.h"
 #include "MemoryBase.h"
-#include <mutex>
 namespace sablin{
 
 template <uint32_t BITS>
 class TCPageMap2{
 private:
     static constexpr uint32_t kLeafBits = 15;
-    static constexpr uint32_t kLeafLength = 1 << kLeafBits;
+    static constexpr uint64_t kLeafLength = 1 << kLeafBits;
     static constexpr uint32_t kRootBits = BITS - kLeafBits;
-    static constexpr uint32_t kRootLength = 1 << kRootBits;
+    static constexpr uint64_t kRootLength = 1 << kRootBits;
 
     struct Leaf: public UseSystemMallocForNew{
         TCSpan* span_[kLeafLength];
@@ -66,6 +65,7 @@ public:
 class TCPageMap{
 private:
     TCPageMap2<kAddressBits - kPageShift> page_map_;
+    std::mutex page_map_lock_;
 public:
     constexpr TCPageMap(): page_map_(){}
 
@@ -76,16 +76,22 @@ public:
     }
 
     void SetSpan(PageId page_id, TCSpan* span){
+        page_map_lock_.lock();
         page_map_.SetSpan(page_id.GetIndex(), span);
+        page_map_lock_.unlock();
     }
 
     bool Ensure(PageId page_id, std::size_t length){
+        page_map_lock_.lock();
         bool result = page_map_.Ensure(page_id.GetIndex(), length);
+        page_map_lock_.unlock();
         return result;
     }
 
     TCSpan* GetSpan(PageId page_id){
+        page_map_lock_.lock();
         TCSpan* result = page_map_.GetSpan(page_id.GetIndex());
+        page_map_lock_.unlock();
         return result;
     }
 };

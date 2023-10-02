@@ -1,6 +1,7 @@
 #ifndef TC_SPAN_LIST_H
 #define TC_SPAN_LIST_H
 #include "TCSpan.h"
+#include "../Misc/MacroDefine.h"
 namespace sablin{
 
 class TCSpanList{
@@ -16,23 +17,11 @@ public:
     TCSpanList(const TCSpanList&) = delete;
     TCSpanList& operator=(const TCSpanList&) = delete;
 
-    // inline TCSpan* GetBegin(){
-    //     return span_head_->next_;
-    // }
-    //
-    // inline TCSpan* GetEnd(){
-    //     return span_head_;
-    // }
-
     void PushFront(TCSpan* span);
     void PushBack(TCSpan* span);
-    // TCSpan* TryPopFront();
-    // TCSpan* TryPopBack();
     
-    // void Insert(TCSpan* position, TCSpan* new_span);
     void Erase(TCSpan* position);
 
-    // void Push(TCSpan* span);
     TCSpan* TryPop();
 
     inline TCSpan* Begin(){
@@ -47,8 +36,10 @@ public:
     inline void Lock();
     inline void UnLock();
 
-    uint32_t RemoveRange(void** batch, uint32_t move_num);
-    void InsertRange(void** batch, uint32_t move_num);
+#ifdef DEBUG
+public:
+    uint64_t length_ = 0;
+#endif
 };
 
 inline bool TCSpanList::TryLock(){

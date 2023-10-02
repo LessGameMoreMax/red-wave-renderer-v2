@@ -43,18 +43,14 @@ TCSpan* TCPageCache::AllocateSpan(uintptr_t pages_num){
 
 void TCPageCache::DeallocateSpan(TCSpan* span){
     page_cache_lock_.lock();
-    RemoveFromSpanList(span);
+    // RemoveFromSpanList(span);
     MergeIntoSpanList(span);
     page_cache_lock_.unlock();
 }
 
 //TODO: Use MapObjectToSpans To Reduce Function Calls And Speed!
 TCSpan* TCPageCache::MapObjectToSpan(void* object_ptr){
-    TCSpan* result = page_map_.GetSpan(PtrToPageId(object_ptr));
-#ifdef DEBUG
-    // ASSERT_WITH_STRING(result != nullptr, "TCPageCache::MapObjectToSpan: Object Ptr TCSpan Is Nullptr!")
-#endif
-    return result;
+    return page_map_.GetSpan(PtrToPageId(object_ptr));
 }
 
 bool TCPageCache::GrowHeap(uintptr_t pages_num){
@@ -65,7 +61,6 @@ bool TCPageCache::GrowHeap(uintptr_t pages_num){
     if(page_map_.Ensure(page_id-1, pages_num+2))[[likely]]{
         TCSpan* span = new TCSpan();
         span->Initialize(page_id, pages_num);
-        // RecordSpan(span);
         MergeIntoSpanList(span);
         return true;
     }else{
@@ -125,23 +120,20 @@ TCSpan* TCPageCache::Carve(TCSpan* span, uintptr_t pages_num){
         RecordSpan(left_over);
         AddToSpanList(left_over);
         span->SetPageNum(pages_num);
-        // page_map_.SetSpan(span->GetLastPageId(), span);
     }
     return extra < 0? nullptr : span;
 }
 
-TCSpan* TCPageCache::AllocBig(std::size_t size){
+void* TCPageCache::AllocBig(std::size_t size){
     size = RoundUp(size, kPageSize);
     std::size_t page_num = size >> kPageShift;
     TCSpan* result = AllocateSpan(page_num);
     result->SetObjectSize(size);
-    return result;
+    result->InitializePush(result->GetStartAddr());
+    return result->Pop();
 }
 
 void TCPageCache::FreeBig(TCSpan* span){
-#ifdef DEBUG
-        ASSERT_WITH_STRING(span->GetFirstPageId().GetIndex() >> 33 == 0, "")
-#endif
     DeallocateSpan(span);
 }
 

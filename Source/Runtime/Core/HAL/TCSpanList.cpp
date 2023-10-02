@@ -18,6 +18,9 @@ TCSpanList::~TCSpanList(){
     }
     delete span_head_;
     span_head_ = nullptr;
+#ifdef DEBUG
+    length_ = 0;
+#endif
 }
 
 void TCSpanList::Clear(){
@@ -29,6 +32,9 @@ void TCSpanList::Clear(){
     }
     delete span_head_;
     span_head_ = nullptr;
+#ifdef DEBUG
+    length_ = 0;
+#endif
 }
 
 void TCSpanList::PushFront(TCSpan* span){
@@ -40,6 +46,9 @@ void TCSpanList::PushFront(TCSpan* span){
     span->next_ = span_head_next;
     span_head_->next_ = span;
     span->prev_ = span_head_;
+#ifdef DEBUG
+    ++length_;
+#endif
 }
 
 void TCSpanList::PushBack(TCSpan* span){
@@ -51,19 +60,10 @@ void TCSpanList::PushBack(TCSpan* span){
     span->prev_ = span_head_prev;
     span_head_->prev_ = span;
     span->next_ = span_head_;
+#ifdef DEBUG
+    ++length_;
+#endif
 }
-
-// TCSpan* TCSpanList::TryPopFront(){
-//
-// }
-//
-// TCSpan* TCSpanList::TryPopBack(){
-//
-// }
-//
-// void TCSpanList::Insert(TCSpan* position, TCSpan* new_span){
-//
-// }
 
 void TCSpanList::Erase(TCSpan* position){
 #ifdef DEBUG
@@ -71,6 +71,10 @@ void TCSpanList::Erase(TCSpan* position){
 #endif
     position->next_->prev_ = position->prev_;
     position->prev_->next_ = position->next_;
+#ifdef DEBUG
+    position->prev_ = position->next_ = nullptr;
+    --length_;
+#endif
 }
 
 TCSpan* TCSpanList::TryPop(){

@@ -13,9 +13,8 @@ class WindowsPlatformMemory final: public GenericPlatformMemory{
 private:
     struct RawPtrSize{
         void* raw_ptr_;
-	std::size_t raw_size_;
+	    std::size_t raw_size_;
     };
-    static std::map<void*, RawPtrSize> ptr_map_;
 public:
     WindowsPlatformMemory() = default;
     virtual ~WindowsPlatformMemory() = default;

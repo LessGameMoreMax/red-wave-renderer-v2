@@ -11,8 +11,6 @@
 
 namespace sablin{
 
-std::map<void*, WindowsPlatformMemory::RawPtrSize> WindowsPlatformMemory::ptr_map_;
-
 void WindowsPlatformMemory::Initialize(){
     GenericPlatformMemory::Initialize();
 }
@@ -39,21 +37,17 @@ void WindowsPlatformMemory::MemoryOverflow(){
 }
 
 std::pair<void*, std::size_t> WindowsPlatformMemory::BaseMalloc(std::size_t size, std::size_t alignment){
-    void* raw_ptr = VirtualAlloc(0, size + alignment, MEM_COMMIT | MEM_RESERVE, PAGE_READWRITE);
+    void* raw_ptr = VirtualAlloc(0, sizeof(std::size_t) + sizeof(void*) + size + alignment, MEM_COMMIT | MEM_RESERVE, PAGE_READWRITE);
     if(raw_ptr == NULL) return {nullptr, 0};
-    void* ptr = Align(raw_ptr, alignment);
-    std::size_t actual_size = size + alignment - ((uintptr_t)ptr - (uintptr_t)raw_ptr);
-    ptr_map_[ptr] = {raw_ptr, size + alignment};
+    void* ptr = Align((uint8_t*)raw_ptr + sizeof(std::size_t) + sizeof(void*), alignment);
+    *(void**)((uint8_t*)ptr - sizeof(void*)) = raw_ptr;
+    *(std::size_t*)((uint8_t*)ptr - sizeof(void*) - sizeof(std::size_t)) = size;
+    std::size_t actual_size = size + alignment - ((uintptr_t)ptr - (uintptr_t)raw_ptr) + sizeof(std::size_t) + sizeof(void*);
     return {ptr, actual_size};
 }
 
 void WindowsPlatformMemory::BaseFree(void* ptr, std::size_t size){
-    auto iter = ptr_map_.find(ptr);
-#ifdef DEBUG
-    ASSERT_WITH_STRING(iter != ptr_map_.end(), "WindowsPlatformMemory::BaseFree: Ptr Is Not In Ptr Map!")
-#endif
-    ASSERT_WITH_STRING(VirtualFree((iter->second).raw_ptr_, 0, MEM_RELEASE), "WindowsPlatformMemory::BaseFree: Virtual Free Failed!")
-    ptr_map_.erase(iter);
+    ASSERT_WITH_STRING(VirtualFree(*(void**)((uint8_t*)ptr - sizeof(void*)), 0, MEM_RELEASE), "WindowsPlatformMemory::BaseFree: Virtual Free Failed!")
 }
 }
 #endif

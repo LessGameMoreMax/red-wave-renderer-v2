@@ -48,8 +48,8 @@ std::pair<void*, std::size_t> WindowsPlatformMemory::BaseMalloc(std::size_t size
 }
 
 void WindowsPlatformMemory::BaseFree(void* ptr, std::size_t size){
-#ifdef DEBUG
     auto iter = ptr_map_.find(ptr);
+#ifdef DEBUG
     ASSERT_WITH_STRING(iter != ptr_map_.end(), "WindowsPlatformMemory::BaseFree: Ptr Is Not In Ptr Map!")
 #endif
     ASSERT_WITH_STRING(VirtualFree((iter->second).raw_ptr_, 0, MEM_RELEASE), "WindowsPlatformMemory::BaseFree: Virtual Free Failed!")

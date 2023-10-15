@@ -1,4 +1,4 @@
-OBJ_S =	TCBenchMarkTest.o \
+OBJ_S =	TCBenchMarkWindowsTest.o \
 		../MallocAnsi.o \
 		../MallocBase.o \
 		../MallocTC.o \

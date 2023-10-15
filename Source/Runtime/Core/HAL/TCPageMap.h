@@ -70,7 +70,11 @@ private:
     TCPageMap2<kAddressBits - kPageShift> page_map_;
     std::mutex page_map_lock_;
 public:
+#if PLATFORM_INDEX == WINDOWS_PLATFORM_INDEX
+    explicit TCPageMap(): page_map_(){}
+#elif
     constexpr TCPageMap(): page_map_(){}
+#endif
 
     inline void Initialize(){}
 

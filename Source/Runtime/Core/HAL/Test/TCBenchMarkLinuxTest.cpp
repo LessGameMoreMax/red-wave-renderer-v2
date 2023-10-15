@@ -72,7 +72,7 @@ int main(){
     MemoryManager::Initialize();
     for(int i = 0;i != 1000; ++i){
         cout << i << endl;
-        BenchMarkMalloc(10000, 8, 10);
+        BenchMarkMalloc(1000, 8, 10);
     }
     // {
     //     for(int i = 0;i != 1000; ++i){

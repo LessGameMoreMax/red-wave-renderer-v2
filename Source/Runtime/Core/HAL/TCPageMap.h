@@ -72,7 +72,7 @@ private:
 public:
 #if PLATFORM_INDEX == WINDOWS_PLATFORM_INDEX
     explicit TCPageMap(): page_map_(){}
-#elif
+#else
     constexpr TCPageMap(): page_map_(){}
 #endif
 

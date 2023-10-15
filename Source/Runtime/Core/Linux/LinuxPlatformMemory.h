@@ -1,5 +1,8 @@
 #ifndef LINUX_PLATFORM_MEMORY_H
 #define LINUX_PLATFORM_MEMORY_H
+
+#include "../HAL/Platform.h"
+#if PLATFORM_INDEX == LINUX_PLATFORM_INDEX
 #include "../GenericPlatform/GenericPlatformMemory.h"
 
 namespace sablin{
@@ -24,4 +27,6 @@ public:
 using PlatformMemory = LinuxPlatformMemory;
 
 }
+#endif
+
 #endif

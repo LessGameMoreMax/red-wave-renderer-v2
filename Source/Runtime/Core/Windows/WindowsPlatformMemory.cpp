@@ -1,10 +1,12 @@
 #include "WindowsPlatformMemory.h"
+#if PLATFORM_INDEX == WINDOWS_PLATFORM_INDEX
 #include "../HAL/MallocTC.h"
 #include "../HAL/MallocAnsi.h"
 #include "../Misc/MacroDefine.h"
 #ifdef DEBUG
 #include <iostream>
 #endif
+
 #include <windows.h>
 
 namespace sablin{
@@ -54,3 +56,4 @@ void WindowsPlatformMemory::BaseFree(void* ptr, std::size_t size){
     ptr_map_.erase(iter);
 }
 }
+#endif

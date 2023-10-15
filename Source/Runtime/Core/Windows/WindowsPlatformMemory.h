@@ -1,5 +1,8 @@
 #ifndef WINDOWS_PLATFORM_MEMORY_H
 #define WINDOWS_PLATFORM_MEMORY_H
+
+#include "../HAL/Platform.h"
+#if PLATFORM_INDEX == WINDOWS_PLATFORM_INDEX
 #include "../GenericPlatform/GenericPlatformMemory.h"
 #include <map>
 #include <cstdint>
@@ -30,4 +33,6 @@ public:
 
 using PlatformMemory = WindowsPlatformMemory;
 }
+#endif
+
 #endif

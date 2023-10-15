@@ -1,4 +1,6 @@
 #include "LinuxPlatformMemory.h"
+
+#if PLATFORM_INDEX == LINUX_PLATFORM_INDEX
 #include "../Misc/MacroDefine.h"
 #ifdef DEBUG
 #include <iostream>
@@ -67,3 +69,4 @@ void LinuxPlatformMemory::BaseFree(void* ptr, std::size_t size){
     ASSERT_WITH_STRING(munmap(ptr, size) == 0, "LinuxPlatformMemory::BaseFree: Munmap Failed!")
 }
 }
+#endif

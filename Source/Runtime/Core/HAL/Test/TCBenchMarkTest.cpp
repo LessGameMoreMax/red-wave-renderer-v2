@@ -26,7 +26,7 @@ void* WorkFunc(void* arg){
     TCGlobals::CreateThreadLocalCache();
     {
         for(size_t j = 0;j != rounds; ++j){
-            vector<void*> ptr_vec;
+            vector<char*> ptr_vec;
             size_t begin1 = clock();
             for(size_t i = 0;i != times; ++i){
                 ptr_vec.push_back(new char[1024]);

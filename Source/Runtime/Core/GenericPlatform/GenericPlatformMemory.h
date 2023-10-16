@@ -11,7 +11,7 @@ class MallocBase;
 class GenericPlatformMemory{
 private:
 public:
-    GenericPlatformMemory() = default;
+    explicit GenericPlatformMemory() = default;
     virtual ~GenericPlatformMemory() = default;
     
     static void Initialize();

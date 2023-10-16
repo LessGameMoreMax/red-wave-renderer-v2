@@ -8,5 +8,8 @@ namespace sablin{
 #define MACRO_LINK(x, y) MACRO_LINK_INNER(x, y)
 #define MACRO_LINK_INNER(x, y) x##y
 
+#define STRING_NULL ""
+#define STRING_DEFAULT "default"
+
 }
 #endif

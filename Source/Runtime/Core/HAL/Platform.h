@@ -16,9 +16,11 @@ namespace sablin{
 #if defined(WIN32) || defined(_WIN32) || defined(_WIN64) || defined(_WIN64_)
     #define PLATFORM_INDEX WINDOWS_PLATFORM_INDEX
     #define PLATFORM_TYPE Windows
+    #define THREAD_DEFAULT_STACK_SIZE 1024
 #elif defined(__linux__) || defined(__linux) || defined(__gnu_linux__)
     #define PLATFORM_INDEX LINUX_PLATFORM_INDEX
     #define PLATFORM_TYPE Linux
+    #define THREAD_DEFAULT_STACK_SIZE 8192
 #else
 #error UNKNOWN PLATFORM! SUPPORTED PLATFORM: WINDOWS, LINUX
 #endif

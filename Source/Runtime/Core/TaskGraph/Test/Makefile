@@ -21,6 +21,8 @@ OBJ_S =	ThreadTest.o \
 		../RunnableThread.o \
 		../../Linux/LinuxPlatformThread.o \
 		../../Linux/LinuxPlatformProcess.o \
+		../../Windows/WindowsPlatformThread.o \
+		../../Windows/WindowsPlatformProcess.o \
 
 main: ${OBJ_S} $(HEADER_S)
 	g++ -Wall -o main.out $(OBJ_S)

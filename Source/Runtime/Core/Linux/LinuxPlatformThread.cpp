@@ -37,7 +37,10 @@ sched_param LinuxPlatformThread::TranslatePriority(const ThreadPriority& thread_
         case (uint32_t)ThreadPriority::kThreadPriorityTimeCritical:
             return sched_param{90};
         default:
+#ifdef DEBUG
             ASSERT_WITH_STRING(false, "Wrong Thread Priority!")
+#endif
+            return sched_param{50};
     }
 }
 
@@ -69,7 +72,7 @@ bool LinuxPlatformThread::SetupThread(const CpuSet& cpu_set){
     if(pthread_create(&thread_, &attr, &LinuxPlatformThread::_Run, (void*)pthread_param_) == 0){
         SetThreadAffinity(cpu_set);
         joinable_ = true;
-        ASSERT_NO_STRING(thread_id_ = -1)
+        ASSERT_NO_STRING(thread_id_ == -1)
         static uint32_t thread_id = 0;
         thread_id_ = thread_id++;
     }else{
@@ -92,6 +95,7 @@ RStatus LinuxPlatformThread::Kill(bool should_wait){
     if(should_wait && joinable_){
         status += Join();
     }
+    joinable_ = false;
 
     delete pthread_param_;
     pthread_param_ = nullptr;

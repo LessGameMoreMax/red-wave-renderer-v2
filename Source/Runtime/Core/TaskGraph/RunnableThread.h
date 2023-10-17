@@ -10,7 +10,7 @@ class RunnableThread: public Runnable{
 protected:
     std::string thread_name_;
     Runnable* runnable_;
-    uint32_t thread_id_;
+    int32_t thread_id_;
     ThreadPriority thread_priority_;
     uint32_t stack_size_;
     bool joinable_;
@@ -30,7 +30,7 @@ public:
         return joinable_;
     }
 
-    constexpr uint32_t GetThreadId() const{
+    constexpr int32_t GetThreadId() const{
         return thread_id_;
     }
 

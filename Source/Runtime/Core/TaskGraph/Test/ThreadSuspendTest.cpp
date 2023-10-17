@@ -21,6 +21,7 @@ public:
     virtual RStatus Run() override{
         while(1){
             std::cout << "1" << std::endl;
+	    this_thread::sleep_for(chrono::seconds(1));
         }
         return RStatus();
     }
@@ -34,10 +35,12 @@ int main(){
         CpuSet cpu_set;
         cpu_set.cpu_set_.insert(2);
         runnable_thread->SetThreadAffinity(cpu_set);
+
         while(1){
+	    this_thread::sleep_for(chrono::seconds(3));
             runnable_thread->Suspend(true);
             std::cout << "Stop!" << std::endl;
-            this_thread::sleep_for(chrono::seconds(10));
+            this_thread::sleep_for(chrono::seconds(5));
             runnable_thread->Suspend(false);
         }
         if(runnable_thread->IsJoinable()){

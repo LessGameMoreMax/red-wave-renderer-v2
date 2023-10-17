@@ -13,7 +13,8 @@ public:
     virtual ~WindowsPlatformProcess() = default;
 
     static RunnableThread* CreateThread(Runnable* runnable, std::string thread_name = STRING_DEFAULT,
-            ThreadPriority thread_priority = ThreadPriority::kThreadPriorityNormal, uint32_t stack_size = THREAD_DEFAULT_STACK_SIZE);
+            ThreadPriority thread_priority = ThreadPriority::kThreadPriorityNormal,
+            uint32_t stack_size = THREAD_DEFAULT_STACK_SIZE, CpuSet cpu_set = CpuSet());
 };
 
 using PlatformProcess = WindowsPlatformProcess;

@@ -55,8 +55,6 @@ bool LinuxPlatformThread::SetupThread(const CpuSet& cpu_set){
     ASSERT_NO_STRING(pthread_attr_init(&attr) == 0)
     //Set Detach State
     pthread_attr_setdetachstate(&attr, PTHREAD_CREATE_JOINABLE);
-    //Set InHeritsched
-    pthread_attr_setinheritsched(&attr, PTHREAD_EXPLICIT_SCHED);
     //Set Sched Policy
     pthread_attr_setschedpolicy(&attr, SCHED_RR);
     //Set Thread Priority
@@ -68,7 +66,7 @@ bool LinuxPlatformThread::SetupThread(const CpuSet& cpu_set){
     ASSERT_NO_STRING(pthread_param_ == nullptr)
     pthread_param_ = new PThreadParam{this, RStatus(STRING_DEFAULT)};
     
-    if(pthread_create(&thread_, &attr, LinuxPlatformThread::_Run, (void*)pthread_param_) == 0){
+    if(pthread_create(&thread_, &attr, &LinuxPlatformThread::_Run, (void*)pthread_param_) == 0){
         SetThreadAffinity(cpu_set);
         joinable_ = true;
         ASSERT_NO_STRING(thread_id_ = -1)

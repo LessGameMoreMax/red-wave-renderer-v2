@@ -27,7 +27,7 @@ public:
 
     virtual void SetThreadPriority(const ThreadPriority thread_priority) override;
     virtual bool SetThreadAffinity(const CpuSet& cpu_set) override;
-    virtual bool SetupThread(const CpuSet& cpu_set = CpuSet()) override;
+    virtual bool SetupThread(const CpuSet& cpu_set) override;
     virtual RStatus Kill(bool should_wait) override;
     virtual void Suspend(bool should_pause) override;
     virtual RStatus Join() override;

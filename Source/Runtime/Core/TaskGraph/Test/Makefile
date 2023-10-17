@@ -1,4 +1,4 @@
-OBJ_S =	ThreadTest.o \
+OBJ_S =	LinuxThreadSuspendTest.o \
 		../../HAL/MallocAnsi.o \
 		../../HAL/MallocBase.o \
 		../../HAL/MallocTC.o \

@@ -8,7 +8,7 @@ namespace sablin{
 LinuxPlatformThread::LinuxPlatformThread(Runnable* runnable, std::string thread_name,
         ThreadPriority thread_priority, uint32_t stack_size): 
     RunnableThread(runnable, thread_name, thread_priority, stack_size), 
-    thread_(0), pthread_param_(nullptr){}
+    thread_(0), pthread_param_(nullptr) {}
 
 LinuxPlatformThread::~LinuxPlatformThread(){
     Kill(true);

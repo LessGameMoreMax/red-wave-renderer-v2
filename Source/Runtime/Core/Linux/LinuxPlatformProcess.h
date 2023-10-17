@@ -12,8 +12,8 @@ public:
     explicit LinuxPlatformProcess() = default;
     virtual ~LinuxPlatformProcess() = default;
 
-    static RunnableThread* CreateThread(Runnable* runnable, std::string thread_name = STRING_DEFAULT,
-            ThreadPriority thread_priority = ThreadPriority::kThreadPriorityNormal, 
+    static RunnableThread* CreateNativeThread(Runnable* runnable, std::string thread_name = STRING_DEFAULT,
+            ThreadPriority thread_priority = ThreadPriority::kThreadPriorityNormal, ThreadType thread_type = ThreadType::kThreadTypeNative,
             uint32_t stack_size = THREAD_DEFAULT_STACK_SIZE, CpuSet cpu_set = CpuSet());
 };
 

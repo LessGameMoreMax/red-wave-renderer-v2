@@ -53,7 +53,7 @@ void BenchMarkMalloc(size_t times, size_t works, size_t rounds){
     runnable->times = times;
     runnable->rounds = rounds;
     for(size_t k = 0;k != works; ++k){
-        RunnableThread* runnable_thread = PlatformProcess::CreateThread(runnable);
+        RunnableThread* runnable_thread = PlatformProcess::CreateNativeThread(runnable);
         thread_list.push_back(runnable_thread);
     }
 

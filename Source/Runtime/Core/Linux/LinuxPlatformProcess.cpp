@@ -9,10 +9,10 @@
 #endif
 namespace sablin{
 
-RunnableThread* LinuxPlatformProcess::CreateThread(Runnable* runnable, std::string thread_name, 
-        ThreadPriority thread_priority, uint32_t stack_size, CpuSet cpu_set){
+RunnableThread* LinuxPlatformProcess::CreateNativeThread(Runnable* runnable, std::string thread_name, 
+        ThreadPriority thread_priority, ThreadType thread_type, uint32_t stack_size, CpuSet cpu_set){
     stack_size = Max<uint32_t>(stack_size, THREAD_DEFAULT_STACK_SIZE);
-    RunnableThread* runnable_thread = new LinuxPlatformThread(runnable, thread_name, thread_priority, stack_size);
+    RunnableThread* runnable_thread = new LinuxPlatformThread(runnable, thread_name, thread_priority, thread_type, stack_size);
 
     if(!runnable_thread->SetupThread(cpu_set)){
         std::cout << "Warning: Fail to setup thread!" << std::endl;

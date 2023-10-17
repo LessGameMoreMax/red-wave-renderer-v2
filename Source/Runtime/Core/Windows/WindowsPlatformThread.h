@@ -23,7 +23,7 @@ private:
     static DWORD WINAPI _Run(LPVOID wthread_param);
 public:
     explicit WindowsPlatformThread(Runnable* runnable, std::string thread_name,
-            ThreadPriority thread_priority, uint32_t stack_size);
+            ThreadPriority thread_priority, ThreadType thread_type, uint32_t stack_size);
     virtual ~WindowsPlatformThread();
 
     virtual void SetThreadPriority(const ThreadPriority thread_priority) override;

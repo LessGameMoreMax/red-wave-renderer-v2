@@ -12,11 +12,12 @@ protected:
     Runnable* runnable_;
     int32_t thread_id_;
     ThreadPriority thread_priority_;
+    ThreadType thread_type_;
     uint32_t stack_size_;
     bool joinable_;
 public:
     explicit RunnableThread(Runnable* runnable, std::string thread_name, 
-            ThreadPriority thread_priority, uint32_t stack_size);
+            ThreadPriority thread_priority, ThreadType thread_type, uint32_t stack_size);
     virtual ~RunnableThread() = default;
 
     virtual void SetThreadPriority(const ThreadPriority thread_priority) = 0;
@@ -40,6 +41,10 @@ public:
 
     inline ThreadPriority GetThreadPriority() const{
         return thread_priority_;
+    }
+
+    inline ThreadType GetThreadType() const{
+        return thread_type_;
     }
 
     inline bool HasSetup() const{

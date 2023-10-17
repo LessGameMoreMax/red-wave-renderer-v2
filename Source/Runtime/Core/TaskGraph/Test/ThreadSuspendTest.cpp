@@ -30,7 +30,7 @@ int main(){
     MemoryManager::Initialize();
     {
         MyRunnable* runnable = new MyRunnable();
-        RunnableThread* runnable_thread = PlatformProcess::CreateThread(runnable);
+        RunnableThread* runnable_thread = PlatformProcess::CreateNativeThread(runnable);
         CpuSet cpu_set;
         cpu_set.cpu_set_.insert(2);
         runnable_thread->SetThreadAffinity(cpu_set);

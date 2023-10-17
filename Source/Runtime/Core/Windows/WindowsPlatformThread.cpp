@@ -7,8 +7,8 @@
 namespace sablin{
 
 WindowsPlatformThread::WindowsPlatformThread(Runnable* runnable, std::string thread_name,
-        ThreadPriority thread_priority, uint32_t stack_size):
-    RunnableThread(runnable, thread_name, thread_priority, stack_size),
+        ThreadPriority thread_priority, ThreadType thread_type, uint32_t stack_size):
+    RunnableThread(runnable, thread_name, thread_priority, thread_type, stack_size),
     thread_(0), wthread_param_(nullptr){}
 
 WindowsPlatformThread::~WindowsPlatformThread(){

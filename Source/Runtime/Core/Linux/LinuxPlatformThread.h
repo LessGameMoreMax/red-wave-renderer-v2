@@ -22,7 +22,7 @@ private:
     static void* _Run(void* pthread_param);
 public:
     explicit LinuxPlatformThread(Runnable* runnable, std::string thread_name,
-            ThreadPriority thread_priority, uint32_t stack_size);
+            ThreadPriority thread_priority, ThreadType thread_type, uint32_t stack_size);
     virtual ~LinuxPlatformThread();
 
     virtual void SetThreadPriority(const ThreadPriority thread_priority) override;

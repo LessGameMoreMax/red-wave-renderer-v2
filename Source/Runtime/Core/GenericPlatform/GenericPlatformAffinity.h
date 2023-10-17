@@ -22,5 +22,11 @@ struct CpuSet{
     std::set<uint16_t> cpu_set_;
 };
 
+enum class ThreadType: uint32_t{
+    kThreadTypeNative,
+    kThreadTypeWorkPrimary,
+    kThreadTypeWorkSecondary
+};
+
 }
 #endif

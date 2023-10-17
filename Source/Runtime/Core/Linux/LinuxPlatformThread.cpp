@@ -123,14 +123,10 @@ RStatus LinuxPlatformThread::Run(){
 
 void* LinuxPlatformThread::_Run(void* pthread_param){
 #ifdef USE_TC_ALLOCTOR
-    TCGlobals::CreateThreadLocalCache();
+    TCThreadLocalCacheRAII tc_thread_local_cache_raii;
 #endif
     PThreadParam* param = static_cast<PThreadParam*>(pthread_param);
     param->status_ = param->linux_platform_thread_->Run();
-#ifdef USE_TC_ALLOCTOR
-    TCGlobals::DestroyThreadLocalCache();
-#endif
-
     return nullptr;
 }
 

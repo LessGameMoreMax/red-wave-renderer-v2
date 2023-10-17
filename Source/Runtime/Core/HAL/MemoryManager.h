@@ -3,10 +3,21 @@
 namespace sablin{
 
 class MemoryManager final{
-private:
 public:
     static void Initialize();
     static void Exit();
+};
+
+class MemoryManagerRAII{
+public:
+    explicit MemoryManagerRAII(){
+        MemoryManager::Initialize();
+    }
+
+    ~MemoryManagerRAII(){
+        MemoryManager::Exit();
+    }
+
 };
 
 }

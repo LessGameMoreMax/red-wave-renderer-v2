@@ -138,13 +138,10 @@ RStatus WindowsPlatformThread::Run(){
 
 DWORD WINAPI WindowsPlatformThread::_Run(LPVOID wthread_param){
 #ifdef USE_TC_ALLOCTOR
-    TCGlobals::CreateThreadLocalCache();
+    TCThreadLocalCacheRAII tc_thread_local_cache_raii;
 #endif
     WThreadParam* param = static_cast<WThreadParam*>(wthread_param);
     param->status_ = param->windows_platform_thread_->Run();
-#ifdef USE_TC_ALLOCTOR
-    TCGlobals::DestroyThreadLocalCache();
-#endif
     return 0;
 }
 

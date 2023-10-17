@@ -11,5 +11,9 @@ namespace sablin{
 #define STRING_NULL ""
 #define STRING_DEFAULT "default"
 
+#define CLASS_NO_ALLOWED_COPY(type)              \
+    type(const type&) = delete;                  \
+    const type& operator=(const type&) = delete; \
+
 }
 #endif

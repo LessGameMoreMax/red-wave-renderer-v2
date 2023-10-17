@@ -8,8 +8,7 @@
 #include <atomic>
 #include "../../HAL/MemoryBase.h"
 #include "../Runnable.h"
-#include "../../HAL/Platform.h"
-#include INCLUDE_PLATFORM_HEADER(../.., PlatformProcess.h)
+#include "../../GenericPlatform/GenericPlatformProcess.h"
 
 using namespace sablin;
 using namespace std;

@@ -1,6 +1,6 @@
 #include "WindowsPlatformThread.h"
-#include <synchapi.h>
 #if PLATFORM_INDEX == WINDOWS_PLATFORM_INDEX
+#include <synchapi.h>
 #include "../Debug/Assertion.h"
 #include "../Misc/MacroDefine.h"
 #include "../HAL/TCGlobals.h"

@@ -5,10 +5,11 @@
 #include <queue>
 #include <thread>
 #include "../Misc/MacroTools.h"
-#include "../Misc/TypeTraits.h"
+#include "../Debug/Assertion.h"
 namespace sablin{
 
 template <typename T>
+requires std::is_pointer_v<T>
 class AtomicQueue{
 private:
     std::mutex lock_;
@@ -16,7 +17,9 @@ private:
     std::queue<T> queue_;
 public:
     AtomicQueue() = default;
-    ~AtomicQueue();
+    ~AtomicQueue(){
+        ASSERT_NO_STRING(IsEmpty())
+    }
     CLASS_NO_ALLOWED_COPY(AtomicQueue)
 
     bool IsEmpty(){
@@ -37,12 +40,61 @@ public:
         cond_variable_.notify_one();
     }
 
-    T TryPop(){
+    // Wait For Lock!
+    T Pop(){
         std::lock_guard<std::mutex> lk(lock_);
+        if(queue_.empty()) {
+            return nullptr;
+        }
+        T result = std::move(queue_.front());
+        queue_.pop();
+        return result;
     }
 
+    T PopTimeOut(long ms){
+        std::lock_guard<std::mutex> lk(lock_);
+        if(!cond_variable_.wait_for(lk, std::chrono::milliseconds(ms), [this]{ return !queue_.empty();})){
+            return nullptr;
+        }
 
+        T result = std::move(queue_.front());
+        queue_.pop();
+        return result;
+    }
 
+    bool TryPopBatch(std::vector<T>& batch, int max_pool_batch_size){
+        bool result = false;
+        if(!queue_.empty() && lock_.try_lock()){
+            while(!queue_.empty() && max_pool_batch_size-- > 0){
+                batch.emplace_back(std::move(queue_.front()));
+                queue_.pop();
+                result = true;
+            }
+            lock_.unlock();
+        }
+        return result;
+    }
+
+    // No Any Wait!
+    T TryPop(){
+        T result = nullptr;
+        if(!queue_.empty() && lock_.try_lock()){
+            result = std::move(queue_.front());
+            queue_.pop();
+            lock_.unlock();
+        }
+        return result;
+    }
+
+    // Wait For Lock And Element!
+    T WaitPop(){
+        std::lock_guard<std::mutex> lk(lock_);
+        while(queue_.empty())
+            cond_variable_.wait(lk, [this]{ return !queue_.empty();});
+        T result = std::move(queue_.front());
+        queue_.pop();
+        return result;
+    }
 };
 
 }

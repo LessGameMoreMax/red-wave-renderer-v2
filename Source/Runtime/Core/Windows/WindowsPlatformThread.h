@@ -26,7 +26,7 @@ public:
             ThreadPriority thread_priority, ThreadType thread_type, uint32_t stack_size);
     virtual ~WindowsPlatformThread();
 
-    virtual void SetThreadPriority(const ThreadPriority thread_priority) override;
+    virtual bool SetThreadPriority(const ThreadPriority thread_priority) override;
     virtual bool SetThreadAffinity(const CpuSet& cpu_set) override;
     virtual bool SetupThread(const CpuSet& cpu_set) override;
     virtual RStatus Kill(bool should_wait) override;

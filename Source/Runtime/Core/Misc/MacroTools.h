@@ -1,5 +1,6 @@
 #ifndef MACRO_TOOLS_H
 #define MACRO_TOOLS_H
+#include <string>
 namespace sablin{
 
 #define MACRO_TO_STRING(s) MACRO_TO_STRING_INNER(s)
@@ -10,6 +11,9 @@ namespace sablin{
 
 #define STRING_NULL ""
 #define STRING_DEFAULT "default"
+#define STRING_CODE_LOCATION                                    \
+    (std::string(__FILE__) + " | " + std::string(__FUNCTION__)  \
+     + " | line = [" + ::std::to_string(__LINE__) + "]")
 
 #define CLASS_NO_ALLOWED_COPY(type)              \
     type(const type&) = delete;                  \

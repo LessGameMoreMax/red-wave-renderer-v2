@@ -15,10 +15,10 @@ WindowsPlatformThread::~WindowsPlatformThread(){
     Kill(true);
 }
 
-void WindowsPlatformThread::SetThreadPriority(const ThreadPriority thread_priority){
+bool WindowsPlatformThread::SetThreadPriority(const ThreadPriority thread_priority){
     if(!HasSetup()) return;
     thread_priority_ = thread_priority;
-    ::SetThreadPriority(thread_, TranslatePriority(thread_priority_));
+    return ::SetThreadPriority(thread_, TranslatePriority(thread_priority_));
 }
 
 int WindowsPlatformThread::TranslatePriority(const ThreadPriority& thread_priority){

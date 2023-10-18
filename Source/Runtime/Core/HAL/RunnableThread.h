@@ -20,7 +20,7 @@ public:
             ThreadPriority thread_priority, ThreadType thread_type, uint32_t stack_size);
     virtual ~RunnableThread() = default;
 
-    virtual void SetThreadPriority(const ThreadPriority thread_priority) = 0;
+    virtual bool SetThreadPriority(const ThreadPriority thread_priority) = 0;
     virtual bool SetThreadAffinity(const CpuSet& cpu_set) = 0;
     virtual bool SetupThread(const CpuSet& cpu_set) = 0;
     virtual RStatus Kill(bool should_wait) = 0;

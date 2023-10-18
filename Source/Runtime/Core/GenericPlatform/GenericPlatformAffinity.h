@@ -24,8 +24,9 @@ struct CpuSet{
 
 enum class ThreadType: uint32_t{
     kThreadTypeNative,
-    kThreadTypeGraphTaskThreadPrimary,
-    kThreadTypeGraphTaskThreadSecondary
+    kThreadTypeGraphTaskPrimaryThread,
+    kThreadTypeGraphTaskSecondaryThread,
+    kThreadTypeNone
 };
 
 }

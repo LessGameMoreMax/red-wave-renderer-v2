@@ -14,8 +14,10 @@ LinuxPlatformThread::~LinuxPlatformThread(){
     Kill(true);
 }
 
-void LinuxPlatformThread::SetThreadPriority(const ThreadPriority thread_priority){
-    return;
+bool LinuxPlatformThread::SetThreadPriority(const ThreadPriority thread_priority){
+    thread_priority_ = thread_priority;
+    sched_param param = TranslatePriority(thread_priority_);
+    return pthread_setschedparam(thread_, SCHED_RR, &param) == 0;
 }
 
 sched_param LinuxPlatformThread::TranslatePriority(const ThreadPriority& thread_priority){

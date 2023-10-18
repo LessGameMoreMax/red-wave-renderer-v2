@@ -3,7 +3,7 @@
 
 #include "../HAL/Platform.h"
 #if PLATFORM_INDEX == LINUX_PLATFORM_INDEX
-#include "../TaskGraph/RunnableThread.h"
+#include "../HAL/RunnableThread.h"
 #include <pthread.h>
 namespace sablin{
 

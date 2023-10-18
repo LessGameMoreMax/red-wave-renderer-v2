@@ -2,7 +2,7 @@
 
 #if PLATFORM_INDEX == LINUX_PLATFORM_INDEX
 #include "../Math/MathTools.h"
-#include "../Linux/LinuxPlatformThread.h"
+#include "LinuxPlatformThread.h"
 #include "../Misc/MacroDefine.h"
 #ifdef DEBUG
 #include "../Debug/Assertion.h"

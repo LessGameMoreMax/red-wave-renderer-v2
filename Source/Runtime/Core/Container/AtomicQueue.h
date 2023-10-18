@@ -27,10 +27,10 @@ public:
         return queue_.empty();
     }
 
-    void Push(T&& value){
+    void Push(T pointer){
         while(true){
             if(lock_.try_lock()){
-                queue_.push(std::move(value));
+                queue_.push(std::move(pointer));
                 lock_.unlock();
                 break;
             }else{

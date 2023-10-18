@@ -17,8 +17,8 @@ OBJ_S =	ThreadTest.o \
 		../../HAL/TCPageCache.o \
 		../../HAL/TCPageMap.o \
 		../../HAL/TCSystemMalloc.o \
-		../RStatus.o \
-		../RunnableThread.o \
+		../../HAL/RStatus.o \
+		../../HAL/RunnableThread.o \
 		../../Linux/LinuxPlatformThread.o \
 		../../Linux/LinuxPlatformProcess.o \
 		../../Windows/WindowsPlatformThread.o \

@@ -2,7 +2,7 @@
 
 #if PLATFORM_INDEX == WINDOWS_PLATFORM_INDEX
 #include "../Math/MathTools.h"
-#include "../Windows/WindowsPlatformThread.h"
+#include "WindowsPlatformThread.h"
 #include "../Misc/MacroDefine.h"
 #ifdef DEBUG
 #include "../Debug/Assertion.h"

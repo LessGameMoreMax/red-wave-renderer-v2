@@ -7,7 +7,7 @@
 #include <vector>
 #include <atomic>
 #include "../../HAL/MemoryBase.h"
-#include "../Runnable.h"
+#include "../../HAL/Runnable.h"
 #include "../../GenericPlatform/GenericPlatformProcess.h"
 
 using namespace sablin;

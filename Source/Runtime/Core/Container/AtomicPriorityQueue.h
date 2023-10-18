@@ -21,7 +21,7 @@ private:
     };
 
     std::mutex lock_;
-    std::priority_queue<Element*> priority_queue_;
+    std::priority_queue<Element> priority_queue_;
 public:
     AtomicPriorityQueue() = default;
     ~AtomicPriorityQueue(){
@@ -34,10 +34,9 @@ public:
         return priority_queue_.empty();
     }
 
-    void Push(T&& value, int32_t priority){
-        Element* element = new Element{std::move(value), priority};
+    void Push(T pointer, int32_t priority){
         std::lock_guard<std::mutex> lk(lock_);
-        priority_queue_.push(element);
+        priority_queue_.push({std::move(pointer), priority});
     }
 
     //No Any Wait!
@@ -46,12 +45,10 @@ public:
         //Pay Attention To The Condition!
         // if(lock_.try_lock() && !priority_queue_.empty()) Dead Lock!
         if(!priority_queue_.empty() && lock_.try_lock()){
-            Element* element = std::move(priority_queue_.top());
+            result = priority_queue_.top().pointer_;
             priority_queue_.pop();
             lock_.unlock();
 
-            result = element->pointer_;
-            delete element;
         }
         return result;
     }
@@ -60,10 +57,8 @@ public:
         bool result = false;
         if(lock_.try_lock()){
             while(!priority_queue_.empty() && max_pool_batch_size-- >0){
-                Element* element = std::move(priority_queue_.top());
+                batch.emplace_back(priority_queue_.top().pointer_);
                 priority_queue_.pop();
-                batch.emplace_back(element->pointer_);
-                delete element;
                 result = true;
             }
             lock_.unlock();

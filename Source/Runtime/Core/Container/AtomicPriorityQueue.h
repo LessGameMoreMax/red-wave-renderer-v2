@@ -45,10 +45,11 @@ public:
         //Pay Attention To The Condition!
         // if(lock_.try_lock() && !priority_queue_.empty()) Dead Lock!
         if(!priority_queue_.empty() && lock_.try_lock()){
-            result = priority_queue_.top().pointer_;
-            priority_queue_.pop();
+            if(!priority_queue_.empty()){
+                result = priority_queue_.top().pointer_;
+                priority_queue_.pop();
+            }
             lock_.unlock();
-
         }
         return result;
     }

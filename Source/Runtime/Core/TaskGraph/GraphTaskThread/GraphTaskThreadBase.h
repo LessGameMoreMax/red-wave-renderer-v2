@@ -15,7 +15,6 @@ protected:
     bool is_done_;
     bool is_init_;
     bool is_running_;
-    ThreadType thread_type_;
     unsigned long graph_task_number_;
 
     AtomicQueue<GraphTask*>* graph_task_queue_;

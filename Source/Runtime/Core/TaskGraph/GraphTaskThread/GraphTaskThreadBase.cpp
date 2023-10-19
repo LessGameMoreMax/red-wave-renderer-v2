@@ -5,7 +5,6 @@ GraphTaskThreadBase::GraphTaskThreadBase():
     is_done_(false),
     is_init_(false),
     is_running_(false),
-    thread_type_(ThreadType::kThreadTypeNone),
     graph_task_number_(0),
     graph_task_queue_(nullptr),
     graph_task_priority_queue_(nullptr),
@@ -25,7 +24,8 @@ RStatus GraphTaskThreadBase::Destroy(){
 
 GraphTask* GraphTaskThreadBase::PopPoolTask(){
     GraphTask* result = graph_task_queue_->TryPop();
-    if(result == nullptr && thread_type_ == ThreadType::kThreadTypeGraphTaskSecondaryThread){
+    if(result == nullptr && 
+            thread_->GetThreadType() == ThreadType::kThreadTypeGraphTaskSecondaryThread){
         result = graph_task_priority_queue_->TryPop();
     }
     return result;
@@ -33,7 +33,8 @@ GraphTask* GraphTaskThreadBase::PopPoolTask(){
 
 bool GraphTaskThreadBase::PopPoolBatchTask(std::vector<GraphTask*>& tasks){
     bool result = graph_task_queue_->TryPopBatch(tasks, pool_config_->max_pool_batch_size_);
-    if(!result && thread_type_ == ThreadType::kThreadTypeGraphTaskSecondaryThread){
+    if(!result &&
+            thread_->GetThreadType() == ThreadType::kThreadTypeGraphTaskSecondaryThread){
         result = graph_task_priority_queue_->TryPopBatch(tasks, 1);
     }
     return result;

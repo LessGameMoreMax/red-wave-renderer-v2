@@ -62,7 +62,7 @@ public:
         return result;
     }
 
-    bool TryPopBatch(std::vector<T>& batch, int max_pool_batch_size){
+    bool TryPopBatch(std::vector<T>& batch, int32_t max_pool_batch_size){
         bool result = false;
         if(!queue_.empty() && lock_.try_lock()){
             while(!queue_.empty() && max_pool_batch_size-- > 0){
@@ -79,8 +79,10 @@ public:
     T TryPop(){
         T result = nullptr;
         if(!queue_.empty() && lock_.try_lock()){
-            result = std::move(queue_.front());
-            queue_.pop();
+            if(!queue_.empty()){ // Important!
+                result = std::move(queue_.front());
+                queue_.pop();
+            }
             lock_.unlock();
         }
         return result;

@@ -57,11 +57,30 @@ public:
 
     template <typename Func>
     auto Commit(const Func& func, int32_t index = kDefaultGraphTaskStrategy)
-        -> std::future<decltype(std::declval<Func>()())>;
+        -> std::future<decltype(std::declval<Func>()())> {
+        std::packaged_task<decltype(std::declval<Func>()())()> task(func);
+        std::future<decltype(std::declval<Func>()())> result(task.get_future());
+
+        int32_t real_index = Dispatch(index);
+        if(real_index >= 0 && real_index < config_->primary_thread_size_){
+            primary_threads_[real_index]->PushGraphTask(new GraphTask(std::move(task)));
+        }else if(real_index == kLongTimeTaskStrategy){
+            graph_task_priority_queue_.Push(new GraphTask(std::move(task)), kLongTimeTaskStrategy);
+        }else{
+            graph_task_queue_.Push(new GraphTask(std::move(task)));
+        }
+        return result;
+    }
 
     template <typename Func>
     auto CommitWithPriority(const Func& func, int32_t priority)
-        -> std::future<decltype(std::declval<Func>()())>;
+        -> std::future<decltype(std::declval<Func>()())> {
+        std::packaged_task<decltype(std::declval<Func>()())()> task(func);
+        std::future<decltype(std::declval<Func>()())> result(task.get_future());
+        if(secondary_threads_.empty()) CreateSecondaryThread(1);
+        graph_task_priority_queue_.Push(new GraphTask(std::move(task)), priority);
+        return result;
+    }
 };
 
 }

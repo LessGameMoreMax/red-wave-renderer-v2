@@ -65,6 +65,10 @@ public:
         ASSERT_NO_STRING(impl_ != nullptr)
         impl_->Call();
     }
+
+    virtual RStatus Run() override{
+        return RStatus("No Implement!", STRING_CODE_LOCATION);
+    }
 };
 
 }

@@ -21,6 +21,7 @@ struct GraphTaskThreadPoolConfig{
     long queue_empty_interval_ = kQueueEmptyInterval;
     ThreadPriority primary_thread_priority_ = kPrimaryThreadPriority;
     ThreadPriority secondary_thread_priority_ = kSecondaryThreadPriority;
+    ThreadPriority monitor_thread_priority_ = kMonitorThreadPriority;
     bool batch_task_enable_ = kBatchTaskEnable;
     bool monitor_enable_ = kMonitorEnable;
 

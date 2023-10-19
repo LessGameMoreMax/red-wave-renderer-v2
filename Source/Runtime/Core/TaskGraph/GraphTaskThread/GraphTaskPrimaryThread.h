@@ -9,6 +9,7 @@
 namespace sablin{
 
 class GraphTaskPrimaryThread: public GraphTaskThreadBase{
+    friend class GraphTaskThreadPool;
 private:
     int32_t pool_id_;
     int32_t steal_range_;

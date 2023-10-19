@@ -6,6 +6,7 @@
 namespace sablin{
 
 class GraphTaskSecondaryThread: public GraphTaskThreadBase{
+    friend class GraphTaskThreadPool;
 private:
     int32_t cur_ttl_;
 protected:

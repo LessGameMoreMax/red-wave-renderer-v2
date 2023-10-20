@@ -2,7 +2,7 @@
 namespace sablin{
 
 GraphTaskThreadBase::GraphTaskThreadBase():
-    is_done_(false),
+    is_done_(true),
     is_init_(false),
     is_running_(false),
     graph_task_number_(0),

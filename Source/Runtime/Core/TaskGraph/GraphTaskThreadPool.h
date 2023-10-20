@@ -43,6 +43,7 @@ public:
     virtual RStatus Init() override;
     int32_t GetThreadPoolId(int32_t thread_id);
     virtual RStatus Destroy() override;
+    virtual RStatus Run() override{ return RStatus("NoImplement!", STRING_CODE_LOCATION);}
 
     inline constexpr bool IsInit() const{
         return is_init_;

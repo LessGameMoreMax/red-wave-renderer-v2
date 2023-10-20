@@ -7,7 +7,8 @@ using namespace std;
 
 int main(){
     MemoryManagerRAII memory_manager_raii;
-    // GraphTaskThreadPool pool;
+    GraphTaskThreadPool pool;
+    pool.Setup();
     return 0;
 }
 

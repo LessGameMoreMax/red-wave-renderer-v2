@@ -25,7 +25,8 @@ protected:
     explicit GraphTaskThreadBase();
     virtual ~GraphTaskThreadBase();
 
-    virtual RStatus Destroy() override;
+    virtual RStatus Setup() = 0;
+    virtual RStatus Exit();
     virtual GraphTask* PopPoolTask();
     virtual bool PopPoolBatchTask(std::vector<GraphTask*>& tasks);
     void RunGraphTask(GraphTask* task);

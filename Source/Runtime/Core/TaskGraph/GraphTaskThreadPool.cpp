@@ -5,29 +5,30 @@ GraphTaskThreadPool::GraphTaskThreadPool(GraphTaskThreadPoolConfig* config) noex
     is_init_(false), cur_pool_id_(0), config_(config){}
 
 GraphTaskThreadPool::~GraphTaskThreadPool(){
-    config_->monitor_enable_ = false;
-    if(monitor_thread_->IsJoinable()){
-        monitor_thread_->Join();
+    if(is_init_){
+        config_->monitor_enable_ = false;
+        if(monitor_thread_->IsJoinable()){
+            monitor_thread_->Join();
+        }
+        delete monitor_thread_;
+        delete monitor_runnable_;
+        Exit();
     }
-    delete monitor_thread_;
-    delete monitor_runnable_;
-    Destroy();
     delete config_;
 }
 
-RStatus GraphTaskThreadPool::Init(){
+RStatus GraphTaskThreadPool::Setup(){
     if(is_init_) return RStatus();
     RStatus status;
     monitor_runnable_ = new MonitorRunnable(this);
     monitor_thread_ = PlatformProcess::CreateNativeThread(monitor_runnable_, "GraphTaskThreadPoolMonitorThread",
             config_->monitor_thread_priority_, ThreadType::kThreadTypeGraphTaskMonitorThread);
-    monitor_thread_->SetupThread(CpuSet());
     thread_record_map_.clear();
     primary_threads_.reserve(config_->primary_thread_size_);
     for(uint32_t i = 0;i != config_->primary_thread_size_; ++i){
         GraphTaskPrimaryThread* ptr = new GraphTaskPrimaryThread();
         ptr->SetGraphTaskThreadPoolInfo(i, &graph_task_queue_, &primary_threads_, config_);
-        status += ptr->Init();
+        status += ptr->Setup();
 
         thread_record_map_[ptr->thread_->GetThreadId()] = i;
         primary_threads_.emplace_back(ptr);
@@ -49,12 +50,14 @@ int32_t GraphTaskThreadPool::GetThreadPoolId(int32_t thread_id){
     return iter->second;
 }
 
-RStatus GraphTaskThreadPool::Destroy(){
+RStatus GraphTaskThreadPool::Exit(){
+    // Make Sure Do Not Call Secondary Function Base Class's Pure Virtual Function: Run();
+    std::this_thread::sleep_for(std::chrono::milliseconds(50));
     RStatus status;
     if(!is_init_) return status;
 
     for(GraphTaskPrimaryThread* pt: primary_threads_)
-        status += pt->Destroy();
+        status += pt->Exit();
 
     ASSERT_NO_STRING(status.IsOk())
 
@@ -79,7 +82,7 @@ RStatus GraphTaskThreadPool::CreateSecondaryThread(uint32_t size){
     for(uint32_t i = 0;i != left_size; ++i){
         GraphTaskSecondaryThread* ptr = new GraphTaskSecondaryThread();
         ptr->SetGraphTaskThreadPoolInfo(&graph_task_queue_, &graph_task_priority_queue_, config_);
-        status += ptr->Init();
+        status += ptr->Setup();
         secondary_threads_.emplace_back(ptr);
     }
     return status;

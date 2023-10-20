@@ -12,7 +12,7 @@
 #include <future>
 namespace sablin{
 
-class GraphTaskThreadPool: public Runnable{
+class GraphTaskThreadPool{
 private:
     bool is_init_;
     int32_t cur_pool_id_;
@@ -37,13 +37,12 @@ protected:
     virtual int32_t Dispatch(int32_t origin_index);
 public:
     explicit GraphTaskThreadPool(GraphTaskThreadPoolConfig* config = new GraphTaskThreadPoolConfig()) noexcept;
-    virtual ~GraphTaskThreadPool() override;
+    virtual ~GraphTaskThreadPool();
     CLASS_NO_ALLOWED_COPY(GraphTaskThreadPool)
 
-    virtual RStatus Init() override;
+    virtual RStatus Setup();
     int32_t GetThreadPoolId(int32_t thread_id);
-    virtual RStatus Destroy() override;
-    virtual RStatus Run() override{ return RStatus("NoImplement!", STRING_CODE_LOCATION);}
+    virtual RStatus Exit();
 
     inline constexpr bool IsInit() const{
         return is_init_;

@@ -10,14 +10,13 @@ class GraphTaskSecondaryThread: public GraphTaskThreadBase{
 private:
     int32_t cur_ttl_;
 protected:
-    virtual RStatus Init() override{
+    virtual RStatus Setup() override{
         ASSERT_NO_STRING(is_init_ == false)
         ASSERT_NO_STRING(pool_config_ != nullptr)
         cur_ttl_ = pool_config_->secondary_thread_ttl_;
         thread_ = PlatformProcess::CreateNativeThread(this, "GraphTaskSecondaryThread",
                 pool_config_->secondary_thread_priority_, 
                 ThreadType::kThreadTypeGraphTaskSecondaryThread);
-        thread_->SetupThread(CpuSet());
         is_init_ = true;
         return RStatus();
     }
@@ -82,7 +81,7 @@ protected:
 
 
 public:
-    explicit GraphTaskSecondaryThread(): cur_ttl_(0){}
+    explicit GraphTaskSecondaryThread(): GraphTaskThreadBase(), cur_ttl_(0){}
 };
 
 }

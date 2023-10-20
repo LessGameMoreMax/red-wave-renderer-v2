@@ -18,12 +18,13 @@ private:
     std::vector<GraphTaskPrimaryThread*>* pool_threads_;
 protected:
     explicit GraphTaskPrimaryThread():
+        GraphTaskThreadBase(),
         pool_id_(-1),
         steal_range_(0),
         pool_threads_(nullptr){
     }
 
-    // Before Init()!
+    // Before Setup()!
     RStatus SetGraphTaskThreadPoolInfo(int32_t pool_id, AtomicQueue<GraphTask*>* pool_task_queue,
             std::vector<GraphTaskPrimaryThread*>* pool_threads, GraphTaskThreadPoolConfig* config){
         ASSERT_NO_STRING(is_init_ == false)
@@ -36,7 +37,7 @@ protected:
         return RStatus();
     }
 
-    virtual RStatus Init() override{
+    virtual RStatus Setup() override{
         ASSERT_NO_STRING(is_init_ == false)
         ASSERT_NO_STRING(pool_config_ != nullptr)
 
@@ -44,7 +45,6 @@ protected:
         thread_ = PlatformProcess::CreateNativeThread(this, 
                 "GraphTaskPrimaryThread", pool_config_->primary_thread_priority_, 
                 ThreadType::kThreadTypeGraphTaskPrimaryThread);
-        thread_->SetupThread(CpuSet());
         is_init_ = true;
         return RStatus();
     }
@@ -146,9 +146,6 @@ protected:
             std::this_thread::yield();
         }
     }
-
-
-
 };
 
 }

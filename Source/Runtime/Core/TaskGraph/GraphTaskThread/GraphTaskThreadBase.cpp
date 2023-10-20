@@ -16,7 +16,7 @@ GraphTaskThreadBase::~GraphTaskThreadBase(){
     delete thread_;
 }
 
-RStatus GraphTaskThreadBase::Destroy(){
+RStatus GraphTaskThreadBase::Exit(){
     ASSERT_NO_STRING(is_init_);
     Reset();
     return RStatus();

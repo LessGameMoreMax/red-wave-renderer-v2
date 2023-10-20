@@ -52,7 +52,7 @@ public:
     }
 
     T PopTimeOut(long ms){
-        std::lock_guard<std::mutex> lk(lock_);
+        std::unique_lock<std::mutex> lk(lock_);
         if(!cond_variable_.wait_for(lk, std::chrono::milliseconds(ms), [this]{ return !queue_.empty();})){
             return nullptr;
         }

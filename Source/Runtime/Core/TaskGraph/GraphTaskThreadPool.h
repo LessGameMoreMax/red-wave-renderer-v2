@@ -63,7 +63,7 @@ public:
         std::future<decltype(std::declval<Func>()())> result(task.get_future());
 
         int32_t real_index = Dispatch(index);
-        if(real_index >= 0 && real_index < config_->primary_thread_size_){
+        if(real_index >= 0 && real_index < (int32_t)config_->primary_thread_size_){
             primary_threads_[real_index]->PushGraphTask(new GraphTask(std::move(task)));
         }else if(real_index == kLongTimeTaskStrategy){
             graph_task_priority_queue_.Push(new GraphTask(std::move(task)), kLongTimeTaskStrategy);

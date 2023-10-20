@@ -38,9 +38,8 @@ void LinuxPlatformMemory::MemoryOverflow(){
 }
 
 std::pair<void*, std::size_t> LinuxPlatformMemory::BaseMalloc(std::size_t size, std::size_t alignment){
-    uint32_t linux_page_size = sysconf(_SC_PAGESIZE);
 #ifdef DEBUG
-    ASSERT_WITH_STRING(alignment % linux_page_size == 0, "LinuxPlatformMemory::BaseMalloc: Size Can Not Be Divided By Linux Page Size!")
+    ASSERT_WITH_STRING(alignment % sysconf(_SC_PAGESIZE) == 0, "LinuxPlatformMemory::BaseMalloc: Size Can Not Be Divided By Linux Page Size!")
 #endif
     void* result = mmap(NULL, size + alignment, PROT_READ | PROT_WRITE, MAP_PRIVATE | MAP_ANONYMOUS, -1, 0);
     if(result == NULL) return {nullptr, 0};
@@ -62,9 +61,8 @@ std::pair<void*, std::size_t> LinuxPlatformMemory::BaseMalloc(std::size_t size, 
 }
 
 void LinuxPlatformMemory::BaseFree(void* ptr, std::size_t size){
-    uint32_t linux_page_size = sysconf(_SC_PAGESIZE);
 #ifdef DEBUG
-    ASSERT_WITH_STRING(size % linux_page_size == 0, "LinuxPlatformMemory::BaseFree: Size Can Not Be Divided By Linux Page Size!")
+    ASSERT_WITH_STRING(size % sysconf(_SC_PAGESIZE) == 0, "LinuxPlatformMemory::BaseFree: Size Can Not Be Divided By Linux Page Size!")
 #endif
     ASSERT_WITH_STRING(munmap(ptr, size) == 0, "LinuxPlatformMemory::BaseFree: Munmap Failed!")
 }

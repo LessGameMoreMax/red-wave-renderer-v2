@@ -24,7 +24,7 @@ RStatus GraphTaskThreadPool::Init(){
     monitor_thread_->SetupThread(CpuSet());
     thread_record_map_.clear();
     primary_threads_.reserve(config_->primary_thread_size_);
-    for(int32_t i = 0;i != config_->primary_thread_size_; ++i){
+    for(uint32_t i = 0;i != config_->primary_thread_size_; ++i){
         GraphTaskPrimaryThread* ptr = new GraphTaskPrimaryThread();
         ptr->SetGraphTaskThreadPoolInfo(i, &graph_task_queue_, &primary_threads_, config_);
         status += ptr->Init();
@@ -107,7 +107,7 @@ int32_t GraphTaskThreadPool::Dispatch(int32_t origin_index){
     int32_t real_index = 0;
     if(origin_index == kDefaultGraphTaskStrategy){
         real_index = cur_pool_id_++;
-        if(cur_pool_id_ >= config_->max_thread_size_ || cur_pool_id_ < 0)
+        if(cur_pool_id_ >= (int32_t)config_->max_thread_size_ || cur_pool_id_ < 0)
             cur_pool_id_ = 0;
     }else{
         real_index = origin_index;

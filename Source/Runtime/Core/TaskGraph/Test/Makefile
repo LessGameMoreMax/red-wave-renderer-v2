@@ -25,48 +25,13 @@ OBJ_S =	ThreadPoolTest.o \
 		../../Windows/WindowsPlatformProcess.o \
 		../GraphTaskThreadPool.o \
 		../GraphTaskThread/GraphTaskThreadBase.o \
+	
+main: $(OBJ_S)
+	g++ $(OBJ_S) -o main.out
 
-CPP_S =	ThreadPoolTest.cpp \
-		../../HAL/MallocAnsi.cpp \
-		../../HAL/MallocBase.cpp \
-		../../HAL/MallocTC.cpp \
-		../../HAL/MemoryBase.cpp \
-		../../HAL/MemoryManager.cpp \
-		../../GenericPlatform/GenericPlatformMemory.cpp \
-		../../Linux/LinuxPlatformMemory.cpp \
-		../../Windows/WindowsPlatformMemory.cpp \
-		../../HAL/TCSizeMap.cpp \
-		../../HAL/TCSizeTools.cpp \
-		../../HAL/TCGlobals.cpp \
-		../../HAL/TCThreadCache.cpp \
-		../../HAL/TCCentralCache.cpp \
-		../../HAL/TCSpan.cpp \
-		../../HAL/TCSpanList.cpp \
-		../../HAL/TCPageCache.cpp \
-		../../HAL/TCPageMap.cpp \
-		../../HAL/TCSystemMalloc.cpp \
-		../../HAL/RStatus.cpp \
-		../../HAL/RunnableThread.cpp \
-		../../Linux/LinuxPlatformThread.cpp \
-		../../Linux/LinuxPlatformProcess.cpp \
-		../../Windows/WindowsPlatformThread.cpp \
-		../../Windows/WindowsPlatformProcess.cpp \
-		../GraphTaskThreadPool.cpp \
-		../GraphTaskThread/GraphTaskThreadBase.cpp \
-
-main: ${OBJ_S} $(HEADER_S)
-	g++ -std=c++20 -Wall -o main.out $(OBJ_S)
-
-$(OBJ_S): $(HEADER_S)
-	g++ -std=c++20 -c $(CPP_S)
+$(OBJ_S):
+	g++ -std=c++20 -Wall -c $(patsubst %.o, %.cpp, $@) -o $@
 
 .PHONY : clean
 clean:
-	rm main.out $(OBJ_S)
-
-.PHONY : debug
-debug: ${OBJ_S} $(HEADER_S)
-	g++ -std=c++20 -Wall -g -o debug.out $(OBJ_S)
-
-$(OBJ_S): $(HEADER_S)
-	g++ -std=c++20 -g -c $(CPP_S)
+	rm *.out $(OBJ_S)

@@ -48,7 +48,7 @@ public:
         task_vector_.clear();
     }
 
-    inline constexpr size_t GetSize() const{
+    inline size_t GetSize() const{
         return task_vector_.size();
     }
 

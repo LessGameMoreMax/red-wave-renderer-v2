@@ -90,7 +90,7 @@ void* TCThreadCache::FetchFromCentralCache(uint8_t bucket_index, std::size_t siz
 }
 
 void TCThreadCache::ListTooLong(TCFreeList* free_list, uint8_t bucket_num){
-    const int32_t move_num = TCGlobals::size_map_.GetMoveNum(bucket_num);
+    const uint32_t move_num = TCGlobals::size_map_.GetMoveNum(bucket_num);
     ReleaseToCentralCache(free_list, bucket_num, move_num);
 
 //Just One Character's Wrong: free_list_->GetMaxLength();
@@ -114,7 +114,7 @@ void TCThreadCache::ReleaseToCentralCache(TCFreeList* free_list, uint8_t bucket_
     std::size_t delta_size = move_num * TCGlobals::size_map_.GetClassToSize(bucket_num);
 
     void* batch[kMaxMoveNum];
-    int32_t batch_size = TCGlobals::size_map_.GetMoveNum(bucket_num);
+    uint32_t batch_size = TCGlobals::size_map_.GetMoveNum(bucket_num);
     while(move_num > batch_size){
 //Just One Character's Wrong: free_list_->PopBatch(batch_size, batch);
 //Local Var Name Don Not Same With Class Member Var Name!

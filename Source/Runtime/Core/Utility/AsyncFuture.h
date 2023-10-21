@@ -41,6 +41,7 @@ public:
 
 
     void Exit(){
+        //Pay Attention To Order!
         if(runnable_thread_ != nullptr){
             delete runnable_thread_;
             runnable_thread_ = nullptr;

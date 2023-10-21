@@ -4,39 +4,68 @@
 #include "../Debug/Assertion.h"
 #include "../HAL/Runnable.h"
 #include "../GenericPlatform/GenericPlatformProcess.h"
-
 namespace sablin{
 
-template<typename F, typename... Args>
+template<typename R, typename F, typename... Args>
 class AsyncRunnable: public Runnable{
-    using R = typename std::result_of<F(Args...)>::type;
 private:
-    std::function<R(Args...)> func_;
+    F func_;
     std::tuple<Args...> args_;
     std::promise<R> promise_;
 public:
-    explicit AsyncRunnable(F&& func, Args&&... args):
-        func_(std::forward<F>(func)), args_(std::forward<Args>(args)...){}
+    template<typename FwdF, typename... FwdArgs,
+            typename = std::enable_if_t<(std::is_convertible_v<FwdArgs&&, Args>&&...)>>
+    explicit AsyncRunnable(FwdF&& func, FwdArgs&&... args):
+        func_(std::forward<FwdF>(func)), args_(std::forward<FwdArgs>(args)...){}
 
     virtual RStatus Run() override{
         promise_.set_value(std::apply(func_, args_));
+        return RStatus();
     }
 
-    const std::promise<R>& GetPromise() const{
+    std::promise<R>& GetPromise(){
         return promise_;
     }
 };
 
+template<typename F, typename... Args>
+class AsyncRunnable<void, F, Args...>: public Runnable{
+private:
+    F func_;
+    std::tuple<Args...> args_;
+    std::promise<void> promise_;
+public:
+    template<typename FwdF, typename... FwdArgs,
+            typename = std::enable_if_t<(std::is_convertible_v<FwdArgs&&, Args>&&...)>>
+    explicit AsyncRunnable(FwdF&& func, FwdArgs&&... args):
+        func_(std::forward<FwdF>(func)), args_(std::forward<FwdArgs>(args)...){}
+
+    virtual RStatus Run() override{
+        std::apply(func_, args_);
+        promise_.set_value();
+        return RStatus();
+    }
+
+    std::promise<void>& GetPromise(){
+        return promise_;
+    }
+};
+
+template<typename F, typename... Args>
+auto MakeAsyncRunnable(F&& f, Args&&... args){
+    return new AsyncRunnable<typename std::result_of<F(Args...)>::type, std::decay_t<F>,
+           std::remove_cv_t<Args>...>(std::forward<F>(f), std::forward<Args>(args)...);
+}
+
 template<typename F, typename... Args,
     typename R = typename std::result_of<F(Args...)>::type>
 static std::future<R> AsyncLanuchAsync(F&& fn, Args&&... args){
-    AsyncRunnable<std::decay_t<F>, std::remove_cv_t<std::remove_reference_t<Args>>...>* 
-        runnable = new AsyncRunnable(fn, args...);
+    auto runnable = MakeAsyncRunnable(std::forward<F>(fn), std::forward<Args>(args)...);
     ASSERT_NO_STRING(runnable != nullptr)
     PlatformProcess::CreateNativeThread(runnable, "AsyncLaunchAsyncThread",
             ThreadPriority::kThreadPriorityNormal,
             ThreadType::kThreadTypeAsyncLaunchAsync);
-    return runnable->GetPromise().get_future();
+    return std::move(runnable->GetPromise().get_future());
 }
 }
 #endif

@@ -27,6 +27,7 @@ enum class ThreadType: uint32_t{
     kThreadTypeGraphTaskPrimaryThread,
     kThreadTypeGraphTaskSecondaryThread,
     kThreadTypeGraphTaskMonitorThread,
+    kThreadTypeAsyncLaunchAsync,
     kThreadTypeNone
 };
 

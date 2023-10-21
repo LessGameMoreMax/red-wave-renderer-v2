@@ -11,6 +11,7 @@ namespace sablin{
 
 #define STRING_NULL ""
 #define STRING_DEFAULT "default"
+#define STRING_UNKNOWN "unknown"
 #define STRING_CODE_LOCATION                                    \
     (std::string(__FILE__) + " | " + std::string(__FUNCTION__)  \
      + " | line = [" + ::std::to_string(__LINE__) + "]")

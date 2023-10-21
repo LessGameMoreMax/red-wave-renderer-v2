@@ -6,6 +6,7 @@
 #include <future>
 #include "../Math/MathTools.h"
 #include "../Utility/Async.h"
+#include "../Utility/AsyncFuture.h"
 namespace sablin{
 
 class TaskGraphTimer{
@@ -13,7 +14,7 @@ private:
     std::atomic<bool> is_stop_;
     std::mutex lock_;
     std::condition_variable cond_var_;
-    std::future<void> future_;
+    AsyncFuture<void> future_;
     long origin_interval_;
     long left_interval;
 public:
@@ -29,7 +30,7 @@ public:
     void Stop(){
         if(is_stop_.exchange(true)) return;
         cond_var_.notify_one();
-        future_.wait();
+        future_.Wait();
     }
 
     template <typename Func>

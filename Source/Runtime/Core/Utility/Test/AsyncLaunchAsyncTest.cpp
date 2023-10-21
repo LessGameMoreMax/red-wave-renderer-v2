@@ -58,6 +58,7 @@ int main()
     X x;
     auto a1 = AsyncLanuchAsync(&X::foo, &x, 42, "Hello");
     auto a3 = AsyncLanuchAsync(X(), 43);
-    std::cout << a3.get() << '\n'; 
+    std::cout << a3.Get() << '\n'; 
+
 }
 

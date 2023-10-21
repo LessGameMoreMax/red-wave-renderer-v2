@@ -4,6 +4,7 @@
 #include "../Debug/Assertion.h"
 #include "../HAL/Runnable.h"
 #include "../GenericPlatform/GenericPlatformProcess.h"
+#include "AsyncFuture.h"
 namespace sablin{
 
 template<typename R, typename F, typename... Args>
@@ -59,13 +60,13 @@ auto MakeAsyncRunnable(F&& f, Args&&... args){
 
 template<typename F, typename... Args,
     typename R = typename std::result_of<F(Args...)>::type>
-static std::future<R> AsyncLanuchAsync(F&& fn, Args&&... args){
+static AsyncFuture<R> AsyncLanuchAsync(F&& fn, Args&&... args){
     auto runnable = MakeAsyncRunnable(std::forward<F>(fn), std::forward<Args>(args)...);
     ASSERT_NO_STRING(runnable != nullptr)
-    PlatformProcess::CreateNativeThread(runnable, "AsyncLaunchAsyncThread",
+    RunnableThread* runnable_thread = PlatformProcess::CreateNativeThread(runnable, "AsyncLaunchAsyncThread",
             ThreadPriority::kThreadPriorityNormal,
             ThreadType::kThreadTypeAsyncLaunchAsync);
-    return std::move(runnable->GetPromise().get_future());
+    return std::move(AsyncFuture<R>(std::move(runnable->GetPromise().get_future()), runnable, runnable_thread));
 }
 }
 #endif

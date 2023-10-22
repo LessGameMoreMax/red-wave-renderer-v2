@@ -5,6 +5,7 @@
 #if PLATFORM_INDEX == WINDOWS_PLATFORM_INDEX
 #include "../HAL/RunnableThread.h"
 #include <windows.h>
+#include <mutex>
 namespace sablin{
 
 class WindowsPlatformThread: public RunnableThread{
@@ -17,6 +18,7 @@ private:
     };
 
     WThreadParam* wthread_param_;
+    std::mutex lock_;
 private:
     int TranslatePriority(const ThreadPriority& thread_priority);
     WORD GetAffinityGroupIndex(const uint16_t index);

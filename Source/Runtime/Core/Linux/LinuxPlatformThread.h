@@ -5,6 +5,7 @@
 #if PLATFORM_INDEX == LINUX_PLATFORM_INDEX
 #include "../HAL/RunnableThread.h"
 #include <pthread.h>
+#include <mutex>
 namespace sablin{
 
 class LinuxPlatformThread: public RunnableThread{
@@ -17,6 +18,7 @@ private:
     };
 
     PThreadParam* pthread_param_;
+    std::mutex lock_;
 private:
     sched_param TranslatePriority(const ThreadPriority& thread_priority);
     static void* _Run(void* pthread_param);

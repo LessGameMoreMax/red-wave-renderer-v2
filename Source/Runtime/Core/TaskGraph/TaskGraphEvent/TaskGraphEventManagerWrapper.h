@@ -19,7 +19,7 @@ namespace sablin{
 private:                                                                        \
     TaskGraphEventManager* event_manager_ = nullptr;                            \
 protected:                                                                      \
-    TASK_GRAPH_DECLARE_PARAM_MANAGER_WRAPPER                                    \
+    TASK_GRAPH_DECLARE_EVENT_MANAGER_WRAPPER                                    \
 
 }
 #endif

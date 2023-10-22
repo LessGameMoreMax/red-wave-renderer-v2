@@ -18,6 +18,7 @@ OBJ_S =	AsyncLaunchAsyncTest.o \
 		$(DIR)/Runtime/Core/HAL/TCSystemMalloc.o \
 		$(DIR)/Runtime/Core/HAL/RStatus.o \
 		$(DIR)/Runtime/Core/HAL/RunnableThread.o \
+		$(DIR)/Runtime/Core/HAL/ThisThread.o \
 		$(DIR)/Runtime/Core/GenericPlatform/GenericPlatformMemory.o \
 		$(DIR)/Runtime/Core/Windows/WindowsPlatformMemory.o \
 		$(DIR)/Runtime/Core/Windows/WindowsPlatformThread.o \

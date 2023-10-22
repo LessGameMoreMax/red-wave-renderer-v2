@@ -5,6 +5,7 @@
 namespace sablin{
 
 class TaskGraphDaemon: public TaskGraphDaemonBase{
+    friend class TaskGraphDaemonManager;
 private:
     TaskGraphTimer timer_;
 private:

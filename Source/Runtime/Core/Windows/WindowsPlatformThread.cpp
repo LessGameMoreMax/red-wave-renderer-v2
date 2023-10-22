@@ -4,6 +4,7 @@
 #include "../Debug/Assertion.h"
 #include "../Misc/MacroDefine.h"
 #include "../HAL/TCGlobals.h"
+#include "../HAL/ThisThread.h"
 namespace sablin{
 
 WindowsPlatformThread::WindowsPlatformThread(Runnable* runnable, std::string thread_name,
@@ -74,6 +75,7 @@ WORD WindowsPlatformThread::GetAffinityGroupIndex(const uint16_t index){
 
 bool WindowsPlatformThread::SetupThread(const CpuSet& cpu_set){
     wthread_param_ = new WThreadParam{this, RStatus(STRING_DEFAULT)};
+    lock_.lock();
     thread_ = CreateThread(NULL, stack_size_, &WindowsPlatformThread::_Run, 
             (LPVOID)wthread_param_, CREATE_SUSPENDED, NULL);
     if(thread_ == NULL){
@@ -88,6 +90,7 @@ bool WindowsPlatformThread::SetupThread(const CpuSet& cpu_set){
         SetThreadAffinity(cpu_set);
         ResumeThread(thread_);
     }
+    lock_.unlock();
     return joinable_;
 }
 
@@ -137,11 +140,15 @@ RStatus WindowsPlatformThread::Run(){
 }
 
 DWORD WINAPI WindowsPlatformThread::_Run(LPVOID wthread_param){
+    WThreadParam* param = static_cast<WThreadParam*>(wthread_param);
+    WindowsPlatformThread* thread = param->windows_platform_thread_;
 #ifdef USE_TC_ALLOCTOR
     TCThreadLocalCacheRAII tc_thread_local_cache_raii;
 #endif
-    WThreadParam* param = static_cast<WThreadParam*>(wthread_param);
-    param->status_ = param->windows_platform_thread_->Run();
+    thread->lock_.lock();
+    ThisThread::thread_id_ = thread->GetThreadId();
+    thread->lock_.unlock();
+    param->status_ = thread->Run();
     return 0;
 }
 

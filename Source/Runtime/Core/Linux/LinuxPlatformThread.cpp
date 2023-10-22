@@ -3,6 +3,7 @@
 #include "../Debug/Assertion.h"
 #include "../Misc/MacroDefine.h"
 #include "../HAL/TCGlobals.h"
+#include "../HAL/ThisThread.h"
 namespace sablin{
 
 LinuxPlatformThread::LinuxPlatformThread(Runnable* runnable, std::string thread_name,
@@ -71,6 +72,7 @@ bool LinuxPlatformThread::SetupThread(const CpuSet& cpu_set){
     ASSERT_NO_STRING(pthread_param_ == nullptr)
     pthread_param_ = new PThreadParam{this, RStatus(STRING_DEFAULT)};
     
+    lock_.lock();
     if(pthread_create(&thread_, &attr, &LinuxPlatformThread::_Run, (void*)pthread_param_) == 0){
         SetThreadAffinity(cpu_set);
         joinable_ = true;
@@ -81,6 +83,7 @@ bool LinuxPlatformThread::SetupThread(const CpuSet& cpu_set){
         delete pthread_param_;
         pthread_param_ = nullptr;
     }
+    lock_.unlock();
     ASSERT_NO_STRING(pthread_attr_destroy(&attr) == 0)
     return joinable_;
 }
@@ -124,11 +127,15 @@ RStatus LinuxPlatformThread::Run(){
 }
 
 void* LinuxPlatformThread::_Run(void* pthread_param){
+    PThreadParam* param = static_cast<PThreadParam*>(pthread_param);
+    LinuxPlatformThread* thread = param->linux_platform_thread_;
 #ifdef USE_TC_ALLOCTOR
     TCThreadLocalCacheRAII tc_thread_local_cache_raii;
 #endif
-    PThreadParam* param = static_cast<PThreadParam*>(pthread_param);
-    param->status_ = param->linux_platform_thread_->Run();
+    thread->lock_.lock();
+    ThisThread::thread_id_ = thread->GetThreadId();
+    thread->lock_.unlock();
+    param->status_ = thread->Run();
     return nullptr;
 }
 

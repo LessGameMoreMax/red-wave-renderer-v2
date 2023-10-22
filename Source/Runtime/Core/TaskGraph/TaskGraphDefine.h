@@ -15,5 +15,21 @@ enum class TaskGraphEventType: uint32_t{
     kTaskGraphEventTypeAsync
 };
 
+enum class TaskGraphAspectType: uint32_t{
+    kBeginInit = 0,
+    kFinishInit = 1,
+    kBeginRun = 2,
+    kFinishRun = 3,
+    kBeginDestroy = 4,
+    kFinishDestroy = 5,
+    kEnterCrashed = 99
+};
+
+enum class TaskGraphFunctionType: uint32_t{
+    kInit = 1,
+    kRun = 2,
+    kDestroy = 3
+};
+
 }
 #endif

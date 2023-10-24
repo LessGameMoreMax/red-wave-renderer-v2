@@ -10,6 +10,7 @@
 namespace sablin{
 
 class TaskGraphAspectBase: public TaskGraphDescInfoInterface{
+    friend class TaskGraphElement;
 private:
     TaskGraphPassedParam* aspect_param_ptr_;
     TaskGraphParamManager* param_manager_;

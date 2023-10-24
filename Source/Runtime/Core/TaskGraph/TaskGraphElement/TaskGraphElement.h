@@ -12,10 +12,21 @@
 #include "../TaskGraphParam/TaskGraphParamManagerWrapper.h"
 #include "../TaskGraphEvent/TaskGraphEventManagerWrapper.h"
 #include "TaskGraphElementRelation.h"
+#include "../TaskGraphParam/TaskGraphPassedDefaultParam.h"
+#include "../TaskGraphAspect/TaskGraphTemplateAspect.h"
 namespace sablin{
 
 class TaskGraphElement: public Runnable,
                         public TaskGraphDescInfoInterface{
+    friend class TaskGraphElementSorter;
+    friend class TaskGraphEngine;
+    friend class TaskGraphGroup;
+    friend class TaskGraphCluster;
+    friend class TaskGraphStaticEngine;
+    friend class TaskGraphDynamicEngine;
+    friend class TaskGraphElementManager;
+    friend class TaskGraphMaxParaOptimizer;
+    friend class TaskGraphElementRepository;
 private:
     bool done_;
     bool linkable_;
@@ -112,6 +123,61 @@ protected:
         return dynamic_cast<T*>((iter != local_params_.end())? iter->second: nullptr);
     }
 public:
+    template<typename TAspect, typename TParam = TaskGraphPassedDefaultParam,
+        std::enable_if_t<std::is_base_of<TaskGraphAspect, TAspect>::value, int> = 0,
+        std::enable_if_t<std::is_base_of<TaskGraphPassedParam, TParam>::value, int> = 0>
+    TaskGraphElement* AddTaskGraphAspect(TParam* param = nullptr){
+        if(aspect_manager_ == nullptr){
+            aspect_manager_ = new TaskGraphAspectManager();
+        }
+        TaskGraphAspect* aspect = new TAspect();
+        aspect->SetName(GetName());
+        aspect->SetAspectParam<TParam>(param);
+        aspect->SetTaskGraphParamManager(param_manager_);
+        aspect->SetTaskGraphEventManager(event_manager_);
+        aspect_manager_->Add(aspect);
+        return this;
+    }
+
+    template<typename TAspect, typename ...Args,
+        std::enable_if_t<std::is_base_of<TaskGraphTemplateAspect<Args...>, TAspect>::value, int> = 0>
+    TaskGraphElement* AddTaskGraphAspect(Args... args){
+        if(aspect_manager_ == nullptr){
+            aspect_manager_ = new TaskGraphAspectManager();
+        }
+        auto aspect = new TAspect(std::forward<Args>(args)...);
+        aspect->SetName(GetName());
+        aspect->SetTaskGraphParamManager(param_manager_);
+        aspect->SetTaskGraphEventManager(event_manager_);
+        aspect_manager_->Add(aspect);
+        return this;
+    }
+
+    template<typename T, std::enable_if_t<std::is_base_of<TaskGraphPassedParam, T>::value, int> = 0>
+    TaskGraphElement* AddElementParam(const std::string& key, T* param){
+        ASSERT_NO_STRING(is_init_ == false)
+        ASSERT_NO_STRING(param != nullptr)
+        if(local_params_.find(key) != local_params_.end()){
+            if(local_params_[key] != nullptr){
+                delete local_params_[key];
+                local_params_[key] = nullptr;
+            }
+        }
+        T* cur = new T();
+        cur->clone(param);
+        local_params_[key] = cur;
+        return this;
+    }
+
+    RStatus AddDependTaskGraphElements(const std::set<TaskGraphElement*>& elements);
+    TaskGraphElement* SetName(const std::string& name) override;
+    TaskGraphElement* SetLoop(size_t loop);
+    TaskGraphElement* SetLevel(int32_t level);
+    TaskGraphElement* SetVisible(bool visible);
+    TaskGraphElement* SetBindingIndex(int32_t index);
+    TaskGraphElement* SetTimeout(long timeout,
+            TaskGraphElementTimeoutStrategy strategy = TaskGraphElementTimeoutStrategy::kAsError);
+    bool IsGroup() const;
 };
 
 }

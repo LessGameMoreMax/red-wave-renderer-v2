@@ -63,7 +63,7 @@ RStatus TaskGraphElement::SetElementInfo(const std::set<TaskGraphElement*>& depe
     SetName(name)->SetLoop(loop);
     param_manager_ = param_manager;
     event_manager_ = event_manager;
-    status = AddDependElements(depend_elements);
+    status = AddDependTaskGraphElements(depend_elements);
     return status;
 }
 
@@ -266,6 +266,75 @@ RStatus TaskGraphElement::BuildRelation(TaskGraphElementRelation& relation){
     relation.successors_ = run_before_;
     relation.belong_ = belong_;
     return RStatus();
+}
+
+RStatus TaskGraphElement::AddDependTaskGraphElements(const std::set<TaskGraphElement*>& elements){
+    ASSERT_NO_STRING(is_init_ == false)
+    for(TaskGraphElement* cur: elements){
+        ASSERT_NO_STRING(cur != nullptr)
+        if(cur->belong_ != belong_)
+            return RStatus(cur->GetName() + "Can Not Depend Because Not Same Belong Info!",
+                    STRING_CODE_LOCATION);
+        if(this == cur) continue;
+        cur->run_before_.insert(this);
+        dependence_.insert(cur);
+    }
+    left_depend_ = dependence_.size();
+    return RStatus();
+}
+
+TaskGraphElement* TaskGraphElement::SetName(const std::string& name){
+    ASSERT_NO_STRING(is_init_ == false)
+    name_ = name.empty() ? session_: name;
+    if(aspect_manager_ != nullptr){
+        aspect_manager_->SetName(name_);
+    }
+    return this;
+}
+
+TaskGraphElement* TaskGraphElement::SetLoop(size_t loop){
+    ASSERT_NO_STRING(is_init_ == false)
+    if(timeout_ > kTaskGraphDefaultElementTimeout && loop != kTaskGraphDefaultLoopTimes){
+        ASSERT_WITH_STRING(false, "Can Not Set Loop Value When Timeout Is Bigger Than 0!")
+    }
+    loop_ = loop;
+    return this;
+}
+
+TaskGraphElement* TaskGraphElement::SetLevel(int32_t level){
+    ASSERT_NO_STRING(is_init_ == false)
+    level_ = level;
+    return this;
+}
+
+TaskGraphElement* TaskGraphElement::SetVisible(bool visible){
+    ASSERT_NO_STRING(is_init_ == false)
+    visible_ = visible;
+    return this;
+}
+
+TaskGraphElement* TaskGraphElement::SetBindingIndex(int32_t index){
+    ASSERT_NO_STRING(is_init_ == false)
+    binding_index_ = index;
+    return this;
+}
+
+TaskGraphElement* TaskGraphElement::SetTimeout(long timeout, 
+        TaskGraphElementTimeoutStrategy strategy){
+    ASSERT_NO_STRING(is_init_ == false)
+    if(timeout < kTaskGraphDefaultElementTimeout){
+        ASSERT_WITH_STRING(false, "Timeout Value Can Not Smaller Than Zero!")
+    }
+    if(loop_ > kTaskGraphDefaultLoopTimes && timeout != kTaskGraphDefaultElementTimeout){
+        ASSERT_WITH_STRING(false, "Can Not Set Timeout Value When Loop Bigger Than 1!")
+    }
+    timeout_ = timeout;
+    timeout_strategy_ = strategy;
+    return this;
+}
+
+bool TaskGraphElement::IsGroup() const{
+    return (long(element_type_) & long(TaskGraphElementType::kGroup)) > 0;
 }
 
 }

@@ -31,5 +31,10 @@ enum class TaskGraphFunctionType: uint32_t{
     kDestroy = 3
 };
 
+enum class TaskGraphEngineType: uint32_t{
+    kStatic = 1,
+    kDynamic = 2
+};
+
 }
 #endif

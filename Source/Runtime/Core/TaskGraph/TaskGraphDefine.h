@@ -36,5 +36,12 @@ enum class TaskGraphEngineType: uint32_t{
     kDynamic = 2
 };
 
+enum class TaskGraphNodeType: uint32_t{
+    kBasic = 0,
+    kIo = 1,
+    kCpu = 2,
+    kGpu = 3
+};
+
 }
 #endif

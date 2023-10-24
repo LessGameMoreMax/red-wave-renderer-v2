@@ -8,6 +8,7 @@ namespace sablin{
 
 class TaskGraphEventManager: public TaskGraphEventBase,
                              public TaskGraphManagerBase<TaskGraphEvent>{
+    friend class TaskGraphPipeline;
 private:
     std::unordered_map<std::string, TaskGraphEvent*> event_map_;
 protected:

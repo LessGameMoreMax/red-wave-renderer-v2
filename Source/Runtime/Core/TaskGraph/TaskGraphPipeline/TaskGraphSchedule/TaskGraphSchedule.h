@@ -5,6 +5,7 @@
 namespace sablin{
 
 class TaskGraphSchedule{
+    friend class TaskGraphPipeline;
 private:
     GraphTaskThreadPool* unique_thread_pool_;
     GraphTaskThreadPool* shared_thread_pool_;

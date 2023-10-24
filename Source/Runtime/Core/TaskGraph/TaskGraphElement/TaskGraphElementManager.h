@@ -11,6 +11,7 @@ namespace sablin{
 
 class TaskGraphElementManager: public Runnable,
                                public TaskGraphManagerBase<TaskGraphElement>{
+    friend class TaskGraphPipeline;
 private:
     std::set<TaskGraphElement*, TaskGraphElementSorter> manager_elements_;
     TaskGraphEngine* engine_;

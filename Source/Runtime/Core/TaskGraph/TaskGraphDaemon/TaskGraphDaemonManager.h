@@ -8,6 +8,7 @@ namespace sablin{
 
 class TaskGraphDaemonManager: public TaskGraphDaemonBase,
                               public TaskGraphManagerBase<TaskGraphDaemon>{
+    friend class TaskGraphPipeline;
 private:
     std::set<TaskGraphDaemon*> daemons_;
 protected:

@@ -27,6 +27,13 @@ class TaskGraphElement: public Runnable,
     friend class TaskGraphElementManager;
     friend class TaskGraphMaxParaOptimizer;
     friend class TaskGraphElementRepository;
+    friend class TaskGraphPipeline;
+    friend class TaskGraphPerf;
+    friend class TaskGraphNode;
+    friend class TaskGraphAdapter;
+    template<int32_t> friend class TaskGraphCoordinator;
+    friend class TaskGraphFence;
+    friend class TaskGraphFunction;
 private:
     bool done_;
     bool linkable_;

@@ -6,6 +6,7 @@
 namespace sablin{
 
 class TaskGraphParamManager: public TaskGraphManagerBase<TaskGraphParam>{
+    friend class TaskGraphPipeline;
 private:
     std::unordered_map<std::string, TaskGraphParam*> param_map_;
     std::mutex lock_;

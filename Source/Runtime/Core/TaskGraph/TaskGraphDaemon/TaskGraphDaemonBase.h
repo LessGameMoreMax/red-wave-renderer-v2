@@ -9,6 +9,7 @@ namespace sablin{
 
 class TaskGraphDaemonBase: public TaskGraphDescInfoInterface{
     friend class TaskGraphDaemon;
+    friend class TaskGraphPipeline;
 private:
     TaskGraphParamManager* param_manager_;
     TaskGraphEventManager* event_manager_;

@@ -7,6 +7,7 @@ namespace sablin{
 class TaskGraphGroup: public TaskGraphElement{
     friend class TaskGraphStaticEngine;
     friend class TaskGraphCluster;
+    friend class TaskGraphPipeline;
 private:
     std::vector<TaskGraphElement*> group_elements_arr_;
 private:

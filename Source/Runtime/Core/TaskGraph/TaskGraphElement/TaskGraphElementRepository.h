@@ -4,6 +4,8 @@
 namespace sablin{
 
 class TaskGraphElementRepository{
+    friend class TaskGraphPerf;
+    friend class TaskGraphPipeline;
 private:
     std::set<TaskGraphElement*> elements_;
     TaskGraphElementState cur_state_;

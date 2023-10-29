@@ -50,9 +50,9 @@ protected:
             const std::vector<std::vector<TaskGraphElement*>>& paths,
             std::vector<std::vector<int32_t>>& graph){
         for(auto& path: paths){
-            for(int32_t i =0;i < path.size() - 1; ++i){
+            for(int32_t i =0;i < (int32_t)path.size() - 1; ++i){
                 int32_t height = std::distance(elements.begin(), elements.find(path[i]));
-                for(int32_t j = i + 1; j < path.size(); ++j){
+                for(int32_t j = i + 1; j < (int32_t)path.size(); ++j){
                     int32_t column = std::distance(elements.begin(), elements.find(path[j]));
                     graph[height][column] = 0;
                     graph[column][height] = 0;

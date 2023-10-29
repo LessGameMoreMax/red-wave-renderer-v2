@@ -23,8 +23,8 @@ OBJ_S =	ThreadPoolTest.o \
 		../../Linux/LinuxPlatformProcess.o \
 		../../Windows/WindowsPlatformThread.o \
 		../../Windows/WindowsPlatformProcess.o \
-		../GraphTaskThreadPool.o \
-		../GraphTaskThread/GraphTaskThreadBase.o \
+		../../TaskGraph/GraphTaskThreadPool.o \
+		../../TaskGraph/GraphTaskThread/GraphTaskThreadBase.o
 	
 main: $(OBJ_S)
 	g++ $(OBJ_S) -o main.out

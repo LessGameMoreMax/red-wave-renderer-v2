@@ -31,6 +31,7 @@ public:
     std::shared_mutex param_shared_lock_;
 
     explicit TaskGraphParam();
+    virtual ~TaskGraphParam() = default;
 
     RStatus GetBackTrace(std::vector<std::string>& traces);
     void AddBackTrace(const std::string& trace);

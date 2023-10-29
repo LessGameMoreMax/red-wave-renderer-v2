@@ -105,7 +105,7 @@ RStatus TaskGraphElement::FatProcessor(const TaskGraphFunctionType& function_typ
             default:
                 return RStatus("Get Function Type Error!", STRING_CODE_LOCATION);
         }
-    }catch (std::exception){
+    }catch (std::exception&){
         DoAspect(TaskGraphAspectType::kEnterCrashed);
         status = Crashed("FatProcessor Exception!");
     }

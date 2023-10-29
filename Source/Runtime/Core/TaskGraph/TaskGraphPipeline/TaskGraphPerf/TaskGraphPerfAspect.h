@@ -6,6 +6,7 @@ namespace sablin{
 
 template<typename... Args>
 class TaskGraphPerfAspect: public TaskGraphTemplateAspect<Args...>{
+    friend class TaskGraphElement;
 private:
     double pipeline_start_ts_;
     double cur_start_ts_;

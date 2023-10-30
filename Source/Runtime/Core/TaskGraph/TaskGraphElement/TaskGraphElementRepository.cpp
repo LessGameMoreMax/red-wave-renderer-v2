@@ -67,7 +67,7 @@ RStatus TaskGraphElementRepository::Setup(){
     for(auto& element: elements_){
         ASSERT_NO_STRING(element != nullptr)
         status = element->CheckSuitable();
-        if(status.IsOk()) return RStatus("TaskGraphElementRepository::Setup", STRING_CODE_LOCATION);
+        if(!status.IsOk()) return RStatus("TaskGraphElementRepository::Setup", STRING_CODE_LOCATION);
         if(element->IsAsync()){
             async_elements_.emplace(element);
         }

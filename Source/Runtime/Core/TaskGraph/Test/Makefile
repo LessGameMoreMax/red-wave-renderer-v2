@@ -1,30 +1,59 @@
-OBJ_S =	ThreadPoolTest.o \
-		../../HAL/MallocAnsi.o \
-		../../HAL/MallocBase.o \
-		../../HAL/MallocTC.o \
-		../../HAL/MemoryBase.o \
-		../../HAL/MemoryManager.o \
-		../../GenericPlatform/GenericPlatformMemory.o \
-		../../Linux/LinuxPlatformMemory.o \
-		../../Windows/WindowsPlatformMemory.o \
-		../../HAL/TCSizeMap.o \
-		../../HAL/TCSizeTools.o \
-		../../HAL/TCGlobals.o \
-		../../HAL/TCThreadCache.o \
-		../../HAL/TCCentralCache.o \
-		../../HAL/TCSpan.o \
-		../../HAL/TCSpanList.o \
-		../../HAL/TCPageCache.o \
-		../../HAL/TCPageMap.o \
-		../../HAL/TCSystemMalloc.o \
-		../../HAL/RStatus.o \
-		../../HAL/RunnableThread.o \
-		../../Linux/LinuxPlatformThread.o \
-		../../Linux/LinuxPlatformProcess.o \
-		../../Windows/WindowsPlatformThread.o \
-		../../Windows/WindowsPlatformProcess.o \
-		../../TaskGraph/GraphTaskThreadPool.o \
-		../../TaskGraph/GraphTaskThread/GraphTaskThreadBase.o
+DIR = ~/Projects/red-wave-renderer-v2/Source
+
+OBJ_S =	TaskGraphPipelineTest.o \
+		$(DIR)/Runtime/Core/HAL/MallocAnsi.o \
+		$(DIR)/Runtime/Core/HAL/MallocBase.o \
+		$(DIR)/Runtime/Core/HAL/MallocTC.o \
+		$(DIR)/Runtime/Core/HAL/MemoryBase.o \
+		$(DIR)/Runtime/Core/HAL/MemoryManager.o \
+		$(DIR)/Runtime/Core/HAL/TCSizeMap.o \
+		$(DIR)/Runtime/Core/HAL/TCSizeTools.o \
+		$(DIR)/Runtime/Core/HAL/TCGlobals.o \
+		$(DIR)/Runtime/Core/HAL/TCThreadCache.o \
+		$(DIR)/Runtime/Core/HAL/TCCentralCache.o \
+		$(DIR)/Runtime/Core/HAL/TCSpan.o \
+		$(DIR)/Runtime/Core/HAL/TCSpanList.o \
+		$(DIR)/Runtime/Core/HAL/TCPageCache.o \
+		$(DIR)/Runtime/Core/HAL/TCPageMap.o \
+		$(DIR)/Runtime/Core/HAL/TCSystemMalloc.o \
+		$(DIR)/Runtime/Core/HAL/RStatus.o \
+		$(DIR)/Runtime/Core/HAL/RunnableThread.o \
+		$(DIR)/Runtime/Core/HAL/ThisThread.o \
+		$(DIR)/Runtime/Core/GenericPlatform/GenericPlatformMemory.o \
+		$(DIR)/Runtime/Core/Windows/WindowsPlatformMemory.o \
+		$(DIR)/Runtime/Core/Windows/WindowsPlatformThread.o \
+		$(DIR)/Runtime/Core/Windows/WindowsPlatformProcess.o \
+		$(DIR)/Runtime/Core/Linux/LinuxPlatformMemory.o \
+		$(DIR)/Runtime/Core/Linux/LinuxPlatformThread.o \
+		$(DIR)/Runtime/Core/Linux/LinuxPlatformProcess.o \
+		$(DIR)/Runtime/Core/TaskGraph/GraphTaskThreadPool.o \
+		$(DIR)/Runtime/Core/TaskGraph/GraphTaskThread/GraphTaskThreadBase.o \
+		$(DIR)/Runtime/Core/TaskGraph/TaskGraphAspect/TaskGraphAspectBase.o \
+		$(DIR)/Runtime/Core/TaskGraph/TaskGraphAspect/TaskGraphAspectManager.o \
+		$(DIR)/Runtime/Core/TaskGraph/TaskGraphAspect/TaskGraphAspect.o \
+		$(DIR)/Runtime/Core/TaskGraph/TaskGraphDaemon/TaskGraphDaemonBase.o \
+		$(DIR)/Runtime/Core/TaskGraph/TaskGraphDaemon/TaskGraphDaemon.o \
+		$(DIR)/Runtime/Core/TaskGraph/TaskGraphDaemon/TaskGraphDaemonManager.o \
+		$(DIR)/Runtime/Core/TaskGraph/TaskGraphElement/TaskGraphAdapter/TaskGraphFence/TaskGraphFence.o \
+		$(DIR)/Runtime/Core/TaskGraph/TaskGraphElement/TaskGraphAdapter/TaskGraphFunction/TaskGraphFunction.o \
+		$(DIR)/Runtime/Core/TaskGraph/TaskGraphElement/TaskGraphElement.o \
+		$(DIR)/Runtime/Core/TaskGraph/TaskGraphElement/TaskGraphElementManager.o \
+		$(DIR)/Runtime/Core/TaskGraph/TaskGraphElement/TaskGraphElementRepository.o \
+		$(DIR)/Runtime/Core/TaskGraph/TaskGraphElement/TaskGraphEngine/TaskGraphDynamicEngine/TaskGraphDynamicEngine.o \
+		$(DIR)/Runtime/Core/TaskGraph/TaskGraphElement/TaskGraphEngine/TaskGraphStaticEngine/TaskGraphStaticEngine.o \
+		$(DIR)/Runtime/Core/TaskGraph/TaskGraphElement/TaskGraphEngine/TaskGraphEngine.o \
+		$(DIR)/Runtime/Core/TaskGraph/TaskGraphElement/TaskGraphGroup/TaskGraphCluster/TaskGraphCluster.o \
+		$(DIR)/Runtime/Core/TaskGraph/TaskGraphElement/TaskGraphGroup/TaskGraphGroup.o \
+		$(DIR)/Runtime/Core/TaskGraph/TaskGraphElement/TaskGraphNode/TaskGraphNode.o \
+		$(DIR)/Runtime/Core/TaskGraph/TaskGraphEvent/TaskGraphEvent.o \
+		$(DIR)/Runtime/Core/TaskGraph/TaskGraphEvent/TaskGraphEventManager.o \
+		$(DIR)/Runtime/Core/TaskGraph/TaskGraphParam/TaskGraphParam.o \
+		$(DIR)/Runtime/Core/TaskGraph/TaskGraphParam/TaskGraphParamManager.o \
+		$(DIR)/Runtime/Core/TaskGraph/TaskGraphPipeline/TaskGraphPerf/TaskGraphPerf.o \
+		$(DIR)/Runtime/Core/TaskGraph/TaskGraphPipeline/TaskGraphPipeline.o \
+		$(DIR)/Runtime/Core/TaskGraph/TaskGraphPipeline/TaskGraphPipelineFactory.o \
+		$(DIR)/Runtime/Core/TaskGraph/TaskGraphPipeline/TaskGraphPipelineManager.o \
+		$(DIR)/Runtime/Core/TaskGraph/TaskGraphPipeline/TaskGraphSchedule/TaskGraphSchedule.o \
 	
 main: $(OBJ_S)
 	g++ $(OBJ_S) -o main.out

@@ -5,7 +5,7 @@ namespace sablin{
 TaskGraphElement::TaskGraphElement():
     done_(false),
     linkable_(false),
-    visible_(false),
+    visible_(true),
     is_init_(false),
     timeout_strategy_(TaskGraphElementTimeoutStrategy::kAsError),
     element_type_(TaskGraphElementType::kElement),

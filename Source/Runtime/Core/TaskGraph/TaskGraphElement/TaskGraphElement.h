@@ -100,7 +100,7 @@ private:
     inline void CheckYield(){
         std::unique_lock<std::mutex> lk(yield_mutex_);
         yield_cv_.wait(lk, [this]{
-            return cur_state_ == TaskGraphElementState::kYield;
+            return cur_state_ != TaskGraphElementState::kYield;
         });
     }
 

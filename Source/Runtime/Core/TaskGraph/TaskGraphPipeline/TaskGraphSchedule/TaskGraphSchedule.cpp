@@ -6,9 +6,7 @@ TaskGraphSchedule::TaskGraphSchedule():
     shared_thread_pool_(nullptr),
     schedule_type_(TaskGraphScheduleType::kTaskGraphScheduleTypeUnique){}
 
-TaskGraphSchedule::~TaskGraphSchedule(){
-    Exit();
-}
+TaskGraphSchedule::~TaskGraphSchedule(){}
 
 RStatus TaskGraphSchedule::MakeType(GraphTaskThreadPool* thread_pool){
     delete unique_thread_pool_;
@@ -38,8 +36,9 @@ RStatus TaskGraphSchedule::Setup(){
 }
 
 RStatus TaskGraphSchedule::Exit(){
-    if(schedule_type_ == TaskGraphScheduleType::kTaskGraphScheduleTypeUnique)
+    if(schedule_type_ == TaskGraphScheduleType::kTaskGraphScheduleTypeUnique){
         delete unique_thread_pool_;
+    }
     return RStatus();
 }
 

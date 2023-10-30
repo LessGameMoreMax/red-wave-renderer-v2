@@ -90,7 +90,7 @@ public:
         }
 
         if(std::any_of(depend_elements.begin(), depend_elements.end(),
-                    [](){})){
+                    [](TaskGraphElement* element){return element == nullptr;})){
             std::cout << "CreateTaskGraphGroup DependElements Have Nullptr!" << std::endl;
             ASSERT_NO_STRING(false)
         }

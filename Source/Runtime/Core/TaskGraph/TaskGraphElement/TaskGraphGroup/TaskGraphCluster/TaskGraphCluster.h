@@ -5,6 +5,7 @@ namespace sablin{
 
 class TaskGraphCluster: public TaskGraphGroup{
     friend class TaskGraphStaticEngine;
+    friend class TaskGraphPipeline;
 private:
     RStatus Process(bool is_mock);
     virtual RStatus Run() final;

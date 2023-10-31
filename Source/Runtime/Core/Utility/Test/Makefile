@@ -26,34 +26,6 @@ OBJ_S =	AsyncLaunchAsyncTest.o \
 		$(DIR)/Runtime/Core/Linux/LinuxPlatformMemory.o \
 		$(DIR)/Runtime/Core/Linux/LinuxPlatformThread.o \
 		$(DIR)/Runtime/Core/Linux/LinuxPlatformProcess.o \
-		$(DIR)/Runtime/Core/TaskGraph/GraphTaskThreadPool.o \
-		$(DIR)/Runtime/Core/TaskGraph/GraphTaskThread/GraphTaskThreadBase.o \
-		$(DIR)/Runtime/Core/TaskGraph/TaskGraphAspect/TaskGraphAspectBase.o \
-		$(DIR)/Runtime/Core/TaskGraph/TaskGraphAspect/TaskGraphAspectManager.o \
-		$(DIR)/Runtime/Core/TaskGraph/TaskGraphAspect/TaskGraphAspect.o \
-		$(DIR)/Runtime/Core/TaskGraph/TaskGraphDaemon/TaskGraphDaemonBase.o \
-		$(DIR)/Runtime/Core/TaskGraph/TaskGraphDaemon/TaskGraphDaemon.o \
-		$(DIR)/Runtime/Core/TaskGraph/TaskGraphDaemon/TaskGraphDaemonManager.o \
-		$(DIR)/Runtime/Core/TaskGraph/TaskGraphElement/TaskGraphAdapter/TaskGraphFence/TaskGraphFence.o \
-		$(DIR)/Runtime/Core/TaskGraph/TaskGraphElement/TaskGraphAdapter/TaskGraphFunction/TaskGraphFunction.o \
-		$(DIR)/Runtime/Core/TaskGraph/TaskGraphElement/TaskGraphElement.o \
-		$(DIR)/Runtime/Core/TaskGraph/TaskGraphElement/TaskGraphElementManager.o \
-		$(DIR)/Runtime/Core/TaskGraph/TaskGraphElement/TaskGraphElementRepository.o \
-		$(DIR)/Runtime/Core/TaskGraph/TaskGraphElement/TaskGraphEngine/TaskGraphDynamicEngine/TaskGraphDynamicEngine.o \
-		$(DIR)/Runtime/Core/TaskGraph/TaskGraphElement/TaskGraphEngine/TaskGraphStaticEngine/TaskGraphStaticEngine.o \
-		$(DIR)/Runtime/Core/TaskGraph/TaskGraphElement/TaskGraphEngine/TaskGraphEngine.o \
-		$(DIR)/Runtime/Core/TaskGraph/TaskGraphElement/TaskGraphGroup/TaskGraphCluster/TaskGraphCluster.o \
-		$(DIR)/Runtime/Core/TaskGraph/TaskGraphElement/TaskGraphGroup/TaskGraphGroup.o \
-		$(DIR)/Runtime/Core/TaskGraph/TaskGraphElement/TaskGraphNode/TaskGraphNode.o \
-		$(DIR)/Runtime/Core/TaskGraph/TaskGraphEvent/TaskGraphEvent.o \
-		$(DIR)/Runtime/Core/TaskGraph/TaskGraphEvent/TaskGraphEventManager.o \
-		$(DIR)/Runtime/Core/TaskGraph/TaskGraphParam/TaskGraphParam.o \
-		$(DIR)/Runtime/Core/TaskGraph/TaskGraphParam/TaskGraphParamManager.o \
-		$(DIR)/Runtime/Core/TaskGraph/TaskGraphPipeline/TaskGraphPerf/TaskGraphPerf.o \
-		$(DIR)/Runtime/Core/TaskGraph/TaskGraphPipeline/TaskGraphPipeline.o \
-		$(DIR)/Runtime/Core/TaskGraph/TaskGraphPipeline/TaskGraphPipelineFactory.o \
-		$(DIR)/Runtime/Core/TaskGraph/TaskGraphPipeline/TaskGraphPipelineManager.o \
-		$(DIR)/Runtime/Core/TaskGraph/TaskGraphPipeline/TaskGraphSchedule/TaskGraphSchedule.o \
 	
 main: $(OBJ_S)
 	g++ $(OBJ_S) -o main.out

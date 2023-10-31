@@ -171,7 +171,7 @@ public:
             }
         }
         T* cur = new T();
-        cur->clone(param);
+        cur->Clone(param);
         local_params_[key] = cur;
         return this;
     }

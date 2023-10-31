@@ -24,10 +24,10 @@ protected:
     TASK_GRAPH_DECLARE_EVENT_MANAGER_WRAPPER
 
     template<typename T, std::enable_if_t<std::is_base_of<TaskGraphPassedParam, T>::value, int> = 0>
-    T* GetParam(){
+    T* GetAspectParam(){
         ASSERT_NO_STRING(aspect_param_ptr_ != nullptr)
         T* param = nullptr;
-        if(typeid(*param).name() == typeid(T).name()){
+        if(typeid(*aspect_param_ptr_).name() == typeid(T).name()){
             param = dynamic_cast<T*>(aspect_param_ptr_);
         }
         return param;

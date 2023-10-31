@@ -133,6 +133,7 @@ public:
         return status;
     }
 
+    template<typename T, std::enable_if_t<std::is_base_of<TaskGraphElement, T>::value, int> = 0>
     RStatus RegisterTaskGraphElement(TaskGraphFunction** function_ptr,
             const std::set<TaskGraphElement*>&
             depend_elements = std::initializer_list<TaskGraphElement*>(),
@@ -140,6 +141,7 @@ public:
         return RegisterTaskGraphElement<TaskGraphFunction>((TaskGraphElement**)(function_ptr), depend_elements, name, loop);
     }
 
+    template<typename T, std::enable_if_t<std::is_base_of<TaskGraphElement, T>::value, int> = 0>
     RStatus RegisterTaskGraphElement(TaskGraphFence** fence_ptr,
             const std::set<TaskGraphElement*>&
             depend_elements = std::initializer_list<TaskGraphElement*>(),
@@ -147,12 +149,13 @@ public:
         return RegisterTaskGraphElement<TaskGraphFence>((TaskGraphElement**)(fence_ptr), depend_elements, name, loop);
     }
 
-    template<int32_t SIZE>
+    template<typename T, std::enable_if_t<std::is_base_of<TaskGraphElement, T>::value, int> = 0,
+        int32_t SIZE>
     RStatus RegisterTaskGraphElement(TaskGraphCoordinator<SIZE>** coordinator_ptr,
             const std::set<TaskGraphElement*>&
             depend_elements = std::initializer_list<TaskGraphElement*>(),
             const std::string& name = STRING_NULL, size_t loop = kTaskGraphDefaultLoopTimes){
-        return RegisterTaskGraphElement<TaskGraphCoordinator, SIZE>((TaskGraphElement**)(coordinator_ptr), depend_elements, name, loop);
+        return RegisterTaskGraphElement<TaskGraphCoordinator<SIZE>>((TaskGraphElement**)(coordinator_ptr), depend_elements, name, loop);
     }
 
     template<typename TNode, typename... Args,
@@ -191,7 +194,7 @@ public:
     template<typename TDaemon, typename TParam = TaskGraphPassedDefaultParam,
         std::enable_if_t<std::is_base_of<TaskGraphDaemon, TDaemon>::value, int> = 0,
         std::enable_if_t<std::is_base_of<TaskGraphPassedParam, TParam>::value, int> = 0>
-    TaskGraphPipeline* AddDaemon(long ms, TParam* param = nullptr){
+    TaskGraphPipeline* AddTaskGraphDaemon(long ms, TParam* param = nullptr){
         ASSERT_NO_STRING(is_init_ == false)
         ASSERT_NO_STRING(param_manager_ != nullptr)
         ASSERT_NO_STRING(daemon_manager_ != nullptr)

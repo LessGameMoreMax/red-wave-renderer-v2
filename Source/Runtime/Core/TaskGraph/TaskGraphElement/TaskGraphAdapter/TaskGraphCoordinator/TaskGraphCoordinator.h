@@ -5,6 +5,7 @@ namespace sablin{
 
 template<int32_t SIZE>
 class TaskGraphCoordinator: public TaskGraphAdapter{
+    friend class TaskGraphPipeline;
 protected:
     explicit TaskGraphCoordinator():
         TaskGraphAdapter(){

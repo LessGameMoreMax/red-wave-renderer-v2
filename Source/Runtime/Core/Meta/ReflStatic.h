@@ -3,6 +3,7 @@
 #include "../Misc/MacroTools.h"
 #include <tuple>
 #include <type_traits>
+#include <functional>
 namespace sablin{
 
 #define _FIELD_CONSTRUCT(FIELD, ATTR) lenin::_Field{lenin::_TypeContainer<decay_t<decltype(ClassType::FIELD)>>{}, MACRO_TO_STRING(FIELD), &ClassType::FIELD, ATTR} 
@@ -15,6 +16,18 @@ namespace sablin{
 #define _SPEARD_FIELD_12(FIELD, ATTR, ...) _FIELD_CONSTRUCT(FIELD, ATTR), _SPEARD_FIELD_10(__VA_ARGS__)
 #define _SPEARD_FIELD_14(FIELD, ATTR, ...) _FIELD_CONSTRUCT(FIELD, ATTR), _SPEARD_FIELD_12(__VA_ARGS__)
 #define _SPEARD_FIELD_16(FIELD, ATTR, ...) _FIELD_CONSTRUCT(FIELD, ATTR), _SPEARD_FIELD_14(__VA_ARGS__)
+
+    
+#define _MEMBER_METHOD_CONSTRUCT(METHOD, ATTR) lenin::_MemberMethod{lenin::_MemberMethodWrapper{MACRO_TO_STRING(METHOD), &ClassType::METHOD}, ATTR}
+
+#define _SPEARD_MEMBER_METHOD_2(METHOD, ATTR)       _MEMBER_METHOD_CONSTRUCT(METHOD, ATTR)
+#define _SPEARD_MEMBER_METHOD_4(METHOD, ATTR, ...)  _MEMBER_METHOD_CONSTRUCT(METHOD, ATTR), _SPEARD_MEMBER_METHOD_2(__VA_ARGS__)
+#define _SPEARD_MEMBER_METHOD_6(METHOD, ATTR, ...)  _MEMBER_METHOD_CONSTRUCT(METHOD, ATTR), _SPEARD_MEMBER_METHOD_4(__VA_ARGS__)
+#define _SPEARD_MEMBER_METHOD_8(METHOD, ATTR, ...)  _MEMBER_METHOD_CONSTRUCT(METHOD, ATTR), _SPEARD_MEMBER_METHOD_6(__VA_ARGS__)
+#define _SPEARD_MEMBER_METHOD_10(METHOD, ATTR, ...) _MEMBER_METHOD_CONSTRUCT(METHOD, ATTR), _SPEARD_MEMBER_METHOD_8(__VA_ARGS__)
+#define _SPEARD_MEMBER_METHOD_12(METHOD, ATTR, ...) _MEMBER_METHOD_CONSTRUCT(METHOD, ATTR), _SPEARD_MEMBER_METHOD_10(__VA_ARGS__)
+#define _SPEARD_MEMBER_METHOD_14(METHOD, ATTR, ...) _MEMBER_METHOD_CONSTRUCT(METHOD, ATTR), _SPEARD_MEMBER_METHOD_12(__VA_ARGS__)
+#define _SPEARD_MEMBER_METHOD_16(METHOD, ATTR, ...) _MEMBER_METHOD_CONSTRUCT(METHOD, ATTR), _SPEARD_MEMBER_METHOD_14(__VA_ARGS__)
 
 #define _SPEARD_CLASS_1(CLASS) \
 namespace sablin{                                                  \
@@ -58,43 +71,47 @@ namespace sablin{                                                  \
 }        \
 
 #define SR_FIELDS(...) \
-    inline static constexpr const lenin::_FieldsInfo _fields_info{                             \
-        MACRO_LINK(_SPEARD_FIELD_, ARG_COUNT(__VA_ARGS__))(__VA_ARGS__)};                      \
-    inline static constexpr const size_t get_fields_count(){                                   \
-        size_t size = std::tuple_size<decltype(_fields_info.fields_tuple_)>::value;            \
-        if constexpr(HasParent1<ClassType>::Value){                                            \
-            size += ClassInfo<ParentType1>::get_fields_count();                                \
-        }                                                                                      \
-        if constexpr(HasParent2<ClassType>::Value){                                            \
-            size += ClassInfo<ParentType2>::get_fields_count();                                \
-        }                                                                                      \
-        return size;                                                                           \
-    }                                                                                          \
-    template<int32_t index>                                                                    \
-    inline static constexpr const auto& get_field(){                                           \
-        constexpr int32_t size = std::tuple_size<decltype(_fields_info.fields_tuple_)>::value; \
-        if constexpr(index < size){                                                            \
-            return std::get<index>(_fields_info.fields_tuple_);                                \
-        }else{                                                                                 \
-            constexpr int32_t index1 = index - size;                                           \
-            constexpr int32_t size1 = ClassInfo<ParentType1>::get_fields_count();              \
-            if constexpr(index1 < size1){                                                      \
-                return ClassInfo<ParentType1>::get_field<index1>();                            \
-            }else{                                                                             \
-                return ClassInfo<ParentType2>::get_field<index1 - size1>();                    \
-            }                                                                                  \
-        }                                                                                      \
-    }                                                                                          \
+    inline static constexpr const lenin::_FieldsInfo _fields_info{                              \
+        MACRO_LINK(_SPEARD_FIELD_, ARG_COUNT(__VA_ARGS__))(__VA_ARGS__)};                       \
+    inline static constexpr const size_t get_fields_count(){                                    \
+        size_t size = std::tuple_size<decltype(_fields_info.fields_tuple_)>::value;             \
+        if constexpr(HasParent1<ClassType>::Value){                                             \
+            size += ClassInfo<ParentType1>::get_fields_count();                                 \
+        }                                                                                       \
+        if constexpr(HasParent2<ClassType>::Value){                                             \
+            size += ClassInfo<ParentType2>::get_fields_count();                                 \
+        }                                                                                       \
+        return size;                                                                            \
+    }                                                                                           \
+    template<int32_t index>                                                                     \
+    inline static constexpr const auto& get_field(){                                            \
+        constexpr int32_t size = std::tuple_size<decltype(_fields_info.fields_tuple_)>::value;  \
+        if constexpr(index < size){                                                             \
+            return std::get<index>(_fields_info.fields_tuple_);                                 \
+        }else{                                                                                  \
+            constexpr int32_t index1 = index - size;                                            \
+            constexpr int32_t size1 = ClassInfo<ParentType1>::get_fields_count();               \
+            if constexpr(index1 < size1){                                                       \
+                return ClassInfo<ParentType1>::get_field<index1>();                             \
+            }else{                                                                              \
+                return ClassInfo<ParentType2>::get_field<index1 - size1>();                     \
+            }                                                                                   \
+        }                                                                                       \
+    }                                                                                           \
     inline static constexpr int32_t get_field_by_field_name(const std::string_view field_name){ \
-        size_t result_index = -1;                                                              \
-        auto f = [&](const size_t index, const std::string_view& name){                        \
-            if(field_name.compare(name) == 0) result_index = index;                            \
-        };                                                                                     \
-        [&]<size_t... I>(std::index_sequence<I...>){                                           \
-            ((f(I, get_field<I>().field_name_)), ...);                                         \
-        }(std::make_index_sequence<get_fields_count()>{});                                     \
-        return result_index;                                                                   \
-    }                                                                                          \
+        size_t result_index = -1;                                                               \
+        auto f = [&](const size_t index, const std::string_view& name){                         \
+            if(field_name.compare(name) == 0) result_index = index;                             \
+        };                                                                                      \
+        [&]<size_t... I>(std::index_sequence<I...>){                                            \
+            ((f(I, get_field<I>().field_name_)), ...);                                          \
+        }(std::make_index_sequence<get_fields_count()>{});                                      \
+        return result_index;                                                                    \
+    }                                                                                           \
+
+#define SR_MEMBER_METHODS(...) \
+    inline static constexpr const lenin::_MemberMethodsInfo _member_methods_info{               \
+        MACRO_LINK(_SPEARD_MEMBER_METHOD_, ARG_COUNT(__VA_ARGS__))(__VA_ARGS__)};               \
 
 namespace lenin{
 
@@ -156,6 +173,36 @@ struct _FieldsInfo{
 
     explicit constexpr _FieldsInfo(Args... args):
         fields_tuple_(std::forward<Args>(args)...){}
+};
+
+template<typename T, typename R, typename... Params>
+struct _MemberMethodWrapper{
+    using MemberMethodType = R(T::*)(Params...);
+    using ReturnType = R;
+    std::string_view method_name_;
+    MemberMethodType member_method_;
+
+    explicit constexpr _MemberMethodWrapper(const std::string_view method_name, MemberMethodType member_method):
+        method_name_(method_name),
+        member_method_(member_method){}
+};
+
+template<typename W, typename... Args>
+struct _MemberMethod{
+    W member_method_wrapper_;
+    std::tuple<Args...> attributes_;
+
+    explicit constexpr _MemberMethod(W member_method_wrapper, const std::tuple<Args...>& attributes):
+        member_method_wrapper_(member_method_wrapper),
+        attributes_(attributes){}
+};
+
+template<typename... Args>
+struct _MemberMethodsInfo{
+    std::tuple<Args...> methods_tuple_;
+
+    explicit constexpr _MemberMethodsInfo(Args... args):
+        methods_tuple_(std::forward<Args>(args)...){}
 };
 
 }

@@ -9,6 +9,14 @@ public:
     int n_i = 1;
     float n_f = 0.4;
 
+    int Add(int a, int b){
+        return a + b;
+    }
+
+    int Sub(int a, int b){
+        return a - b;
+    }
+
 };
 
 class Node2{
@@ -33,6 +41,7 @@ public:
 
 SR_CLASS(Node)
     SR_FIELDS(n_i, std::tuple{1}, n_f, std::tuple{0.4})
+    SR_MEMBER_METHODS(Add, std::tuple{1}, Sub, std::tuple{2})
 SR_END()
 
 SR_CLASS(Node2)
@@ -44,7 +53,7 @@ SR_CLASS(Child, Node)
 SR_END()
 
 SR_CLASS(Final, Child, Node2)
-    SR_FIELDS(f_i, std::tuple{}, f_f, std::tuple{})
+    SR_FIELDS(f_i, std::tuple{1}, f_f, std::tuple{2})
 SR_END()
 
 int main(){
@@ -96,4 +105,7 @@ int main(){
     //
     // cout << ClassInfo<Final>::get_field_by_field_name("n_i2") << endl;
     // cout << ClassInfo<Final>::get_field_by_field_name("n_f2") << endl;
+    // remove_reference_t<decltype(std::get<0>(ClassInfo<Node>::_member_methods_info.methods_tuple_))>::ReturnType a = 1;
+
+    // cout << std::get<0>(std::get<0>(ClassInfo<Node>::_member_methods_info.methods_tuple_).attributes_) << endl;
 }

@@ -27,7 +27,7 @@ public:
 
 class Child: public Node{
 public:
-    int c_i = 2;
+    const int c_i = 2;
     float c_f = 0.2;
 
     int Mul(int a, int b){
@@ -114,8 +114,18 @@ int main(){
 
     // cout << std::get<0>(std::get<0>(ClassInfo<Node>::_member_methods_info.methods_tuple_).attributes_) << endl;
     // decltype(std::get<0>(ClassInfo<Node>::_member_methods_info.methods_tuple_).member_method_wrapper_)::ParamType<1> a = 1;
-    cout << ClassInfo<Child>::get_member_methods_count() << endl;
+    // cout << ClassInfo<Child>::get_member_methods_count() << endl;
     // cout << ClassInfo<Child>::get_member_method<0>().member_method_wrapper_.method_name_ << endl;
     // cout << ClassInfo<Child>::get_member_method<1>().member_method_wrapper_.method_name_ << endl;
     // cout << ClassInfo<Child>::get_member_method<2>().member_method_wrapper_.method_name_ << endl;
+    // cout << ClassInfo<Child>::get_member_method_by_member_method_name("Add") << endl;
+    // cout << ClassInfo<Child>::get_member_method_by_member_method_name("Sub") << endl;
+    // cout << ClassInfo<Child>::get_member_method_by_member_method_name("Mul") << endl;
+    // cout << ClassInfo<Child>::get_member_method_by_member_method_name("Adad") << endl;
+    // cout << ClassInfo<Child>::get_member_method_by_member_method_name("Adwad") << endl;
+    // cout << ClassInfo<Child>::get_member_method<1>().get_member_method_type_name() << endl;
+
+    remove_cvref_t<decltype(ClassInfo<Child>::get_field<0>())>::MemberType a = "a";
+
+    return 0;
 }

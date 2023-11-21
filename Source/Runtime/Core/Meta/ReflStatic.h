@@ -18,7 +18,8 @@ namespace sablin{
 #define _SPEARD_FIELD_16(FIELD, ATTR, ...) _FIELD_CONSTRUCT(FIELD, ATTR), _SPEARD_FIELD_14(__VA_ARGS__)
 
     
-#define _MEMBER_METHOD_CONSTRUCT(METHOD, ATTR) lenin::_MemberMethod{lenin::_MemberMethodWrapper{MACRO_TO_STRING(METHOD), &ClassType::METHOD}, ATTR}
+#define _MEMBER_METHOD_CONSTRUCT(METHOD, ATTR) \
+    lenin::_MemberMethod{lenin::_TypeContainer<decay_t<decltype(&ClassType::METHOD)>>{}, lenin::_MemberMethodWrapper{MACRO_TO_STRING(METHOD), &ClassType::METHOD}, ATTR}
 
 #define _SPEARD_MEMBER_METHOD_2(METHOD, ATTR)       _MEMBER_METHOD_CONSTRUCT(METHOD, ATTR)
 #define _SPEARD_MEMBER_METHOD_4(METHOD, ATTR, ...)  _MEMBER_METHOD_CONSTRUCT(METHOD, ATTR), _SPEARD_MEMBER_METHOD_2(__VA_ARGS__)
@@ -134,9 +135,19 @@ namespace sablin{                                                  \
                 return ClassInfo<ParentType1>::get_member_method<index1>();                            \
             }else{                                                                                     \
                 return ClassInfo<ParentType2>::get_member_method<index1 - size1>();                    \
-            }                                                                                          \
-        }                                                                                              \
-    }                                                                                                  \
+            }                                                                                                           \
+        }                                                                                                               \
+    }                                                                                                                   \
+    inline static constexpr int32_t get_member_method_by_member_method_name(const std::string_view member_method_name){ \
+        size_t result_index = -1;                                                                                       \
+        auto f = [&](const size_t index, const std::string_view& name){                                                 \
+            if(member_method_name.compare(name) == 0) result_index = index;                                             \
+        };                                                                                                              \
+        [&]<size_t... I>(std::index_sequence<I...>){                                                                    \
+            ((f(I, get_member_method<I>().member_method_wrapper_.method_name_)), ...);                                  \
+        }(std::make_index_sequence<get_member_methods_count()>{});                                                      \
+        return result_index;                                                                                            \
+    }                                                                                                                   \
 
 namespace lenin{
 
@@ -167,8 +178,8 @@ struct _TypeContainer{ using Type = T; };
 template<typename P, typename M, typename... Args>
 struct _Field{
     using MemberType = M;
-    std::string_view field_name_;
     P pointer_;
+    std::string_view field_name_;
     std::tuple<Args...> attributes_;
 
     explicit constexpr _Field(_TypeContainer<M>, const std::string_view field_name, P pointer, const std::tuple<Args...>& attributes):
@@ -190,6 +201,21 @@ struct _Field{
         std::string_view temp{std::string_view{type_name.data() + head, tail - head}};
         return std::string_view{temp.data(), temp.find_last_of(';')};
     }
+
+    inline constexpr const std::string_view get_field_name() const{
+        return field_name_;
+    }
+
+
+    inline constexpr const size_t get_attributes_count(){
+        return std::tuple_size<decltype(attributes_)>::value;
+    }
+
+    template<size_t Index>
+    inline constexpr auto& get_attribute(){
+        return std::get<Index>(attributes_);
+    }
+
 };
 
 template<typename... Args>
@@ -215,14 +241,29 @@ struct _MemberMethodWrapper{
         member_method_(member_method){}
 };
 
-template<typename W, typename... Args>
+template<typename W, typename F, typename... Args>
 struct _MemberMethod{
     W member_method_wrapper_;
     std::tuple<Args...> attributes_;
 
-    explicit constexpr _MemberMethod(W member_method_wrapper, const std::tuple<Args...>& attributes):
+    explicit constexpr _MemberMethod(_TypeContainer<F>, W member_method_wrapper, const std::tuple<Args...>& attributes):
         member_method_wrapper_(member_method_wrapper),
         attributes_(attributes){}
+
+    inline constexpr const std::string_view get_member_method_type_name() const{
+        std::string_view type_name;
+#ifdef __clang__
+        type_name = __PRETTY_FUNCTION__;
+        auto head = type_name.find("F = ") + 4;
+        auto tail = type_name.find_last_of(';');
+#elif defined(__GNUC__)
+        type_name = __PRETTY_FUNCTION__;
+        auto head = type_name.find("F = ") + 4;
+        auto tail = type_name.find_last_of(';');
+#endif
+        std::string_view temp{std::string_view{type_name.data() + head, tail - head}};
+        return std::string_view{temp.data(), temp.find_last_of(';')};
+    }
 };
 
 template<typename... Args>
@@ -258,7 +299,7 @@ struct ClassInfo<NoneType>: public lenin::_ClassInfoBase<NoneType>{
 
     template<int32_t index>
     inline static constexpr const auto& get_member_method(){
-        return lenin::_MemberMethod{lenin::_MemberMethodWrapper{"Add", &NoneType::Add}, std::tuple{}};
+        return lenin::_MemberMethod{lenin::_TypeContainer<decltype(&NoneType::Add)>{}, lenin::_MemberMethodWrapper{"Add", &NoneType::Add}, std::tuple{}};
     }
 };
 

@@ -110,7 +110,7 @@ namespace sablin{                                                  \
         return result_index;                                                                        \
     }                                                                                               \
     template<size_t Index>                                                                          \
-    using FieldMemberType = typename std::remove_cvref_t<decltype(get_field<Index>())>::MemberType; \
+    using FieldType = typename std::remove_cvref_t<decltype(get_field<Index>())>;                   \
 
 #define SR_MEMBER_METHODS(...) \
     inline static constexpr const lenin::_MemberMethodsInfo _member_methods_info{                                       \
@@ -151,7 +151,7 @@ namespace sablin{                                                  \
         return result_index;                                                                                            \
     }                                                                                                                   \
     template<size_t Index>                                                                                              \
-    using MemberMethodReturnType = typename decltype(get_member_method<Index>().member_method_wrapper_)::ReturnType;    \
+    using MemberMethodType = decltype(get_member_method<Index>().member_method_wrapper_);                               \
 
 namespace lenin{
 
@@ -181,7 +181,8 @@ struct _TypeContainer{ using Type = T; };
 
 template<typename P, typename M, typename... Args>
 struct _Field{
-    using MemberType = M;
+    using MemberVariableType = M;
+    using MemberVariablePointerType = P;
     P pointer_;
     std::string_view field_name_;
     std::tuple<Args...> attributes_;
@@ -204,6 +205,10 @@ struct _Field{
 #endif
         std::string_view temp{std::string_view{type_name.data() + head, tail - head}};
         return std::string_view{temp.data(), temp.find_last_of(';')};
+    }
+
+    inline constexpr auto get_member_variable_pointer() const{
+        return pointer_;
     }
 
     inline constexpr const std::string_view get_field_name() const{
@@ -230,17 +235,17 @@ struct _FieldsInfo{
 
 template<typename T, typename R, typename... Params>
 struct _MemberMethodWrapper{
-    using MemberMethodType = R(T::*)(Params...);
+    using MemberFunctionType = R(T::*)(Params...);
     using ReturnType = R;
     template<size_t Index>
     using ParamType = std::tuple_element_t<Index, std::tuple<Params...>>;
 
     std::string_view method_name_;
-    MemberMethodType member_method_;
+    MemberFunctionType pointer_;
 
-    explicit constexpr _MemberMethodWrapper(const std::string_view method_name, MemberMethodType member_method):
+    explicit constexpr _MemberMethodWrapper(const std::string_view method_name, MemberFunctionType pointer):
         method_name_(method_name),
-        member_method_(member_method){}
+        pointer_(pointer){}
 
     inline constexpr const std::string_view get_params_type_name() const{
         std::string_view type_name;
@@ -289,6 +294,10 @@ struct _MemberMethodWrapper{
 #endif
         return std::string_view{type_name.data() + head, tail - head};
     }
+
+    inline constexpr const size_t get_params_count() const{
+        return sizeof...(Params);
+    }
 };
 
 template<typename W, typename F, typename... Args>
@@ -319,6 +328,10 @@ struct _MemberMethod{
         return member_method_wrapper_.method_name_;
     }
 
+    inline constexpr auto get_member_function_pointer() const{
+        return member_method_wrapper_.pointer_;
+    }
+
     inline constexpr const size_t get_attributes_count() const{
         return std::tuple_size<decltype(attributes_)>::value;
     }
@@ -339,6 +352,10 @@ struct _MemberMethod{
 
     inline constexpr const std::string_view get_member_method_return_type_name() const{
         return member_method_wrapper_.get_return_type_name();
+    }
+
+    inline constexpr const size_t get_params_count() const{
+        return member_method_wrapper_.get_params_count();
     }
 };
 

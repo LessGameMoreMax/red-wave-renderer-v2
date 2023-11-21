@@ -9,7 +9,7 @@ public:
     const int n_i  = 1;
     float n_f = 0.4;
 
-    const std::tuple<int, int> Add(int a, std::string b){
+    const std::tuple<int, int> Add(int a, std::string b, int c){
         return {1, 2};
     }
 
@@ -134,7 +134,18 @@ int main(){
     // cout << ClassInfo<Node>::get_member_method<0>().get_member_method_params_type_name() << endl;
     // cout << ClassInfo<Node>::get_member_method<1>().get_member_method_params_type_name() << endl;
     // cout << ClassInfo<Node>::get_member_method<0>().get_member_method_param_type_name<0>() << endl;
-    cout << ClassInfo<Node>::get_member_method<1>().get_member_method_return_type_name().size() << endl;
+    // cout << ClassInfo<Node>::get_member_method<1>().get_member_method_return_type_name().size() << endl;
+    // cout << ClassInfo<Node>::get_member_method<0>().get_params_count() << endl;
+
+    // ClassInfo<Node>::MemberMethodType<0>::ReturnType a = 1;
+    // ClassInfo<Node>::MemberMethodType<0>::ParamType<0> b = "a";
+    // ClassInfo<Node>::MemberMethodType<0>::ParamType<1> c = 1;
+    // ClassInfo<Node>::MemberMethodType<0>::ParamType<2> d = "b";
+
+    // ClassInfo<Node>::FieldType<0>::MemberVariableType a = "a";
+    // ClassInfo<Node>::FieldType<0>::MemberVariablePointerType b = "b";
+
+    // ClassInfo<Node>::get_member_method<0>().get_member_function_pointer();
 
     return 0;
 }

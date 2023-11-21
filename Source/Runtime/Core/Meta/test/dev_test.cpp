@@ -6,7 +6,7 @@ using namespace std;
 
 class Node{
 public:
-    int n_i = 1;
+    const int n_i  = 1;
     float n_f = 0.4;
 
     int Add(int a, std::string b){
@@ -125,7 +125,8 @@ int main(){
     // cout << ClassInfo<Child>::get_member_method_by_member_method_name("Adwad") << endl;
     // cout << ClassInfo<Child>::get_member_method<1>().get_member_method_type_name() << endl;
 
-    remove_cvref_t<decltype(ClassInfo<Child>::get_field<0>())>::MemberType a = "a";
+    remove_cvref_t<decltype(ClassInfo<Node>::get_field<0>())>::MemberType a = 1;
+    cout << ClassInfo<Node>::get_field<0>().get_field_type_name() << endl;
 
     return 0;
 }

@@ -6,7 +6,7 @@
 #include <functional>
 namespace sablin{
 
-#define _FIELD_CONSTRUCT(FIELD, ATTR) lenin::_Field{lenin::_TypeContainer<decay_t<decltype(ClassType::FIELD)>>{}, MACRO_TO_STRING(FIELD), &ClassType::FIELD, ATTR} 
+#define _FIELD_CONSTRUCT(FIELD, ATTR) lenin::_Field{lenin::_TypeContainer<decltype(ClassType::FIELD)>{}, MACRO_TO_STRING(FIELD), &ClassType::FIELD, ATTR} 
 
 #define _SPEARD_FIELD_2(FIELD, ATTR)       _FIELD_CONSTRUCT(FIELD, ATTR)
 #define _SPEARD_FIELD_4(FIELD, ATTR, ...)  _FIELD_CONSTRUCT(FIELD, ATTR), _SPEARD_FIELD_2(__VA_ARGS__)

@@ -9,8 +9,8 @@ public:
     const int n_i  = 1;
     float n_f = 0.4;
 
-    int Add(int a, std::string b){
-        return a;
+    const int Add(int a, std::string b){
+        return 1;
     }
 
     int Sub(int a, int b){
@@ -125,8 +125,12 @@ int main(){
     // cout << ClassInfo<Child>::get_member_method_by_member_method_name("Adwad") << endl;
     // cout << ClassInfo<Child>::get_member_method<1>().get_member_method_type_name() << endl;
 
-    remove_cvref_t<decltype(ClassInfo<Node>::get_field<0>())>::MemberType a = 1;
-    cout << ClassInfo<Node>::get_field<0>().get_field_type_name() << endl;
+    // remove_cvref_t<decltype(ClassInfo<Node>::get_field<0>())>::MemberType a = 1;
+    // ClassInfo<Child>::FieldMemberType<2> a = 1;
+    // cout << ClassInfo<Node>::get_field<0>().get_field_type_name() << endl;
+    
+    // decltype(ClassInfo<Node>::get_member_method<0>().member_method_wrapper_)::ReturnType a = "a";
+    // ClassInfo<Node>::MemberMethodReturnType<0> b = "a";
 
     return 0;
 }

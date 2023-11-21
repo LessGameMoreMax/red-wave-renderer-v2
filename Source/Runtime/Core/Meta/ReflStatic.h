@@ -72,43 +72,45 @@ namespace sablin{                                                  \
 }        \
 
 #define SR_FIELDS(...) \
-    inline static constexpr const lenin::_FieldsInfo _fields_info{                              \
-        MACRO_LINK(_SPEARD_FIELD_, ARG_COUNT(__VA_ARGS__))(__VA_ARGS__)};                       \
-    inline static constexpr const size_t get_fields_count(){                                    \
-        size_t size = std::tuple_size<decltype(_fields_info.fields_tuple_)>::value;             \
-        if constexpr(HasParent1<ClassType>::Value){                                             \
-            size += ClassInfo<ParentType1>::get_fields_count();                                 \
-        }                                                                                       \
-        if constexpr(HasParent2<ClassType>::Value){                                             \
-            size += ClassInfo<ParentType2>::get_fields_count();                                 \
-        }                                                                                       \
-        return size;                                                                            \
-    }                                                                                           \
-    template<int32_t index>                                                                     \
-    inline static constexpr const auto& get_field(){                                            \
-        constexpr int32_t size = std::tuple_size<decltype(_fields_info.fields_tuple_)>::value;  \
-        if constexpr(index < size){                                                             \
-            return std::get<index>(_fields_info.fields_tuple_);                                 \
-        }else{                                                                                  \
-            constexpr int32_t index1 = index - size;                                            \
-            constexpr int32_t size1 = ClassInfo<ParentType1>::get_fields_count();               \
-            if constexpr(index1 < size1){                                                       \
-                return ClassInfo<ParentType1>::get_field<index1>();                             \
-            }else{                                                                              \
-                return ClassInfo<ParentType2>::get_field<index1 - size1>();                     \
-            }                                                                                   \
-        }                                                                                       \
-    }                                                                                           \
-    inline static constexpr int32_t get_field_by_field_name(const std::string_view field_name){ \
-        size_t result_index = -1;                                                               \
-        auto f = [&](const size_t index, const std::string_view& name){                         \
-            if(field_name.compare(name) == 0) result_index = index;                             \
-        };                                                                                      \
-        [&]<size_t... I>(std::index_sequence<I...>){                                            \
-            ((f(I, get_field<I>().field_name_)), ...);                                          \
-        }(std::make_index_sequence<get_fields_count()>{});                                      \
-        return result_index;                                                                    \
-    }                                                                                           \
+    inline static constexpr const lenin::_FieldsInfo _fields_info{                                  \
+        MACRO_LINK(_SPEARD_FIELD_, ARG_COUNT(__VA_ARGS__))(__VA_ARGS__)};                           \
+    inline static constexpr const size_t get_fields_count(){                                        \
+        size_t size = std::tuple_size<decltype(_fields_info.fields_tuple_)>::value;                 \
+        if constexpr(HasParent1<ClassType>::Value){                                                 \
+            size += ClassInfo<ParentType1>::get_fields_count();                                     \
+        }                                                                                           \
+        if constexpr(HasParent2<ClassType>::Value){                                                 \
+            size += ClassInfo<ParentType2>::get_fields_count();                                     \
+        }                                                                                           \
+        return size;                                                                                \
+    }                                                                                               \
+    template<int32_t index>                                                                         \
+    inline static constexpr const auto& get_field(){                                                \
+        constexpr int32_t size = std::tuple_size<decltype(_fields_info.fields_tuple_)>::value;      \
+        if constexpr(index < size){                                                                 \
+            return std::get<index>(_fields_info.fields_tuple_);                                     \
+        }else{                                                                                      \
+            constexpr int32_t index1 = index - size;                                                \
+            constexpr int32_t size1 = ClassInfo<ParentType1>::get_fields_count();                   \
+            if constexpr(index1 < size1){                                                           \
+                return ClassInfo<ParentType1>::get_field<index1>();                                 \
+            }else{                                                                                  \
+                return ClassInfo<ParentType2>::get_field<index1 - size1>();                         \
+            }                                                                                       \
+        }                                                                                           \
+    }                                                                                               \
+    inline static constexpr int32_t get_field_by_field_name(const std::string_view field_name){     \
+        size_t result_index = -1;                                                                   \
+        auto f = [&](const size_t index, const std::string_view& name){                             \
+            if(field_name.compare(name) == 0) result_index = index;                                 \
+        };                                                                                          \
+        [&]<size_t... I>(std::index_sequence<I...>){                                                \
+            ((f(I, get_field<I>().field_name_)), ...);                                              \
+        }(std::make_index_sequence<get_fields_count()>{});                                          \
+        return result_index;                                                                        \
+    }                                                                                               \
+    template<size_t Index>                                                                          \
+    using FieldMemberType = typename std::remove_cvref_t<decltype(get_field<Index>())>::MemberType; \
 
 #define SR_MEMBER_METHODS(...) \
     inline static constexpr const lenin::_MemberMethodsInfo _member_methods_info{                                       \
@@ -148,6 +150,8 @@ namespace sablin{                                                  \
         }(std::make_index_sequence<get_member_methods_count()>{});                                                      \
         return result_index;                                                                                            \
     }                                                                                                                   \
+    template<size_t Index>                                                                                              \
+    using MemberMethodReturnType = typename decltype(get_member_method<Index>().member_method_wrapper_)::ReturnType;    \
 
 namespace lenin{
 
@@ -206,16 +210,14 @@ struct _Field{
         return field_name_;
     }
 
-
-    inline constexpr const size_t get_attributes_count(){
+    inline constexpr const size_t get_attributes_count() const{
         return std::tuple_size<decltype(attributes_)>::value;
     }
 
     template<size_t Index>
-    inline constexpr auto& get_attribute(){
+    inline constexpr auto& get_attribute() const{
         return std::get<Index>(attributes_);
     }
-
 };
 
 template<typename... Args>
@@ -263,6 +265,19 @@ struct _MemberMethod{
 #endif
         std::string_view temp{std::string_view{type_name.data() + head, tail - head}};
         return std::string_view{temp.data(), temp.find_last_of(';')};
+    }
+
+    inline constexpr const std::string_view get_member_method_name() const{
+        return member_method_wrapper_.method_name_;
+    }
+
+    inline constexpr const size_t get_attributes_count() const{
+        return std::tuple_size<decltype(attributes_)>::value;
+    }
+
+    template<size_t Index>
+    inline constexpr auto& get_attribute() const{
+        return std::get<Index>(attributes_);
     }
 };
 

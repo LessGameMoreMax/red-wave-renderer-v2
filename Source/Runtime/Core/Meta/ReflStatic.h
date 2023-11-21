@@ -241,6 +241,54 @@ struct _MemberMethodWrapper{
     explicit constexpr _MemberMethodWrapper(const std::string_view method_name, MemberMethodType member_method):
         method_name_(method_name),
         member_method_(member_method){}
+
+    inline constexpr const std::string_view get_params_type_name() const{
+        std::string_view type_name;
+#ifdef __clang__
+        type_name = __PRETTY_FUNCTION__;
+        auto head = type_name.find("Params = ") + 9;
+        auto tail = type_name.find_last_of(';');
+#elif defined(__GNUC__)
+        type_name = __PRETTY_FUNCTION__;
+        auto head = type_name.find("Params = ") + 9;
+        auto tail = type_name.find_last_of(';');
+#endif
+        return std::string_view{type_name.data() + head, tail - head};
+    }
+
+    template<size_t Index>
+    inline constexpr const std::string_view get_param_type_name() const{
+        return _get_param_type_name_impl<ParamType<Index>>();
+    }
+
+    template<typename P>
+    inline constexpr const std::string_view _get_param_type_name_impl() const{
+        std::string_view type_name;
+#ifdef __clang__
+        type_name = __PRETTY_FUNCTION__;
+        auto head = type_name.find("P = ") + 4;
+        auto tail = type_name.find("; T = ");
+#elif defined(__GNUC__)
+        type_name = __PRETTY_FUNCTION__;
+        auto head = type_name.find("P = ") + 4;
+        auto tail = type_name.find("; T = ");
+#endif
+        return std::string_view{type_name.data() + head, tail - head};
+    }
+
+    inline constexpr const std::string_view get_return_type_name() const{    
+        std::string_view type_name;
+#ifdef __clang__
+        type_name = __PRETTY_FUNCTION__;
+        auto head = type_name.find("R = ") + 4;
+        auto tail = type_name.find("; Params = ");
+#elif defined(__GNUC__)
+        type_name = __PRETTY_FUNCTION__;
+        auto head = type_name.find("R = ") + 4;
+        auto tail = type_name.find("; Params = ");
+#endif
+        return std::string_view{type_name.data() + head, tail - head};
+    }
 };
 
 template<typename W, typename F, typename... Args>
@@ -278,6 +326,19 @@ struct _MemberMethod{
     template<size_t Index>
     inline constexpr auto& get_attribute() const{
         return std::get<Index>(attributes_);
+    }
+
+    template<size_t Index>
+    inline constexpr const std::string_view get_member_method_param_type_name() const{
+        return member_method_wrapper_.template get_param_type_name<Index>();
+    }
+
+    inline constexpr const std::string_view get_member_method_params_type_name() const{
+        return member_method_wrapper_.get_params_type_name();
+    }
+
+    inline constexpr const std::string_view get_member_method_return_type_name() const{
+        return member_method_wrapper_.get_return_type_name();
     }
 };
 

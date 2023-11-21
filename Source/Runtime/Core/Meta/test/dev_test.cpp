@@ -9,8 +9,8 @@ public:
     const int n_i  = 1;
     float n_f = 0.4;
 
-    const int Add(int a, std::string b){
-        return 1;
+    const std::tuple<int, int> Add(int a, std::string b){
+        return {1, 2};
     }
 
     int Sub(int a, int b){
@@ -131,6 +131,10 @@ int main(){
     
     // decltype(ClassInfo<Node>::get_member_method<0>().member_method_wrapper_)::ReturnType a = "a";
     // ClassInfo<Node>::MemberMethodReturnType<0> b = "a";
+    // cout << ClassInfo<Node>::get_member_method<0>().get_member_method_params_type_name() << endl;
+    // cout << ClassInfo<Node>::get_member_method<1>().get_member_method_params_type_name() << endl;
+    // cout << ClassInfo<Node>::get_member_method<0>().get_member_method_param_type_name<0>() << endl;
+    cout << ClassInfo<Node>::get_member_method<1>().get_member_method_return_type_name().size() << endl;
 
     return 0;
 }

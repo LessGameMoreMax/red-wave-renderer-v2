@@ -111,30 +111,30 @@ namespace sablin{                                                  \
     }                                                                                           \
 
 #define SR_MEMBER_METHODS(...) \
-    inline static constexpr const lenin::_MemberMethodsInfo _member_methods_info{                      \
-        MACRO_LINK(_SPEARD_MEMBER_METHOD_, ARG_COUNT(__VA_ARGS__))(__VA_ARGS__)};                      \
-    inline static constexpr const size_t get_member_methods_count(){                                   \
-        size_t size = std::tuple_size<decltype(_member_methods_info.methods_tuple_)>::value;           \
-        if constexpr(HasParent1<ClassType>::Value){                                                    \
-            size += ClassInfo<ParentType1>::get_member_methods_count();                                \
-        }                                                                                              \
-        if constexpr(HasParent2<ClassType>::Value){                                                    \
-            size += ClassInfo<ParentType2>::get_member_methods_count();                                \
-        }                                                                                              \
-        return size;                                                                                   \
-    }                                                                                                  \
-    template<int32_t index>                                                                            \
-    inline static constexpr const auto& get_member_method(){                                           \
-        constexpr int32_t size = std::tuple_size<decltype(_member_methods_info.methods_tuple_)>::value; \
-        if constexpr(index < size){                                                                    \
-            return std::get<index>(_member_methods_info.methods_tuple_);                               \
-        }else{                                                                                         \
-            constexpr int32_t index1 = index - size;                                                   \
-            constexpr int32_t size1 = ClassInfo<ParentType1>::get_member_methods_count();              \
-            if constexpr(index1 < size1){                                                              \
-                return ClassInfo<ParentType1>::get_member_method<index1>();                            \
-            }else{                                                                                     \
-                return ClassInfo<ParentType2>::get_member_method<index1 - size1>();                    \
+    inline static constexpr const lenin::_MemberMethodsInfo _member_methods_info{                                       \
+        MACRO_LINK(_SPEARD_MEMBER_METHOD_, ARG_COUNT(__VA_ARGS__))(__VA_ARGS__)};                                       \
+    inline static constexpr const size_t get_member_methods_count(){                                                    \
+        size_t size = std::tuple_size<decltype(_member_methods_info.methods_tuple_)>::value;                            \
+        if constexpr(HasParent1<ClassType>::Value){                                                                     \
+            size += ClassInfo<ParentType1>::get_member_methods_count();                                                 \
+        }                                                                                                               \
+        if constexpr(HasParent2<ClassType>::Value){                                                                     \
+            size += ClassInfo<ParentType2>::get_member_methods_count();                                                 \
+        }                                                                                                               \
+        return size;                                                                                                    \
+    }                                                                                                                   \
+    template<int32_t index>                                                                                             \
+    inline static constexpr const auto& get_member_method(){                                                            \
+        constexpr int32_t size = std::tuple_size<decltype(_member_methods_info.methods_tuple_)>::value;                 \
+        if constexpr(index < size){                                                                                     \
+            return std::get<index>(_member_methods_info.methods_tuple_);                                                \
+        }else{                                                                                                          \
+            constexpr int32_t index1 = index - size;                                                                    \
+            constexpr int32_t size1 = ClassInfo<ParentType1>::get_member_methods_count();                               \
+            if constexpr(index1 < size1){                                                                               \
+                return ClassInfo<ParentType1>::get_member_method<index1>();                                             \
+            }else{                                                                                                      \
+                return ClassInfo<ParentType2>::get_member_method<index1 - size1>();                                     \
             }                                                                                                           \
         }                                                                                                               \
     }                                                                                                                   \

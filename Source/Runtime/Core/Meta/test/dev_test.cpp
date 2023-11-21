@@ -21,8 +21,9 @@ public:
 
 class Node2{
 public:
-    int n_i2 = 12;
-    float n_f2 = 0.6;
+    int Otto(int a, int b, int c){
+        return 0;
+    }
 };
 
 class Child: public Node{
@@ -40,6 +41,10 @@ class Final: public Child, public Node2{
 public:
     int f_i = 3;
     float f_f = 0.5;
+
+    int Div(float a, float b){
+        return a / b;
+    }
 };
 
 
@@ -49,16 +54,18 @@ SR_CLASS(Node)
 SR_END()
 
 SR_CLASS(Node2)
-    SR_FIELDS(n_i2, std::tuple{}, n_f2, std::tuple{})
+    SR_FIELDS()
+    SR_MEMBER_METHODS(Otto, std::tuple{})
 SR_END()
 
 SR_CLASS(Child, Node)
     SR_FIELDS(c_i, std::tuple{2}, c_f, std::tuple{0.2})
-    SR_MEMBER_METHODS(Mul, std::tuple{})
+    SR_MEMBER_METHODS()
 SR_END()
 
 SR_CLASS(Final, Child, Node2)
     SR_FIELDS(f_i, std::tuple{1}, f_f, std::tuple{2})
+    SR_MEMBER_METHODS(Div, std::tuple{})
 SR_END()
 
 int main(){
@@ -146,6 +153,15 @@ int main(){
     // ClassInfo<Node>::FieldType<0>::MemberVariablePointerType b = "b";
 
     // ClassInfo<Node>::get_member_method<0>().get_member_function_pointer();
+
+    // cout << ClassInfo<Node2>::get_fields_count() << endl;
+    // cout << ClassInfo<Node2>::get_member_methods_count() << endl;
+
+    cout << ClassInfo<Final>::get_member_methods_count() << endl;
+    cout << ClassInfo<Final>::get_member_method<0>().get_member_method_name() << endl;
+    cout << ClassInfo<Final>::get_member_method<1>().get_member_method_name() << endl;
+    cout << ClassInfo<Final>::get_member_method<2>().get_member_method_name() << endl;
+    cout << ClassInfo<Final>::get_member_method<3>().get_member_method_name() << endl;
 
     return 0;
 }

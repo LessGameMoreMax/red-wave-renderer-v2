@@ -9,8 +9,8 @@ public:
     int n_i = 1;
     float n_f = 0.4;
 
-    int Add(int a, int b){
-        return a + b;
+    int Add(int a, std::string b){
+        return a;
     }
 
     int Sub(int a, int b){
@@ -29,6 +29,10 @@ class Child: public Node{
 public:
     int c_i = 2;
     float c_f = 0.2;
+
+    int Mul(int a, int b){
+        return a * b;
+    }
 
 };
 
@@ -50,6 +54,7 @@ SR_END()
 
 SR_CLASS(Child, Node)
     SR_FIELDS(c_i, std::tuple{2}, c_f, std::tuple{0.2})
+    SR_MEMBER_METHODS(Mul, std::tuple{})
 SR_END()
 
 SR_CLASS(Final, Child, Node2)
@@ -105,7 +110,12 @@ int main(){
     //
     // cout << ClassInfo<Final>::get_field_by_field_name("n_i2") << endl;
     // cout << ClassInfo<Final>::get_field_by_field_name("n_f2") << endl;
-    // remove_reference_t<decltype(std::get<0>(ClassInfo<Node>::_member_methods_info.methods_tuple_))>::ReturnType a = 1;
+    // decltype(std::get<0>(ClassInfo<Node>::_member_methods_info.methods_tuple_).member_method_wrapper_)::ReturnType a = 1;
 
     // cout << std::get<0>(std::get<0>(ClassInfo<Node>::_member_methods_info.methods_tuple_).attributes_) << endl;
+    // decltype(std::get<0>(ClassInfo<Node>::_member_methods_info.methods_tuple_).member_method_wrapper_)::ParamType<1> a = 1;
+    cout << ClassInfo<Child>::get_member_methods_count() << endl;
+    // cout << ClassInfo<Child>::get_member_method<0>().member_method_wrapper_.method_name_ << endl;
+    // cout << ClassInfo<Child>::get_member_method<1>().member_method_wrapper_.method_name_ << endl;
+    // cout << ClassInfo<Child>::get_member_method<2>().member_method_wrapper_.method_name_ << endl;
 }

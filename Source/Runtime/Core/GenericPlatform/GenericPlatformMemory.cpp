@@ -1,10 +1,8 @@
 #include "GenericPlatformMemory.h"
 #include "../HAL/MallocAnsi.h"
 #include "../Misc/MacroDefine.h"
-#ifdef DEBUG
 #include "../Misc/MacroTools.h"
 #include "../HAL/Platform.h"
-#endif
 #include <cstring>
 namespace sablin{
 
@@ -17,10 +15,8 @@ MallocBase* GenericPlatformMemory::CreateMallocBase(){
 }
 
 void GenericPlatformMemory::DebugInfo(){
-#ifdef DEBUG
     //Platform Info
     PlatformInfo::DebugInfo();
-#endif
 }
 
 void GenericPlatformMemory::MemoryOverflow(){

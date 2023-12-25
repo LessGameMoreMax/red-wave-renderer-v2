@@ -3,7 +3,7 @@
 #include <synchapi.h>
 #include "../Debug/Assertion.h"
 #include "../Misc/MacroDefine.h"
-#include "../HAL/TCGlobals.h"
+#include "../HAL/ThreadLocalMemory.h"
 #include "../HAL/ThisThread.h"
 namespace sablin{
 
@@ -142,9 +142,7 @@ RStatus WindowsPlatformThread::Run(){
 DWORD WINAPI WindowsPlatformThread::_Run(LPVOID wthread_param){
     WThreadParam* param = static_cast<WThreadParam*>(wthread_param);
     WindowsPlatformThread* thread = param->windows_platform_thread_;
-#ifdef USE_TC_ALLOCTOR
-    TCThreadLocalCacheRAII tc_thread_local_cache_raii;
-#endif
+    ThreadLocalMemory thread_local_memory;
     thread->lock_.lock();
     ThisThread::thread_id_ = thread->GetThreadId();
     thread->lock_.unlock();

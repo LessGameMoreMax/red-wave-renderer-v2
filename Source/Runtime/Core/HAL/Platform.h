@@ -36,7 +36,10 @@ class PlatformInfo{
 private:
 public:
     inline static void DebugInfo(){
-        std::cout << MACRO_TO_STRING(PLATFORM_TYPE) << std::endl;
+        std::cout << "Platform Information:" << std::endl;
+        std::cout << "Platform Type: " << MACRO_TO_STRING(PLATFORM_TYPE) << std::endl;
+        std::cout << "Thread Default Stack Size: " << THREAD_DEFAULT_STACK_SIZE << std::endl;
+        std::cout << "Platform Arch: " << MACRO_TO_STRING(PLATFORM_ARCH) << std::endl;
     }
 };
 

@@ -72,7 +72,7 @@ void BenchMarkMalloc(size_t times, size_t works, size_t rounds){
 }
 
 int main(){
-    MemoryManagerRAII memory_manager_raii;
+    MemoryManager memory_manager;
     for(int i = 0;i != 1000; ++i){
         cout << i << endl;
         BenchMarkMalloc(1000, 8, 10);

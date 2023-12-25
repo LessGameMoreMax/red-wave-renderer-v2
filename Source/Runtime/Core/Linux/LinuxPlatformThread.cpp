@@ -2,7 +2,7 @@
 #if PLATFORM_INDEX == LINUX_PLATFORM_INDEX
 #include "../Debug/Assertion.h"
 #include "../Misc/MacroDefine.h"
-#include "../HAL/TCGlobals.h"
+#include "../HAL/ThreadLocalMemory.h"
 #include "../HAL/ThisThread.h"
 namespace sablin{
 
@@ -129,9 +129,7 @@ RStatus LinuxPlatformThread::Run(){
 void* LinuxPlatformThread::_Run(void* pthread_param){
     PThreadParam* param = static_cast<PThreadParam*>(pthread_param);
     LinuxPlatformThread* thread = param->linux_platform_thread_;
-#ifdef USE_TC_ALLOCTOR
-    TCThreadLocalCacheRAII tc_thread_local_cache_raii;
-#endif
+    ThreadLocalMemory thread_local_memory;
     thread->lock_.lock();
     ThisThread::thread_id_ = thread->GetThreadId();
     thread->lock_.unlock();

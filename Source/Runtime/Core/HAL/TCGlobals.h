@@ -19,16 +19,5 @@ public:
     static void DestroyThreadLocalCache();
 };
 
-class TCThreadLocalCacheRAII{
-public:
-    explicit TCThreadLocalCacheRAII(){
-        TCGlobals::CreateThreadLocalCache();
-    }
-
-    ~TCThreadLocalCacheRAII(){
-        TCGlobals::DestroyThreadLocalCache();
-    }
-};
-
 }
 #endif

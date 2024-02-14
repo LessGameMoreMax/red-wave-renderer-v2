@@ -1,7 +1,7 @@
 #include "LinuxPlatformProcess.h"
 
 #if PLATFORM_INDEX == LINUX_PLATFORM_INDEX
-#include "../Math/MathTools.h"
+#include "../../Math/MathTools.h"
 #include "LinuxPlatformThread.h"
 #include "../Misc/MacroDefine.h"
 #ifdef DEBUG

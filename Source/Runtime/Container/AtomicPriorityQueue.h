@@ -3,8 +3,8 @@
 #include <type_traits>
 #include <queue>
 #include <mutex>
-#include "../Misc/MacroTools.h"
-#include "../Debug/Assertion.h"
+#include "../Core/Misc/MacroTools.h"
+#include "../Core/Debug/Assertion.h"
 namespace sablin{
 
 template <typename T>

@@ -4,7 +4,7 @@
 #include <iostream>
 #endif
 #include "PlatformMemory.h"
-#include "../Math/MathTools.h"
+#include "../../Math/MathTools.h"
 #include "MemoryBase.h"
 namespace sablin{
 

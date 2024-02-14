@@ -4,8 +4,8 @@
 #include <condition_variable>
 #include <queue>
 #include <thread>
-#include "../Misc/MacroTools.h"
-#include "../Debug/Assertion.h"
+#include "../Core/Misc/MacroTools.h"
+#include "../Core/Debug/Assertion.h"
 namespace sablin{
 
 template <typename T>

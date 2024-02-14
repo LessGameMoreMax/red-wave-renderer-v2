@@ -1,8 +1,7 @@
 #include "TCSystemMalloc.h"
-#include "../Math/MathTools.h"
+#include "../../Math/MathTools.h"
 #include "TCCommon.h"
 #include "PlatformMemory.h"
-#include "../Math/MathTools.h"
 namespace sablin{
 
 std::mutex TCSystemMalloc::system_malloc_lock_;

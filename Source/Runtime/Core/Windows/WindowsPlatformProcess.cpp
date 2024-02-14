@@ -1,7 +1,7 @@
 #include "WindowsPlatformProcess.h"
 
 #if PLATFORM_INDEX == WINDOWS_PLATFORM_INDEX
-#include "../Math/MathTools.h"
+#include "../../Math/MathTools.h"
 #include "WindowsPlatformThread.h"
 #include "../Misc/MacroDefine.h"
 #ifdef DEBUG

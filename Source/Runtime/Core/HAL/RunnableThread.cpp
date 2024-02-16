@@ -10,5 +10,9 @@ RunnableThread::RunnableThread(Runnable* runnable, std::string thread_name, Thre
         stack_size_(stack_size),
         joinable_(false){}
 
+void RunnableThread::StopRunnable(){
+    if(runnable_ != nullptr) runnable_->Stop();
+}
+
 
 }

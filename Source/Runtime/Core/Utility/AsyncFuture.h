@@ -42,6 +42,7 @@ public:
 
     void Exit(){
         //Pay Attention To Order!
+        if(future_.valid()) Get();
         if(runnable_thread_ != nullptr){
             delete runnable_thread_;
             runnable_thread_ = nullptr;
@@ -95,6 +96,7 @@ public:
 
 
     void Exit(){
+        if(future_.valid()) Get();
         if(runnable_thread_ != nullptr){
             delete runnable_thread_;
             runnable_thread_ = nullptr;
@@ -148,6 +150,7 @@ public:
 
 
     void Exit(){
+        if(future_.valid()) Get();
         if(runnable_thread_ != nullptr){
             delete runnable_thread_;
             runnable_thread_ = nullptr;

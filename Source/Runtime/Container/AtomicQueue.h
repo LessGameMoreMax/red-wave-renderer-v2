@@ -90,9 +90,8 @@ public:
 
     // Wait For Lock And Element!
     T WaitPop(){
-        std::lock_guard<std::mutex> lk(lock_);
-        while(queue_.empty())
-            cond_variable_.wait(lk, [this]{ return !queue_.empty();});
+        std::unique_lock<std::mutex> lk(lock_);
+        cond_variable_.wait(lk, [this]{ return !queue_.empty();});
         T result = std::move(queue_.front());
         queue_.pop();
         return result;

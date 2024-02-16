@@ -27,6 +27,8 @@ public:
     virtual void Suspend(bool should_pause) = 0;
     virtual RStatus Join() = 0;
 
+    virtual void StopRunnable();
+
     constexpr bool IsJoinable() const{
         return joinable_;
     }
@@ -49,6 +51,10 @@ public:
 
     inline bool HasSetup() const{
         return thread_id_ != -1;
+    }
+
+    inline Runnable* GetRunnable() const{
+        return runnable_;
     }
 };
 }

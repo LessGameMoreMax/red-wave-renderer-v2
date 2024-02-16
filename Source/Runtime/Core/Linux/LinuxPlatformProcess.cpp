@@ -13,12 +13,15 @@ RunnableThread* LinuxPlatformProcess::CreateNativeThread(Runnable* runnable, std
         ThreadPriority thread_priority, ThreadType thread_type, uint32_t stack_size, CpuSet cpu_set){
     stack_size = Max<uint32_t>(stack_size, THREAD_DEFAULT_STACK_SIZE);
     RunnableThread* runnable_thread = new LinuxPlatformThread(runnable, thread_name, thread_priority, thread_type, stack_size);
+    if(runnable_thread == nullptr) return nullptr;
 
     if(!runnable_thread->SetupThread(cpu_set)){
         std::cout << "Warning: Fail to setup thread!" << std::endl;
 #ifdef DEBUG
         ASSERT_NO_STRING(false)
 #endif
+        delete runnable_thread;
+        return nullptr;
     }
     return runnable_thread;
 }

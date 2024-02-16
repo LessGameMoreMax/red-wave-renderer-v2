@@ -39,7 +39,7 @@ struct X
 
 int main()
 {
-    MemoryManagerRAII memory_manager_raii;
+    MemoryManager memory_manager;
     X x;
     auto a1 = AsyncLanuchAsync(&X::foo, &x, 42, "Hello");
     auto a3 = AsyncLanuchAsync(X(), 43);

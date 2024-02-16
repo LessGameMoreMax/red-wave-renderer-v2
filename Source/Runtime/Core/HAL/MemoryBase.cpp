@@ -40,5 +40,26 @@ std::size_t MemoryBase::GetAllocSize(void* ptr){
     return kMalloc->GetAllocatedSize(ptr);
 }
 
+void* MemoryBase::BaseMalloc(std::size_t size){
+#ifdef DEBUG
+    std::cout << "MemoryBase::BaseMalloc(std::size_t size)" << std::endl;
+#endif
+    if(size == 0) [[unlikely]]{
+        size = 1;
+    }
+#if !defined(USE_PLATFORM_ALIGNMENT) && __STDCPP_DEFAULT_NEW_ALIGNMENT__ <= 8u
+    return Malloc(size, MEMORY_MIN_ALIGNMENT);
+#else
+    return Malloc(size, MEMORY_ALIGNMENT_DEFAULT);
+#endif
+}
+
+void MemoryBase::BaseFree(void* ptr){
+#ifdef DEBUG
+    std::cout << "MemoryBase::BaseFree(void* ptr)" << std::endl;
+#endif
+    Free(ptr);
+}
+
 
 }

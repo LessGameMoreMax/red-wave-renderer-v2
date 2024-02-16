@@ -26,6 +26,10 @@ public:
     static void Free(void* ptr);
     static std::size_t GetAllocSize(void* ptr);
 
+    static void* BaseMalloc(std::size_t size);
+
+    static void BaseFree(void* ptr);
+
     static inline void* SystemMalloc(std::size_t size){
         return ::malloc(size);
     }

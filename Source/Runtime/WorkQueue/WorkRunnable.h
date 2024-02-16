@@ -1,7 +1,7 @@
 #ifndef WORK_RUNNABLE_H
 #define WORK_RUNNABLE_H
 #include "../Core/HAL/Runnable.h"
-#include <future>
+#include "WorkResult.h"
 namespace sablin{
 namespace lenin{
 
@@ -16,7 +16,7 @@ template<typename R, typename... Args>
 class WorkRunnable: public lenin::_WorkRunnable{
 private:
     std::tuple<Args...> args_;
-    std::promise<R> promise_;
+    WorkPromise<R> promise_;
 public:
     template<typename... FwdArgs,
             typename = std::enable_if_t<(std::is_convertible_v<FwdArgs&&, Args>&&...)>>
@@ -25,7 +25,7 @@ public:
     virtual ~WorkRunnable() = default;
 
     virtual RStatus Run() override final{
-        promise_.set_value(std::apply(
+        promise_.SetValue(std::apply(
                 [this](Args&&... args){
                     return this->Work(std::forward<Args>(args)...); 
                 }, args_));
@@ -39,7 +39,7 @@ template<typename... Args>
 class WorkRunnable<void, Args...>: public lenin::_WorkRunnable{
 private:
     std::tuple<Args...> args_;
-    std::promise<void> promise_;
+    WorkPromise<void> promise_;
 public:
     template<typename... FwdArgs,
             typename = std::enable_if_t<(std::is_convertible_v<FwdArgs&&, Args>&&...)>>
@@ -52,7 +52,7 @@ public:
                 [this](Args&&... args){
                     this->Work(std::forward<Args>(args)...); 
                 }, args_);
-        promise_.set_value();
+        promise_.SetValue();
         return RStatus();
     }
 

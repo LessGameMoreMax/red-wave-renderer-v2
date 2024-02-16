@@ -43,7 +43,7 @@ void WorkThreadPool::Release(const int32_t thread_num){
 
 uint32_t WorkThreadPool::Add(const int32_t thread_num){
     std::list<RunnableThread*> buffer;
-    for(uint32_t i = 0; i != thread_num; ++i){
+    for(int32_t i = 0; i != thread_num; ++i){
         Runnable* runnable = new WorkThreadRunnable();
         if(runnable == nullptr){
             std::cout << "Work Thread Runnable Create Failed!" << std::endl;

@@ -26,7 +26,7 @@ public:
 
     virtual RStatus Run() override final{
         promise_.set_value(std::apply(
-                [=](Args&&... args){
+                [this](Args&&... args){
                     return this->Work(std::forward<Args>(args)...); 
                 }, args_));
         return RStatus();
@@ -49,7 +49,7 @@ public:
 
     virtual RStatus Run() override final{
         std::apply(
-                [=](Args&&... args){
+                [this](Args&&... args){
                     this->Work(std::forward<Args>(args)...); 
                 }, args_);
         promise_.set_value();

@@ -1,6 +1,6 @@
 DIR = ~/Projects/red-wave-renderer-v2/Source
 
-OBJ_S =	WorkQueueTest.o \
+OBJ_S =	WorkQueueTests.o \
 		$(DIR)/Runtime/Core/HAL/MallocAnsi.o \
 		$(DIR)/Runtime/Core/HAL/MallocBase.o \
 		$(DIR)/Runtime/Core/HAL/MallocTC.o \

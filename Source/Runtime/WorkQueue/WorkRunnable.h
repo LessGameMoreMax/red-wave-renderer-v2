@@ -19,6 +19,7 @@ private:
     std::tuple<Args...> args_;
     WorkPromise<R> promise_;
 public:
+    using ReturnType = R;
     template<typename... FwdArgs,
             typename = std::enable_if_t<(std::is_convertible_v<FwdArgs&&, Args>&&...)>>
     explicit WorkRunnable(FwdArgs&&... args):
@@ -33,7 +34,7 @@ public:
         return RStatus();
     }
 
-    virtual R Work(Args&&... args) = 0;
+    virtual R Work(Args... args) = 0;
 };
 
 template<typename... Args>
@@ -43,6 +44,7 @@ private:
     std::tuple<Args...> args_;
     WorkPromise<void> promise_;
 public:
+    using ReturnType = void;
     template<typename... FwdArgs,
             typename = std::enable_if_t<(std::is_convertible_v<FwdArgs&&, Args>&&...)>>
     explicit WorkRunnable(FwdArgs&&... args):
@@ -58,8 +60,7 @@ public:
         return RStatus();
     }
 
-    virtual void Work(Args&&... args) = 0;
+    virtual void Work(Args... args) = 0;
 };
-
 }
 #endif

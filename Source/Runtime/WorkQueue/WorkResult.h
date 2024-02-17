@@ -7,6 +7,9 @@
 namespace sablin{
 
 template<typename R>
+concept IsReturnType = std::is_void_v<R> || std::is_trivially_default_constructible_v<R>;
+
+template<IsReturnType R>
 class WorkPromise;
 
 template<typename R>
@@ -49,7 +52,7 @@ public:
     }
 };
 
-template<typename R>
+template<IsReturnType R>
 class WorkPromise{
 private:
     std::shared_ptr<R> result_;

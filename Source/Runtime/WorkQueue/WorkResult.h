@@ -3,7 +3,11 @@
 #include "../Core/Misc/MacroTools.h"
 #include "../Core/HAL/MemoryBase.h"
 #include <memory>
+#include <type_traits>
 namespace sablin{
+
+template<typename R>
+class WorkPromise;
 
 template<typename R>
 class WorkFutureImpl{
@@ -31,6 +35,7 @@ public:
 
 template<typename R>
 class WorkSharedFuture{
+    friend class WorkPromise<R>;
 private:
     std::shared_ptr<WorkFutureImpl<R>> future_;
 private:
@@ -42,14 +47,6 @@ public:
     R Get(){
         return future_->Get();
     }
-
-    inline void Lock(){
-        future_->Lock();
-    }
-
-    inline void UnLock(){
-        future_->UnLock();
-    }
 };
 
 template<typename R>
@@ -59,7 +56,7 @@ private:
     std::shared_ptr<WorkFutureImpl<R>> future_;
 public:
     explicit WorkPromise(){
-        result_ = MemoryBase::BaseMalloc(sizeof(R));
+        result_ = std::make_shared<R>();
         future_ = std::make_shared<WorkFutureImpl<R>>(result_);
     }
     ~WorkPromise() = default;
@@ -107,14 +104,6 @@ public:
 
     void Get(){
         future_->Get();
-    }
-
-    inline void Lock(){
-        future_->Lock();
-    }
-
-    inline void UnLock(){
-        future_->UnLock();
     }
 };
 

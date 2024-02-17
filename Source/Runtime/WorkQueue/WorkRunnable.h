@@ -14,6 +14,7 @@ public:
 
 template<typename R, typename... Args>
 class WorkRunnable: public lenin::_WorkRunnable{
+    friend class WorkQueue;
 private:
     std::tuple<Args...> args_;
     WorkPromise<R> promise_;
@@ -28,7 +29,7 @@ public:
         promise_.SetValue(std::apply(
                 [this](Args&&... args){
                     return this->Work(std::forward<Args>(args)...); 
-                }, args_));
+                }, std::move(args_)));
         return RStatus();
     }
 
@@ -37,6 +38,7 @@ public:
 
 template<typename... Args>
 class WorkRunnable<void, Args...>: public lenin::_WorkRunnable{
+    friend class WorkQueue;
 private:
     std::tuple<Args...> args_;
     WorkPromise<void> promise_;
@@ -51,7 +53,7 @@ public:
         std::apply(
                 [this](Args&&... args){
                     this->Work(std::forward<Args>(args)...); 
-                }, args_);
+                }, std::move(args_));
         promise_.SetValue();
         return RStatus();
     }

@@ -3,7 +3,6 @@
 #include <string>
 namespace sablin{
 
-// Interface Should Be Pure Virtual Class!
 class TaskGraphDescInfoInterface{
 protected:
     std::string name_;

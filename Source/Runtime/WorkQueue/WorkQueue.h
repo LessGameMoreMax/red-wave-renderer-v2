@@ -1,7 +1,7 @@
 #ifndef WORK_QUEUE_H
 #define WORK_QUEUE_H
-#include "../Core/Misc/MacroTools.h"
-#include "../Container/ProducerConsumerQueue.h"
+#include "Macro/MacroTools.h"
+#include "Container/ProducerConsumerQueue.h"
 #include "WorkFunctionRunnable.h"
 #include "WorkThreadPool.h"
 #include "WorkResult.h"

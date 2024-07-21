@@ -4,8 +4,8 @@
 #include <thread>
 #include <condition_variable>
 #include <atomic>
-#include "../Core/Misc/MacroTools.h"
-#include "../Core/Debug/Assertion.h"
+#include "Macro/MacroTools.h"
+#include "Debug/Assertion.h"
 namespace sablin{
 namespace lenin{
 template <typename T>

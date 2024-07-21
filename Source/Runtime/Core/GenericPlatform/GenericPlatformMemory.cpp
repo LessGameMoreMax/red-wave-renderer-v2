@@ -1,8 +1,8 @@
 #include "GenericPlatformMemory.h"
-#include "../HAL/MallocAnsi.h"
-#include "../Misc/MacroDefine.h"
-#include "../Misc/MacroTools.h"
-#include "../HAL/Platform.h"
+#include "Core/Memory/MallocAnsi.h"
+#include "Macro/MacroDefine.h"
+#include "Macro/MacroTools.h"
+#include "Macro/Platform.h"
 #include <cstring>
 namespace sablin{
 

@@ -3,8 +3,8 @@
 #include <mutex>
 #include <thread>
 #include <optional>
-#include "../Core/Misc/MacroTools.h"
-#include "../Core/Debug/Assertion.h"
+#include "Macro/MacroTools.h"
+#include "Debug/Assertion.h"
 namespace sablin{
 namespace lenin{
 template <typename T>

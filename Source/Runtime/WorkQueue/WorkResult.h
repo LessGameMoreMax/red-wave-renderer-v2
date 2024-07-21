@@ -1,7 +1,7 @@
 #ifndef WORK_RESULT_H
 #define WORK_RESULT_H
-#include "../Core/Misc/MacroTools.h"
-#include "../Core/HAL/MemoryBase.h"
+#include "Macro/MacroTools.h"
+#include "Core/Memory/MemoryBase.h"
 #include <memory>
 #include <type_traits>
 namespace sablin{

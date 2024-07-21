@@ -1,8 +1,8 @@
 #include "WorkThreadPool.h"
-#include "../Core/Debug/Assertion.h"
-#include "../Core/GenericPlatform/GenericPlatformProcess.h"
+#include "Debug/Assertion.h"
+#include "Core/GenericPlatform/GenericPlatformProcess.h"
 #include "WorkThreadRunnable.h"
-#include "../Math/MathTools.h"
+#include "Math/MathTools.h"
 namespace sablin{
 
 WorkThreadPool::WorkThreadPool():
@@ -82,6 +82,9 @@ bool WorkThreadPool::ReduceWorkThread(const int32_t thread_num){
     Release(Min<uint32_t>(thread_num, left));
     return true;
 }
+
+
+
 
 
 }

@@ -2,7 +2,7 @@
 #define GENERIC_PLATFORM_MEMORY_H
 #include <cstdint>
 #include <cstring>
-#include "../Debug/Assertion.h"
+#include "Debug/Assertion.h"
 
 namespace sablin{
 

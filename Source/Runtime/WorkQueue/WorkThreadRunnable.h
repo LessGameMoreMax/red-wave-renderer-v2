@@ -1,6 +1,6 @@
 #ifndef WORK_THREAD_RUNNABLE_H
 #define WORK_THREAD_RUNNABLE_H
-#include "../Core/HAL/Runnable.h"
+#include "Core/Thread/Runnable.h"
 #include "WorkQueue.h"
 namespace sablin{
 

@@ -22,7 +22,6 @@ uint32_t TCCentralCache::RemoveRange(uint8_t bucket_index, void** batch, uint32_
     TCSpanList &span_list = span_list_[bucket_index];
     TCSpan* span = nullptr;
 
-// Need More Smaller Lock!
     span_list.Lock();
     if(!span_list.IsEmpty()){
         TCSpan* begin_span = span_list.Begin();

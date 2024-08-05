@@ -4,7 +4,7 @@
 #include "Container/ProducerConsumerQueue.h"
 #include "WorkFunctionRunnable.h"
 #include "WorkThreadPool.h"
-#include "WorkResult.h"
+#include "WorkFuture.h"
 namespace sablin{
 
 class WorkQueue final{
@@ -35,7 +35,7 @@ public:
     template<typename F, typename... Args,
         typename R = typename std::result_of<F(Args...)>::type>
     static WorkSharedFuture<R> CommitWork(F&& fn, Args&&... args){
-        auto work_runnable = MakeWorkFunctionRunnable(std::forward<F>(fn), std::forward<Args>(args)...);
+        auto work_runnable = lenin::MakeWorkFunctionRunnable(std::forward<F>(fn), std::forward<Args>(args)...);
         ASSERT_NO_STRING(work_runnable != nullptr)
         auto work_shared_future = work_runnable->promise_.GetSharedFuture();
         work_queue_->PushBack(static_cast<lenin::_WorkRunnable*>(work_runnable));

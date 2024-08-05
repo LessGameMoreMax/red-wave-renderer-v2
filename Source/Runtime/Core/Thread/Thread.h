@@ -1,5 +1,5 @@
-#ifndef THIS_THREAD_H 
-#define THIS_THREAD_H
+#ifndef THREAD_H 
+#define THREAD_H
 #include <cstdint>
 namespace sablin{
 

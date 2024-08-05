@@ -1,7 +1,7 @@
 #ifndef WORK_RUNNABLE_H
 #define WORK_RUNNABLE_H
 #include "Core/Thread/Runnable.h"
-#include "WorkResult.h"
+#include "WorkFuture.h"
 namespace sablin{
 namespace lenin{
 

@@ -1,5 +1,5 @@
-#ifndef WORK_RESULT_H
-#define WORK_RESULT_H
+#ifndef WORK_FUTURE_H
+#define WORK_FUTURE_H
 #include "Macro/MacroTools.h"
 #include "Core/Memory/MemoryBase.h"
 #include <memory>
@@ -11,6 +11,8 @@ concept IsReturnType = std::is_void_v<R> || std::is_trivially_default_constructi
 
 template<IsReturnType R>
 class WorkPromise;
+
+namespace lenin{
 
 template<typename R>
 class WorkFutureImpl{
@@ -36,44 +38,6 @@ public:
     }
 };
 
-template<typename R>
-class WorkSharedFuture{
-    friend class WorkPromise<R>;
-private:
-    std::shared_ptr<WorkFutureImpl<R>> future_;
-private:
-    explicit WorkSharedFuture(const std::shared_ptr<WorkFutureImpl<R>> future): 
-        future_(future){}
-public:
-    ~WorkSharedFuture() = default;
-
-    R Get(){
-        return future_->Get();
-    }
-};
-
-template<IsReturnType R>
-class WorkPromise{
-private:
-    std::shared_ptr<R> result_;
-    std::shared_ptr<WorkFutureImpl<R>> future_;
-public:
-    explicit WorkPromise(){
-        result_ = std::make_shared<R>();
-        future_ = std::make_shared<WorkFutureImpl<R>>(result_);
-    }
-    ~WorkPromise() = default;
-
-    void SetValue(R&& value){
-        *result_ = std::move(value);
-        future_->UnLock();
-    }
-
-    WorkSharedFuture<R> GetSharedFuture(){
-        return WorkSharedFuture(future_);
-    }
-};
-
 template<>
 class WorkFutureImpl<void>{
 private:
@@ -94,13 +58,55 @@ public:
     }
 };
 
+}
+
+
+template<typename R>
+class WorkSharedFuture{
+    friend class WorkPromise<R>;
+private:
+    std::shared_ptr<lenin::WorkFutureImpl<R>> future_;
+private:
+    explicit WorkSharedFuture(const std::shared_ptr<lenin::WorkFutureImpl<R>> future): 
+        future_(future){}
+public:
+    ~WorkSharedFuture() = default;
+
+    R Get(){
+        return future_->Get();
+    }
+};
+
+template<IsReturnType R>
+class WorkPromise{
+private:
+    std::shared_ptr<R> result_;
+    std::shared_ptr<lenin::WorkFutureImpl<R>> future_;
+public:
+    explicit WorkPromise(){
+        result_ = std::make_shared<R>();
+        future_ = std::make_shared<lenin::WorkFutureImpl<R>>(result_);
+    }
+    ~WorkPromise() = default;
+
+    void SetValue(R&& value){
+        *result_ = std::move(value);
+        future_->UnLock();
+    }
+
+    WorkSharedFuture<R> GetSharedFuture(){
+        return WorkSharedFuture(future_);
+    }
+};
+
+
 template<>
 class WorkSharedFuture<void>{
     friend class WorkPromise<void>;
 private:
-    std::shared_ptr<WorkFutureImpl<void>> future_;
+    std::shared_ptr<lenin::WorkFutureImpl<void>> future_;
 private:
-    explicit WorkSharedFuture(const std::shared_ptr<WorkFutureImpl<void>> future): 
+    explicit WorkSharedFuture(const std::shared_ptr<lenin::WorkFutureImpl<void>> future): 
         future_(future){}
 public:
     ~WorkSharedFuture() = default;
@@ -113,10 +119,10 @@ public:
 template<>
 class WorkPromise<void>{
 private:
-    std::shared_ptr<WorkFutureImpl<void>> future_;
+    std::shared_ptr<lenin::WorkFutureImpl<void>> future_;
 public:
     explicit WorkPromise(){
-        future_ = std::make_shared<WorkFutureImpl<void>>();
+        future_ = std::make_shared<lenin::WorkFutureImpl<void>>();
     }
     ~WorkPromise() = default;
 

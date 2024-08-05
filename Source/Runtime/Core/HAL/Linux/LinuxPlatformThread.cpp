@@ -3,7 +3,7 @@
 #include "Debug/Assertion.h"
 #include "Macro/MacroDefine.h"
 #include "Core/Memory/ThreadLocalMemory.h"
-#include "Core/Thread/ThisThread.h"
+#include "Core/Thread/Thread.h"
 namespace sablin{
 
 LinuxPlatformThread::LinuxPlatformThread(Runnable* runnable, std::string thread_name,

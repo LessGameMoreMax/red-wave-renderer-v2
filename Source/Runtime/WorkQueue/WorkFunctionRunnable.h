@@ -2,6 +2,7 @@
 #define WORK_FUNCTION_RUNNABLE_H
 #include "WorkRunnable.h"
 namespace sablin{
+namespace lenin{
 
 template<typename R, typename F, typename... Args>
 class WorkFunctionRunnable final: public WorkRunnable<R, Args...>{
@@ -27,5 +28,6 @@ auto MakeWorkFunctionRunnable(F&& f, Args&&... args) -> WorkRunnable<R, std::rem
     return new WorkFunctionRunnable<R, std::decay_t<F>, std::remove_cv_t<Args>...>(std::forward<F>(f), std::forward<Args>(args)...);
 }
 
+}
 }
 #endif

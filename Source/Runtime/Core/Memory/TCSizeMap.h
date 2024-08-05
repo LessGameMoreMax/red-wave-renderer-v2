@@ -10,7 +10,7 @@ class TCSizeMap{
 private:
     static constexpr int32_t kMaxSmallSize = 1024;
     static constexpr std::size_t kClassArraySize = 
-            ((kMaxSize + 127 + (56 << 7)) >> 7) + 1;
+            ((kMaxSize + 127 + (120 << 7)) >> 7) + 1;
 
     uint8_t size_to_class_[kClassArraySize] = {0};
     uint32_t class_to_size_[kBucketNum] = {0};
@@ -36,7 +36,7 @@ public:
 #endif
         if(size <= 8) return 0;
         if(size <= kMaxSmallSize) return (size + (1 << TC_ALIGNMENT_SHIFT) - 1) >> TC_ALIGNMENT_SHIFT;
-        return (size + (1 << 7) - 1 + (56 << 7)) >> 7;
+        return (size + (1 << 7) - 1 + (120 << 7)) >> 7;
     }
 
     inline uint8_t GetSizeToClass(std::size_t size) const{

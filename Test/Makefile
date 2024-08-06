@@ -1,5 +1,5 @@
 # 指定main函数文件名
-CPP_S = WorkQueue/WorkQueueTests.cpp
+CPP_S = Memory/TCBenchMarkWindowsTest.cpp
 
 # 指定执行文件名
 Out = main.out
@@ -54,7 +54,7 @@ define to_cpp
 $(findstring %(basename $(notdir $(1))$(CppSuffix)), $(CPP_S))
 endef
 
-IncludePath = $(foreach Temp, $(IncludeDir), -iquote$(Temp))
+IncludePath = $(foreach Temp, $(IncludeDir), -iquote $(Temp))
 
 Rwildcard = $(foreach DorF, $(wildcard $(1)*), $(call Rwildcard,$(DorF)/,$(2))$(filter $(2), $(DorF)))
 CPP_S += $(foreach Module, $(Modules), $(call Rwildcard, $(SourceDir)/$(Module), %$(CppSuffix)))

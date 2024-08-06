@@ -17,7 +17,7 @@ WindowsPlatformThread::~WindowsPlatformThread(){
 }
 
 bool WindowsPlatformThread::SetThreadPriority(const ThreadPriority thread_priority){
-    if(!HasSetup()) return;
+    if(!HasSetup()) return false;
     thread_priority_ = thread_priority;
     return ::SetThreadPriority(thread_, TranslatePriority(thread_priority_));
 }

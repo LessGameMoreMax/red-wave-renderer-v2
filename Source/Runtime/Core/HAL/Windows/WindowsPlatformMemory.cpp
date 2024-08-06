@@ -63,7 +63,7 @@ std::pair<void*, std::size_t> WindowsPlatformMemory::BaseMalloc(std::size_t size
 
 void WindowsPlatformMemory::BaseFree(void* ptr, std::size_t size){
     // ASSERT_WITH_STRING(VirtualFree(*(void**)((uint8_t*)ptr - sizeof(void*)), 0, MEM_RELEASE), "WindowsPlatformMemory::BaseFree: Virtual Free Failed!")
-    ASSERT_WITH_STRING(VirtualFree(ptr, size), "WindowsPlatformMemory::BaseFree: Virtual Free Failed!")
+    ASSERT_WITH_STRING(VirtualFree(ptr, size, MEM_DECOMMIT), "WindowsPlatformMemory::BaseFree: Virtual Free Failed!")
 }
 }
 #endif

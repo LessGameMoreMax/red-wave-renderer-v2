@@ -5,6 +5,7 @@
 #include <thread>
 #include <vector>
 #include <atomic>
+#include <cassert>
 #include <Windows.h>
 
 using namespace sablin;

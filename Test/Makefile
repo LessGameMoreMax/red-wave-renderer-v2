@@ -24,6 +24,9 @@ DFLAGS = -MM \
 
 
 
+LINUX = Linux
+WINDOWS = Windows
+Target = $(LINUX)
 
 CppSuffix = .cpp
 ObjSuffix = .o
@@ -35,6 +38,12 @@ CLEAN = clean
 
 ifeq ($(DEBUG), $(MAKECMDGOALS))
 CFLAGS += -g
+endif
+
+ifeq ($(Target), $(LINUX))
+INCLUDE = iquote
+else
+INCLUDE = I
 endif
 
 TestDir = $(shell pwd)
@@ -54,7 +63,7 @@ define to_cpp
 $(findstring %(basename $(notdir $(1))$(CppSuffix)), $(CPP_S))
 endef
 
-IncludePath = $(foreach Temp, $(IncludeDir), -iquote $(Temp))
+IncludePath = $(foreach Temp, $(IncludeDir), -$(INCLUDE)$(Temp))
 
 Rwildcard = $(foreach DorF, $(wildcard $(1)*), $(call Rwildcard,$(DorF)/,$(2))$(filter $(2), $(DorF)))
 CPP_S += $(foreach Module, $(Modules), $(call Rwildcard, $(SourceDir)/$(Module), %$(CppSuffix)))
@@ -78,7 +87,7 @@ ifneq ($(CLEAN), $(MAKECMDGOALS))
 -include $(DEP_S)
 endif
 
-.PHONY : clean $(DEBUG)
+.PHONY : $(CLEAN) $(DEBUG)
 clean:
 	-rm -rf $(Out) $(BuildDir)
 

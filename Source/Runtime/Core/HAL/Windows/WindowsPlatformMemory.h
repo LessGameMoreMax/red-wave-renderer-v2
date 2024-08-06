@@ -9,11 +9,6 @@
 namespace sablin{
 
 class WindowsPlatformMemory final: public GenericPlatformMemory{
-private:
-    struct RawPtrSize{
-        void* raw_ptr_;
-	    std::size_t raw_size_;
-    };
 public:
     WindowsPlatformMemory() = default;
     virtual ~WindowsPlatformMemory() = default;

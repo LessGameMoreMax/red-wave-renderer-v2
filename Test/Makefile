@@ -24,10 +24,6 @@ DFLAGS = -MM \
 
 
 
-LINUX = Linux
-WINDOWS = Windows
-Target = $(LINUX)
-
 CppSuffix = .cpp
 ObjSuffix = .o
 HeaderSuffix = .h
@@ -40,11 +36,7 @@ ifeq ($(DEBUG), $(MAKECMDGOALS))
 CFLAGS += -g
 endif
 
-ifeq ($(Target), $(LINUX))
 INCLUDE = iquote
-else
-INCLUDE = I
-endif
 
 TestDir = $(shell pwd)
 RootDir = $(TestDir)/..

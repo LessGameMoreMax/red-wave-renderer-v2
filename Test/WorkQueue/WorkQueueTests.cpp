@@ -2,6 +2,7 @@
 #include <chrono>
 #include "Core/Memory/MemoryManager.h"
 #include "WorkQueue/WorkQueue.h"
+#include "Math/ThreadSafeIostream.h"
 
 using namespace sablin;
 using namespace std;
@@ -11,7 +12,8 @@ public:
     explicit MyWorkRunnable(int number): WorkRunnable(number){}
 
     virtual int Work(int number) override{
-        for(int i = 0;i != 100; ++i){
+        ThreadSafePrintf("good!");
+        for(int i = 0;i != 20; ++i){
             this_thread::sleep_for(chrono::milliseconds(10));
             std::cout << i << std::endl;
         }
@@ -23,16 +25,23 @@ int main(){
     MemoryManager memory_manager;
     WorkQueue::Initialize();
 
-    auto future1 = WorkQueue::CommitWork<MyWorkRunnable>(2);
-
-    cout << future1.Get() << endl;
-
+    // std::vector<WorkSharedFuture<int>> v;
+    // for(int i = 0;i != 10; ++i){
+    //     auto future1 = WorkQueue::CommitWork<MyWorkRunnable>(2);
+    //     v.push_back(std::move(future1));
+    // }
+    ThreadSafePrintf("good!");
+    auto future1 = WorkQueue::CommitTimerWork<MyWorkRunnable>(2, 1000, 2);
     auto future2 = WorkQueue::CommitWork([](){
         for(int i = 0;i != 100; ++i){
             this_thread::sleep_for(chrono::milliseconds(5));
             std::cout << "--" << i << "--" << std::endl;
         }
     });
+    std::cout << future1.Get() << std::endl;
+    future2.Get();
+
+
 
     WorkQueue::Exit();
     return 0;

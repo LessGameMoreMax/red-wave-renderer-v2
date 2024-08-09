@@ -1,7 +1,9 @@
 cmake_minimum_required(VERSION 3.00)
 project (red-wave-renderer-v2)
 include_directories(../../Source/Runtime/)
-set(Main ../Memory/TCBenchMarkWindowsTest.cpp)
+
+set(Main ../WorkQueue/WorkQueueTests.cpp)
+
 set(Core ../../Source/Runtime/Core/*.cpp)
 set(WorkQueue ../../Source/Runtime/WorkQueue/*.cpp)
 

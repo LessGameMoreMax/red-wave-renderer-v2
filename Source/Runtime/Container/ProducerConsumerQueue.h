@@ -162,8 +162,8 @@ std::list<T> ProducerConsumerQueue<T>::PopFrontBatch(uint32_t max_num){
     cond_variable_.wait(lk, [&]{
         return head_->next_ != nullptr || has_stop_;
     });
-    if(has_stop_) return nullptr;
     std::list<T> result;
+    if(has_stop_) return result;
     while(head_->next_ != nullptr && max_num != 0){
         lenin::PCNode<T>* temp = head_;
         result.push_back(head_->next_->data_);
@@ -174,7 +174,7 @@ std::list<T> ProducerConsumerQueue<T>::PopFrontBatch(uint32_t max_num){
     }
     lk.unlock();
 
-    return std::move(result);
+    return result;
 }
 
 template<typename T>
@@ -197,11 +197,11 @@ T ProducerConsumerQueue<T>::TryPopFront(){
 template<typename T>
 requires std::is_pointer_v<T>
 std::list<T> ProducerConsumerQueue<T>::TryPopFrontBatch(uint32_t max_num){
-    if(!lock_.try_lock()) return nullptr;
-    std::unique_lock<std::mutex> lk(lock_, std::adopt_lock);
-    if(head_->next_ == nullptr || has_stop_) return nullptr;
-
     std::list<T> result;
+    if(!lock_.try_lock()) return result;
+    std::unique_lock<std::mutex> lk(lock_, std::adopt_lock);
+    if(head_->next_ == nullptr || has_stop_) return result;
+
     while(head_->next_ != nullptr && max_num != 0){
         lenin::PCNode<T>* temp = head_;
         result.push_back(head_->next_->data_);
@@ -212,7 +212,7 @@ std::list<T> ProducerConsumerQueue<T>::TryPopFrontBatch(uint32_t max_num){
     }
     lk.unlock();
 
-    return std::move(result);
+    return result;
 }
 
 template<typename T>
@@ -220,9 +220,9 @@ requires std::is_pointer_v<T>
 T ProducerConsumerQueue<T>::PopFrontUntil(const std::chrono::time_point<std::chrono::steady_clock, 
         std::chrono::milliseconds>& timepoint){
     std::unique_lock<std::mutex> lk(lock_);
-    cond_variable_.wait_until(lk, [&]{
+    cond_variable_.wait_until(lk, timepoint, [&]{
         return head_->next_ != nullptr || has_stop_;
-    }, timepoint);
+    });
     if(has_stop_) return nullptr;
     if(head_->next_ == nullptr) return nullptr;
 

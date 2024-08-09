@@ -6,9 +6,15 @@ namespace sablin{
 namespace lenin{
 
 class _WorkRunnable: public Runnable{
+    friend class WorkTimerRunnable;
+    friend class WorkThreadBaseRunnable;
+protected:
+    long times_; // < 0: Run Forever Times!
 public:
-    explicit _WorkRunnable() = default;
+    explicit _WorkRunnable(long times = 1):
+        times_(times){}
     virtual ~_WorkRunnable() = default;
+    virtual bool IsTimer() const = 0;
 };
 }
 
@@ -27,13 +33,21 @@ public:
     virtual ~WorkRunnable() = default;
 
     virtual RStatus Run() override final{
-        promise_.SetValue(std::apply(
-                [this](Args&&... args){
-                    return this->Work(std::forward<Args>(args)...); 
-                }, std::move(args_)));
+        if(times_ == 1){
+            promise_.SetValue(std::apply(
+                    [this](Args&&... args){
+                        return this->Work(std::forward<Args>(args)...); 
+                    }, std::move(args_)));
+        }else{
+            std::apply([this](Args&&... args){
+                        return this->Work(std::forward<Args>(args)...); 
+                    }, std::move(args_));
+        }
+        if(times_ > 0) --times_;
         return RStatus();
     }
-
+    
+    virtual bool IsTimer() const final{ return false;}
     virtual R Work(Args... args) = 0;
 };
 
@@ -56,10 +70,12 @@ public:
                 [this](Args&&... args){
                     this->Work(std::forward<Args>(args)...); 
                 }, std::move(args_));
-        promise_.SetValue();
+        if(times_ == 1) promise_.SetValue();
+        if(times_ > 0) --times_;
         return RStatus();
     }
 
+    virtual bool IsTimer() const final{ return false;}
     virtual void Work(Args... args) = 0;
 };
 }

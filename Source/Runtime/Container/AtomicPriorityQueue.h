@@ -7,13 +7,13 @@
 #include "Debug/Assertion.h"
 namespace sablin{
 
-template <typename T>
+template <typename T, typename P>
 requires std::is_pointer_v<T>
 class AtomicPriorityQueue{
 private:
     struct Element{
         T pointer_;
-        int32_t priority_;
+        P priority_;
 
         friend bool operator<(const Element& lhs, const Element& rhs){
             return lhs.priority_ < rhs.priority_;
@@ -34,7 +34,7 @@ public:
         return priority_queue_.empty();
     }
 
-    void Push(T pointer, int32_t priority){
+    void Push(T pointer, P priority){
         std::lock_guard<std::mutex> lk(lock_);
         priority_queue_.push({std::move(pointer), priority});
     }
@@ -42,8 +42,6 @@ public:
     //No Any Wait!
     T TryPop(){
         T result = nullptr;
-        //Pay Attention To The Condition!
-        // if(lock_.try_lock() && !priority_queue_.empty()) Dead Lock!
         if(!priority_queue_.empty() && lock_.try_lock()){
             if(!priority_queue_.empty()){
                 result = priority_queue_.top().pointer_;

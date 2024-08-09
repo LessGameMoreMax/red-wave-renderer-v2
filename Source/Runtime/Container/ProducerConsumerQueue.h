@@ -39,10 +39,12 @@ public:
     T PopFrontUntil(const std::chrono::time_point<std::chrono::steady_clock, std::chrono::milliseconds>& tp);
 
     inline void NotifyAll(){
+        std::unique_lock<std::mutex> lk(lock_);
         cond_variable_.notify_all();
     }
 
     inline void NotifyOne(){
+        std::unique_lock<std::mutex> lk(lock_);
         cond_variable_.notify_one();
     }
 

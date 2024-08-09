@@ -45,8 +45,6 @@ void WorkThreadMonitorRunnable::ReduceSecondaryThread(uint32_t id, uint32_t size
     for(RunnableThread* thread: threads)
         thread->StopRunnable();
 
-    work_thread_pool_->NotifyWorkPoolAll(id);
-
     for(RunnableThread* thread: threads){
         thread->Join();
         Runnable* runnable = thread->GetRunnable();

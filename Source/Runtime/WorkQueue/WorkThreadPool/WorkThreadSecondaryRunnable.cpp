@@ -5,9 +5,9 @@ namespace lenin{
 
 RStatus WorkThreadSecondaryRunnable::Run(){
     while(!has_stop_){
-        lenin::_WorkRunnable* work = work_thread_pool_->PopFront(id_);
-        if(work == nullptr) continue;
-        RunWork(work);
+        lenin::_WorkRunnable* work = work_thread_pool_->TryPopFront(id_);
+        if(work == nullptr) std::this_thread::yield();
+        else RunWork(work);
     }
     return RStatus();
 }

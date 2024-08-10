@@ -55,8 +55,6 @@ public:
 
     void PushBack(lenin::_WorkRunnable* runnable);
     void PushTimerBack(lenin::WorkTimerRunnable* runnable);
-    
-    void NotifyWorkPoolAll(uint32_t id);
 };
 
 }

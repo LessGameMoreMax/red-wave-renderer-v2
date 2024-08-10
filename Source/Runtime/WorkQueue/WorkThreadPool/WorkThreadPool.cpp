@@ -51,7 +51,6 @@ void WorkThreadPool::ExitMonitorThread(){
 
 void WorkThreadPool::ExitTimerThread(){
     timer_thread_->StopRunnable();
-    timer_runnable_->NotifyTimerThread();
     timer_thread_->Join();
     delete timer_thread_;
     delete timer_runnable_;
@@ -59,9 +58,8 @@ void WorkThreadPool::ExitTimerThread(){
 
 void WorkThreadPool::ExitPrimaryThreads(){
     for(uint32_t i = 0;i != GetPoolSize(); ++i){
-        work_pool_[i]->Stop(false);
         primary_work_threads_[i]->StopRunnable();
-        NotifyWorkPoolAll(i);
+        work_pool_[i]->Stop();
         primary_work_threads_[i]->Join();
     }
     for(uint32_t i = 0;i != GetPoolSize(); ++i){
@@ -170,10 +168,6 @@ void WorkThreadPool::PushTimerBack(lenin::WorkTimerRunnable* runnable){
         return;
     }
     timer_runnable_->PushTimerBack(runnable);
-}
-
-void WorkThreadPool::NotifyWorkPoolAll(uint32_t id){
-    work_pool_[id]->NotifyAll();
 }
 
 }

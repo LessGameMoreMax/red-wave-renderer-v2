@@ -22,13 +22,12 @@ public:
     virtual RStatus Run() override;
 
     virtual RStatus Stop() override { 
-        timer_queue_.Stop(true);
         has_stop_ = true;
+        timer_queue_.Stop();
         return RStatus();
     }
 
     void PushTimerBack(lenin::WorkTimerRunnable* runnable);
-    void NotifyTimerThread() {timer_queue_.NotifyOne(); }
 };
 
 }

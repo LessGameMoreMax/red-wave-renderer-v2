@@ -10,6 +10,5 @@ set(WorkQueue ../../Source/Runtime/WorkQueue/*.cpp)
 file(GLOB_RECURSE Srcs ${Core} ${WorkQueue})
 
 add_compile_options(-std=c++20 -Wall)
-set(EXECUTABLE_OUTPUT_PATH ./Build)
 
 add_executable(main.out ${Main} ${Srcs})

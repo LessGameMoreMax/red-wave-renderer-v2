@@ -27,6 +27,14 @@ private:
     std::condition_variable cond_variable_;
     std::atomic<bool> has_stop_;
     std::atomic<uint32_t> size_;
+private:
+    inline void NotifyAll(){
+        cond_variable_.notify_all();
+    }
+
+    inline void NotifyOne(){
+        cond_variable_.notify_one();
+    }
 public:
     explicit ProducerConsumerQueue();
     CLASS_NO_ALLOWED_COPY(ProducerConsumerQueue)
@@ -38,15 +46,6 @@ public:
     std::list<T> TryPopFrontBatch(uint32_t max_num);
     T PopFrontUntil(const std::chrono::time_point<std::chrono::steady_clock, std::chrono::milliseconds>& tp);
 
-    inline void NotifyAll(){
-        std::unique_lock<std::mutex> lk(lock_);
-        cond_variable_.notify_all();
-    }
-
-    inline void NotifyOne(){
-        std::unique_lock<std::mutex> lk(lock_);
-        cond_variable_.notify_one();
-    }
 
     inline void Lock(){
         lock_.lock();
@@ -56,7 +55,7 @@ public:
         lock_.unlock();
     }
 
-    void Stop(bool should_wait);
+    void Stop();
     bool IsEmpty();
 
     bool HasStop() const;
@@ -90,15 +89,11 @@ ProducerConsumerQueue<T>::~ProducerConsumerQueue(){
 
 template<typename T>
 requires std::is_pointer_v<T>
-void ProducerConsumerQueue<T>::Stop(bool should_wait){
-    if(has_stop_) return;
-    while(should_wait){
-        lock_.lock();
-        should_wait = (head_->next_ != nullptr);
-        lock_.unlock();
-        if(should_wait) std::this_thread::yield();
-    }
+void ProducerConsumerQueue<T>::Stop(){
+    std::unique_lock<std::mutex> lk(lock_);
     has_stop_ = true;
+    lk.unlock();
+    NotifyAll();
 }
 
 template<typename T>

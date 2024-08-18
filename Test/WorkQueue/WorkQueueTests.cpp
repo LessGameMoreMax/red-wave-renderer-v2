@@ -2,7 +2,7 @@
 #include <chrono>
 #include "Core/Memory/MemoryManager.h"
 #include "WorkQueue/WorkQueue.h"
-#include "Math/ThreadSafeIostream.h"
+#include "Utility/ThreadSafeIostream.h"
 
 using namespace sablin;
 using namespace std;

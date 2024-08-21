@@ -69,7 +69,7 @@ public:
         NO_IMPLEMENT_ASSERT(Vector2, Normal)
     }
 
-    Vector2& Normalized(){
+    Vector2 Normalized(){
         NO_IMPLEMENT_ASSERT(Vector2, Normalized)
         return *this;
     }
@@ -82,7 +82,7 @@ template<>
 float Vector2<float>::Normal() const;
 
 template<>
-Vector2<float>& Vector2<float>::Normalized();
+Vector2<float> Vector2<float>::Normalized();
 
 template<typename T>
 Vector2<T> operator+(const Vector2<T>& lhs, const Vector2<T>& rhs){
@@ -216,7 +216,7 @@ public:
     }
 
     float Normal() const;
-    Vector3& Normalized();
+    Vector3 Normalized();
 };
 
 template<>
@@ -226,7 +226,7 @@ template<>
 float Vector3<float>::Normal() const;
 
 template<>
-Vector3<float>& Vector3<float>::Normalized();
+Vector3<float> Vector3<float>::Normalized();
 
 template<typename T>
 Vector3<T> operator+(const Vector3<T>& lhs, const Vector3<T>& rhs){
@@ -309,6 +309,9 @@ public:
     explicit Vector4(): s_{} {}
     Vector4(const T x, const T y, const T z, const T w):
         x_(x), y_(y), z_(z), w_(w){}
+    template<typename I>
+    Vector4(const Vector3<I>& lhs, float w):
+        x_(lhs.x_), y_(lhs.y_), z_(lhs.z_), w_(w){}
     Vector4(const Vector4& rhs) = default;
     Vector4(Vector4&& rhs) = default;
     Vector4& operator=(const Vector4& rhs) = default;
@@ -368,7 +371,7 @@ public:
     }
 
     float Normal() const;
-    Vector4& Normalized();
+    Vector4 Normalized();
 };
 
 template<>
@@ -378,7 +381,7 @@ template<>
 float Vector4<float>::Normal() const;
 
 template<>
-Vector4<float>& Vector4<float>::Normalized();
+Vector4<float> Vector4<float>::Normalized();
 
 template<typename T>
 Vector4<T> operator+(const Vector4<T>& lhs, const Vector4<T>& rhs){
@@ -477,6 +480,14 @@ lenin::Vector3<T> CrossProduct(const lenin::Vector3<T>& lhs, const lenin::Vector
 template<typename T, typename I>
 float DotProduct(const lenin::Vector4<T>& lhs, const lenin::Vector4<I>& rhs){
     return rhs.x_*lhs.x_+rhs.y_*lhs.y_+rhs.z_*lhs.z_+rhs.w_*lhs.w_;
+}
+
+template<typename T>
+lenin::Vector4<T> CrossProduct(const lenin::Vector4<T>& lhs, const lenin::Vector4<T>& rhs){
+    return lenin::Vector4<T>(rhs.y_*lhs.z_-rhs.z_*lhs.y_,
+                             rhs.z_*lhs.x_-rhs.x_*lhs.z_,
+                             rhs.x_*lhs.y_-rhs.y_*lhs.x_,
+                             0.0f);    
 }
 
 }

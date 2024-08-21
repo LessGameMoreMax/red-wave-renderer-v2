@@ -270,4 +270,21 @@ Matrix4x4f operator*(const Matrix4x4f &lhs, const Matrix4x4f &rhs){
     return result;
 }
 
+Matrix4x4f LookAtRightHand(const Vector4f &from, const Vector4f &to, const Vector4f &up){
+    const Vector3f from_temp(from.x_, from.y_, from.z_);
+    const Vector3f to_temp(to.x_, to.y_, to.z_);
+    const Vector3f up_temp(up.x_, up.y_, up.z_);
+
+    const Vector3f f = (to_temp - from_temp).Normalized();
+    const Vector3f s = CrossProduct(f, up_temp).Normalized();
+    const Vector3f u = CrossProduct(s, f);
+
+    Matrix4x4f result{
+        s.x_, u.x_, -f.x_, -DotProduct(s, from_temp),
+        s.y_, u.y_, -f.y_, -DotProduct(u, from_temp),
+        s.z_, u.z_, -f.z_, DotProduct(f, from_temp),
+        0.0f, 0.0f, 0.0f, 1.0f};
+    return result;
+}
+
 }

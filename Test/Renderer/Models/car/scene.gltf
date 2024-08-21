@@ -1,0 +1,1091 @@
+{
+  "accessors": [
+    {
+      "bufferView": 2,
+      "componentType": 5126,
+      "count": 52456,
+      "max": [
+        1.9894218444824219,
+        0.8347006440162659,
+        1.314909815788269
+      ],
+      "min": [
+        -1.9903929233551025,
+        -0.8347005844116211,
+        0.23720744252204895
+      ],
+      "type": "VEC3"
+    },
+    {
+      "bufferView": 2,
+      "byteOffset": 629472,
+      "componentType": 5126,
+      "count": 52456,
+      "max": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "min": [
+        -0.9999880790710449,
+        -1.0,
+        -1.0
+      ],
+      "type": "VEC3"
+    },
+    {
+      "bufferView": 3,
+      "componentType": 5126,
+      "count": 52456,
+      "max": [
+        1.0,
+        1.0,
+        1.0,
+        1.0
+      ],
+      "min": [
+        -1.0,
+        -1.0,
+        -1.0,
+        -1.0
+      ],
+      "type": "VEC4"
+    },
+    {
+      "bufferView": 1,
+      "componentType": 5126,
+      "count": 52456,
+      "max": [
+        0.9854651093482971,
+        0.9848512411117554
+      ],
+      "min": [
+        0.011408389545977116,
+        0.009594276547431946
+      ],
+      "type": "VEC2"
+    },
+    {
+      "bufferView": 0,
+      "componentType": 5125,
+      "count": 267669,
+      "type": "SCALAR"
+    },
+    {
+      "bufferView": 2,
+      "byteOffset": 1258944,
+      "componentType": 5126,
+      "count": 65532,
+      "max": [
+        2.0561742782592773,
+        0.8279377818107605,
+        1.2362146377563477
+      ],
+      "min": [
+        -2.0360608100891113,
+        -0.8279378414154053,
+        0.07949987053871155
+      ],
+      "type": "VEC3"
+    },
+    {
+      "bufferView": 2,
+      "byteOffset": 2045328,
+      "componentType": 5126,
+      "count": 65532,
+      "max": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "min": [
+        -1.0,
+        -1.0,
+        -1.0
+      ],
+      "type": "VEC3"
+    },
+    {
+      "bufferView": 3,
+      "byteOffset": 839296,
+      "componentType": 5126,
+      "count": 65532,
+      "max": [
+        1.0,
+        1.0,
+        0.9999608993530273,
+        1.0
+      ],
+      "min": [
+        -1.0,
+        -1.0,
+        -1.0,
+        -1.0
+      ],
+      "type": "VEC4"
+    },
+    {
+      "bufferView": 1,
+      "byteOffset": 419648,
+      "componentType": 5126,
+      "count": 65532,
+      "max": [
+        0.9292020797729492,
+        0.9866235852241516
+      ],
+      "min": [
+        0.011408337391912937,
+        0.04433269053697586
+      ],
+      "type": "VEC2"
+    },
+    {
+      "bufferView": 0,
+      "byteOffset": 1070676,
+      "componentType": 5125,
+      "count": 316335,
+      "type": "SCALAR"
+    },
+    {
+      "bufferView": 2,
+      "byteOffset": 2831712,
+      "componentType": 5126,
+      "count": 29563,
+      "max": [
+        1.8172354698181152,
+        0.778489351272583,
+        0.6506510972976685
+      ],
+      "min": [
+        -1.83826744556427,
+        -0.7780382037162781,
+        0.07949987053871155
+      ],
+      "type": "VEC3"
+    },
+    {
+      "bufferView": 2,
+      "byteOffset": 3186468,
+      "componentType": 5126,
+      "count": 29563,
+      "max": [
+        0.9997604489326477,
+        1.0,
+        0.9997628331184387
+      ],
+      "min": [
+        -0.999759316444397,
+        -1.0,
+        -0.999763011932373
+      ],
+      "type": "VEC3"
+    },
+    {
+      "bufferView": 3,
+      "byteOffset": 1887808,
+      "componentType": 5126,
+      "count": 29563,
+      "max": [
+        0.9852175116539001,
+        1.0,
+        0.9582191109657288,
+        1.0
+      ],
+      "min": [
+        -0.9986333847045898,
+        -0.9999702572822571,
+        -1.0,
+        -1.0
+      ],
+      "type": "VEC4"
+    },
+    {
+      "bufferView": 1,
+      "byteOffset": 943904,
+      "componentType": 5126,
+      "count": 29563,
+      "max": [
+        0.9292020797729492,
+        0.9851657748222351
+      ],
+      "min": [
+        0.014642330817878246,
+        0.04433269053697586
+      ],
+      "type": "VEC2"
+    },
+    {
+      "bufferView": 0,
+      "byteOffset": 2336016,
+      "componentType": 5125,
+      "count": 150321,
+      "type": "SCALAR"
+    },
+    {
+      "bufferView": 2,
+      "byteOffset": 3541224,
+      "componentType": 5126,
+      "count": 2544,
+      "max": [
+        1.7534630298614502,
+        0.7280077934265137,
+        1.224564552307129
+      ],
+      "min": [
+        -1.3215793371200562,
+        -0.7280077934265137,
+        0.5949830412864685
+      ],
+      "type": "VEC3"
+    },
+    {
+      "bufferView": 2,
+      "byteOffset": 3571752,
+      "componentType": 5126,
+      "count": 2544,
+      "max": [
+        0.9994955658912659,
+        0.9736341238021851,
+        0.9945371150970459
+      ],
+      "min": [
+        -0.46573320031166077,
+        -0.9736341238021851,
+        -0.5593223571777344
+      ],
+      "type": "VEC3"
+    },
+    {
+      "bufferView": 1,
+      "byteOffset": 1180408,
+      "componentType": 5126,
+      "count": 2544,
+      "max": [
+        0.9826111793518066,
+        0.6070276498794556
+      ],
+      "min": [
+        0.8328889608383179,
+        0.4611937999725342
+      ],
+      "type": "VEC2"
+    },
+    {
+      "bufferView": 0,
+      "byteOffset": 2937300,
+      "componentType": 5125,
+      "count": 12384,
+      "type": "SCALAR"
+    },
+    {
+      "bufferView": 2,
+      "byteOffset": 3602280,
+      "componentType": 5126,
+      "count": 3678,
+      "max": [
+        1.839297890663147,
+        0.655173659324646,
+        0.5564064979553223
+      ],
+      "min": [
+        -1.9418487548828125,
+        -0.655173659324646,
+        0.43273308873176575
+      ],
+      "type": "VEC3"
+    },
+    {
+      "bufferView": 2,
+      "byteOffset": 3646416,
+      "componentType": 5126,
+      "count": 3678,
+      "max": [
+        1.0,
+        0.998134970664978,
+        0.9998555779457092
+      ],
+      "min": [
+        -0.9982119202613831,
+        -0.998134434223175,
+        -0.9656567573547363
+      ],
+      "type": "VEC3"
+    },
+    {
+      "bufferView": 3,
+      "byteOffset": 2360816,
+      "componentType": 5126,
+      "count": 3678,
+      "max": [
+        0.9656153321266174,
+        0.9999998211860657,
+        0.8927274942398071,
+        1.0
+      ],
+      "min": [
+        -0.9996864795684814,
+        -0.9999998211860657,
+        -0.8731598258018494,
+        1.0
+      ],
+      "type": "VEC4"
+    },
+    {
+      "bufferView": 1,
+      "byteOffset": 1200760,
+      "componentType": 5126,
+      "count": 3678,
+      "max": [
+        0.7772942781448364,
+        0.3317379355430603
+      ],
+      "min": [
+        0.6739368438720703,
+        0.21083152294158936
+      ],
+      "type": "VEC2"
+    },
+    {
+      "bufferView": 0,
+      "byteOffset": 2986836,
+      "componentType": 5125,
+      "count": 21216,
+      "type": "SCALAR"
+    },
+    {
+      "bufferView": 2,
+      "byteOffset": 3690552,
+      "componentType": 5126,
+      "count": 25356,
+      "max": [
+        2.0012972354888916,
+        0.8253166675567627,
+        0.9805801510810852
+      ],
+      "min": [
+        -2.002264976501465,
+        -0.8253167271614075,
+        -0.02242075651884079
+      ],
+      "type": "VEC3"
+    },
+    {
+      "bufferView": 2,
+      "byteOffset": 3994824,
+      "componentType": 5126,
+      "count": 25356,
+      "max": [
+        1.0,
+        0.9999957084655762,
+        1.0
+      ],
+      "min": [
+        -1.0,
+        -0.9999957084655762,
+        -1.0
+      ],
+      "type": "VEC3"
+    },
+    {
+      "bufferView": 3,
+      "byteOffset": 2419664,
+      "componentType": 5126,
+      "count": 25356,
+      "max": [
+        0.9999850988388062,
+        1.0,
+        0.9942902326583862,
+        1.0
+      ],
+      "min": [
+        -0.9999999403953552,
+        -1.0,
+        -1.0,
+        -1.0
+      ],
+      "type": "VEC4"
+    },
+    {
+      "bufferView": 1,
+      "byteOffset": 1230184,
+      "componentType": 5126,
+      "count": 25356,
+      "max": [
+        0.9837464690208435,
+        0.4480825364589691
+      ],
+      "min": [
+        0.06588202714920044,
+        0.0059511661529541016
+      ],
+      "type": "VEC2"
+    },
+    {
+      "bufferView": 0,
+      "byteOffset": 3071700,
+      "componentType": 5125,
+      "count": 135552,
+      "type": "SCALAR"
+    },
+    {
+      "bufferView": 2,
+      "byteOffset": 4299096,
+      "componentType": 5126,
+      "count": 12895,
+      "max": [
+        0.5429471135139465,
+        0.6333405375480652,
+        1.2989383935928345
+      ],
+      "min": [
+        -1.3215792179107666,
+        -0.6333405375480652,
+        0.4238063097000122
+      ],
+      "type": "VEC3"
+    },
+    {
+      "bufferView": 2,
+      "byteOffset": 4453836,
+      "componentType": 5126,
+      "count": 12895,
+      "max": [
+        0.9999992847442627,
+        1.0,
+        1.0
+      ],
+      "min": [
+        -1.0,
+        -1.0,
+        -0.9999817609786987
+      ],
+      "type": "VEC3"
+    },
+    {
+      "bufferView": 3,
+      "byteOffset": 2825360,
+      "componentType": 5126,
+      "count": 12895,
+      "max": [
+        1.0,
+        1.0,
+        0.9994422793388367,
+        1.0
+      ],
+      "min": [
+        -1.0,
+        -1.0,
+        -1.0,
+        -1.0
+      ],
+      "type": "VEC4"
+    },
+    {
+      "bufferView": 1,
+      "byteOffset": 1433032,
+      "componentType": 5126,
+      "count": 12895,
+      "max": [
+        0.7953583598136902,
+        0.9828958511352539
+      ],
+      "min": [
+        0.3951647877693176,
+        0.5845029354095459
+      ],
+      "type": "VEC2"
+    },
+    {
+      "bufferView": 0,
+      "byteOffset": 3613908,
+      "componentType": 5125,
+      "count": 64032,
+      "type": "SCALAR"
+    }
+  ],
+  "asset": {
+    "extras": {
+      "author": "Sergey Egelsky (https://sketchfab.com/egelsky)",
+      "license": "CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)",
+      "source": "https://sketchfab.com/3d-models/porsche-356-high-poly-6048744a250e44c9bc3081ca1825a907",
+      "title": "Porsche 356 (high poly)"
+    },
+    "generator": "Sketchfab-12.67.0",
+    "version": "2.0"
+  },
+  "bufferViews": [
+    {
+      "buffer": 0,
+      "byteLength": 3870036,
+      "name": "floatBufferViews",
+      "target": 34963
+    },
+    {
+      "buffer": 0,
+      "byteLength": 1536192,
+      "byteOffset": 3870036,
+      "byteStride": 8,
+      "name": "floatBufferViews",
+      "target": 34962
+    },
+    {
+      "buffer": 0,
+      "byteLength": 4608576,
+      "byteOffset": 5406228,
+      "byteStride": 12,
+      "name": "floatBufferViews",
+      "target": 34962
+    },
+    {
+      "buffer": 0,
+      "byteLength": 3031680,
+      "byteOffset": 10014804,
+      "byteStride": 16,
+      "name": "floatBufferViews",
+      "target": 34962
+    }
+  ],
+  "buffers": [
+    {
+      "byteLength": 13046484,
+      "uri": "scene.bin"
+    }
+  ],
+  "images": [
+    {
+      "uri": "textures/Porsche356_baseColor.jpeg"
+    },
+    {
+      "uri": "textures/Porsche356_metallicRoughness.png"
+    },
+    {
+      "uri": "textures/Porsche356_normal.jpeg"
+    },
+    {
+      "uri": "textures/glass_baseColor.png"
+    },
+    {
+      "uri": "textures/glass_metallicRoughness.png"
+    }
+  ],
+  "materials": [
+    {
+      "name": "Porsche356",
+      "normalTexture": {
+        "index": 2
+      },
+      "occlusionTexture": {
+        "index": 1,
+        "strength": 0.64
+      },
+      "pbrMetallicRoughness": {
+        "baseColorTexture": {
+          "index": 0
+        },
+        "metallicRoughnessTexture": {
+          "index": 1
+        }
+      }
+    },
+    {
+      "alphaMode": "BLEND",
+      "name": "glass",
+      "pbrMetallicRoughness": {
+        "baseColorFactor": [
+          1.0,
+          1.0,
+          1.0,
+          0.45
+        ],
+        "baseColorTexture": {
+          "index": 3
+        },
+        "metallicRoughnessTexture": {
+          "index": 4
+        }
+      }
+    }
+  ],
+  "meshes": [
+    {
+      "name": "356C_Porsche356_0",
+      "primitives": [
+        {
+          "attributes": {
+            "NORMAL": 1,
+            "POSITION": 0,
+            "TANGENT": 2,
+            "TEXCOORD_0": 3
+          },
+          "indices": 4,
+          "material": 0,
+          "mode": 4
+        }
+      ]
+    },
+    {
+      "name": "chrome_Porsche356_0",
+      "primitives": [
+        {
+          "attributes": {
+            "NORMAL": 6,
+            "POSITION": 5,
+            "TANGENT": 7,
+            "TEXCOORD_0": 8
+          },
+          "indices": 9,
+          "material": 0,
+          "mode": 4
+        }
+      ]
+    },
+    {
+      "name": "chrome_Porsche356_0",
+      "primitives": [
+        {
+          "attributes": {
+            "NORMAL": 11,
+            "POSITION": 10,
+            "TANGENT": 12,
+            "TEXCOORD_0": 13
+          },
+          "indices": 14,
+          "material": 0,
+          "mode": 4
+        }
+      ]
+    },
+    {
+      "name": "glass_glass_0",
+      "primitives": [
+        {
+          "attributes": {
+            "NORMAL": 16,
+            "POSITION": 15,
+            "TEXCOORD_0": 17
+          },
+          "indices": 18,
+          "material": 1,
+          "mode": 4
+        }
+      ]
+    },
+    {
+      "name": "glass_Porsche356_0",
+      "primitives": [
+        {
+          "attributes": {
+            "NORMAL": 20,
+            "POSITION": 19,
+            "TANGENT": 21,
+            "TEXCOORD_0": 22
+          },
+          "indices": 23,
+          "material": 0,
+          "mode": 4
+        }
+      ]
+    },
+    {
+      "name": "rubber_Porsche356_0",
+      "primitives": [
+        {
+          "attributes": {
+            "NORMAL": 25,
+            "POSITION": 24,
+            "TANGENT": 26,
+            "TEXCOORD_0": 27
+          },
+          "indices": 28,
+          "material": 0,
+          "mode": 4
+        }
+      ]
+    },
+    {
+      "name": "interior_Porsche356_0",
+      "primitives": [
+        {
+          "attributes": {
+            "NORMAL": 30,
+            "POSITION": 29,
+            "TANGENT": 31,
+            "TEXCOORD_0": 32
+          },
+          "indices": 33,
+          "material": 0,
+          "mode": 4
+        }
+      ]
+    }
+  ],
+  "nodes": [
+    {
+      "children": [
+        1
+      ],
+      "matrix": [
+        1.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        2.220446049250313e-16,
+        -1.0,
+        0.0,
+        0.0,
+        1.0,
+        2.220446049250313e-16,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ],
+      "name": "Sketchfab_model"
+    },
+    {
+      "children": [
+        2
+      ],
+      "matrix": [
+        1.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        1.0,
+        0.0,
+        0.0,
+        -1.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ],
+      "name": "d8332c313c274a4eb2adcded266c2162.fbx"
+    },
+    {
+      "children": [
+        3,
+        6,
+        10,
+        14,
+        17
+      ],
+      "name": "RootNode"
+    },
+    {
+      "children": [
+        4
+      ],
+      "matrix": [
+        1.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        2.220446049250313e-16,
+        -1.0,
+        0.0,
+        0.0,
+        1.0,
+        2.220446049250313e-16,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ],
+      "name": "356C"
+    },
+    {
+      "children": [
+        5
+      ],
+      "matrix": [
+        -1.3315805452146108e-07,
+        -0.9999999999999911,
+        -0.0,
+        0.0,
+        0.9999999999999911,
+        -1.3315805452146108e-07,
+        0.0,
+        0.0,
+        -0.0,
+        0.0,
+        1.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ],
+      "name": "Object_4"
+    },
+    {
+      "mesh": 0,
+      "name": "356C_Porsche356_0"
+    },
+    {
+      "children": [
+        7
+      ],
+      "matrix": [
+        1.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        2.220446049250313e-16,
+        -1.0,
+        0.0,
+        0.0,
+        1.0,
+        2.220446049250313e-16,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ],
+      "name": "chrome"
+    },
+    {
+      "children": [
+        8,
+        9
+      ],
+      "matrix": [
+        -1.3315805452146108e-07,
+        -0.9999999999999911,
+        -0.0,
+        0.0,
+        0.9999999999999911,
+        -1.3315805452146108e-07,
+        0.0,
+        0.0,
+        -0.0,
+        0.0,
+        1.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ],
+      "name": "Object_7"
+    },
+    {
+      "mesh": 1,
+      "name": "chrome_Porsche356_0"
+    },
+    {
+      "mesh": 2,
+      "name": "chrome_Porsche356_0"
+    },
+    {
+      "children": [
+        11
+      ],
+      "matrix": [
+        1.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        2.220446049250313e-16,
+        -1.0,
+        0.0,
+        0.0,
+        1.0,
+        2.220446049250313e-16,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ],
+      "name": "glass"
+    },
+    {
+      "children": [
+        12,
+        13
+      ],
+      "matrix": [
+        -1.3315805452146108e-07,
+        -0.9999999999999911,
+        -0.0,
+        0.0,
+        0.9999999999999911,
+        -1.3315805452146108e-07,
+        0.0,
+        0.0,
+        -0.0,
+        0.0,
+        1.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ],
+      "name": "Object_11"
+    },
+    {
+      "mesh": 3,
+      "name": "glass_glass_0"
+    },
+    {
+      "mesh": 4,
+      "name": "glass_Porsche356_0"
+    },
+    {
+      "children": [
+        15
+      ],
+      "matrix": [
+        1.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        2.220446049250313e-16,
+        -1.0,
+        0.0,
+        0.0,
+        1.0,
+        2.220446049250313e-16,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ],
+      "name": "rubber"
+    },
+    {
+      "children": [
+        16
+      ],
+      "matrix": [
+        -1.3315805452146108e-07,
+        -0.9999999999999911,
+        -0.0,
+        0.0,
+        0.9999999999999911,
+        -1.3315805452146108e-07,
+        0.0,
+        0.0,
+        -0.0,
+        0.0,
+        1.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ],
+      "name": "Object_15"
+    },
+    {
+      "mesh": 5,
+      "name": "rubber_Porsche356_0"
+    },
+    {
+      "children": [
+        18
+      ],
+      "matrix": [
+        1.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        2.220446049250313e-16,
+        -1.0,
+        0.0,
+        0.0,
+        1.0,
+        2.220446049250313e-16,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ],
+      "name": "interior"
+    },
+    {
+      "children": [
+        19
+      ],
+      "matrix": [
+        -1.3315805452146108e-07,
+        -0.9999999999999911,
+        -0.0,
+        0.0,
+        0.9999999999999911,
+        -1.3315805452146108e-07,
+        0.0,
+        0.0,
+        -0.0,
+        0.0,
+        1.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ],
+      "name": "Object_18"
+    },
+    {
+      "mesh": 6,
+      "name": "interior_Porsche356_0"
+    }
+  ],
+  "samplers": [
+    {
+      "magFilter": 9729,
+      "minFilter": 9987,
+      "wrapS": 10497,
+      "wrapT": 10497
+    }
+  ],
+  "scene": 0,
+  "scenes": [
+    {
+      "name": "Sketchfab_Scene",
+      "nodes": [
+        0
+      ]
+    }
+  ],
+  "textures": [
+    {
+      "sampler": 0,
+      "source": 0
+    },
+    {
+      "sampler": 0,
+      "source": 1
+    },
+    {
+      "sampler": 0,
+      "source": 2
+    },
+    {
+      "sampler": 0,
+      "source": 3
+    },
+    {
+      "sampler": 0,
+      "source": 4
+    }
+  ]
+}

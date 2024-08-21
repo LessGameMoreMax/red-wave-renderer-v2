@@ -1,0 +1,11 @@
+Model Information:
+* title:	Honda NR750 1994
+* source:	https://sketchfab.com/3d-models/honda-nr750-1994-89a79e0a3c334b23830561961f9644c8
+* author:	Comrade1280 (https://sketchfab.com/comrade1280)
+
+Model License:
+* license type:	CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)
+* requirements:	Author must be credited. Commercial use is allowed.
+
+If you use this 3D model in your project be sure to copy paste this credit wherever you share it:
+This work is based on "Honda NR750 1994" (https://sketchfab.com/3d-models/honda-nr750-1994-89a79e0a3c334b23830561961f9644c8) by Comrade1280 (https://sketchfab.com/comrade1280) licensed under CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)

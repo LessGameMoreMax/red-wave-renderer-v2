@@ -2,4 +2,5 @@ CompileFlags:
     Add: [
         -std=c++20,
         -iquote/home/sablin/Projects/red-wave-renderer-v2/Source/Runtime/,
+        -iquote/home/sablin/Projects/red-wave-renderer-v2/Source/Runtime/Renderer/Includes,
     ]

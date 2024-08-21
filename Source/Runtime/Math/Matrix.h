@@ -407,5 +407,7 @@ Vector4f operator*(const Matrix4x4f &matrix, const lenin::Vector4<T> &vector){
 
 Matrix4x4f operator*(const Matrix4x4f &lhs, const Matrix4x4f &rhs);
 
+Matrix4x4f LookAtRightHand(const Vector4f& from, const Vector4f& to, const Vector4f& up);
+
 }
 #endif

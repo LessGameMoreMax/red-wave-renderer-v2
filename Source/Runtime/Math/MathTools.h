@@ -41,5 +41,9 @@ inline void Swap(T& lhs, T& rhs){
     rhs = temp;
 }
 
+inline float ToRadians(const float angle){
+    return angle / 180.0f * kPI;
+}
+
 }
 #endif

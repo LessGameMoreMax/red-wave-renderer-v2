@@ -16,7 +16,7 @@ float Vector2<float>::Normal() const{
 }
 
 template<>
-Vector2<float>& Vector2<float>::Normalized(){
+Vector2<float> Vector2<float>::Normalized(){
     float num = x_ * x_ + y_ * y_;
     float r_num = Rsqrt(num);
     operator*=(r_num);
@@ -47,7 +47,7 @@ float Vector3<float>::Normal() const{
 }
 
 template<>
-Vector3<float>& Vector3<float>::Normalized(){
+Vector3<float> Vector3<float>::Normalized(){
     float num = x_ * x_ + y_ * y_ + z_ * z_;
     float r_num = Rsqrt(num);
     operator*=(r_num);
@@ -79,7 +79,7 @@ float Vector4<float>::Normal() const{
 }
 
 template<>
-Vector4<float>& Vector4<float>::Normalized(){
+Vector4<float> Vector4<float>::Normalized(){
     float num = x_ * x_ + y_ * y_ + z_ * z_ + w_ * w_;
     float r_num = Rsqrt(num);
     operator*=(r_num);

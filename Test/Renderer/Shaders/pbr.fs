@@ -100,7 +100,6 @@ void main()
     float ao = texture(metalRoughAoMap, TexCoords).r;
     float roughness = texture(metalRoughAoMap, TexCoords).g;
     float metallic = texture(metalRoughAoMap, TexCoords).b;
-    ao = 1.0f;
     
     // input lighting data
     vec3 N = texture(normalMap, TexCoords).rgb;

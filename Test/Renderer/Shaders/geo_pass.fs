@@ -40,7 +40,7 @@ void main()
     gPosition = FragPos;
     gAlbedo = texture(albedoMap, TexCoords).rgb;
     gNormal = normalize(mix(Normal, getNormalFromMap(), normalMapAlpha).rgb);
-    gMetalRoughAo.r = mix(0.0, texture(aoMap, TexCoords).r, aoMapAlpha);
+    gMetalRoughAo.r = mix(1.0, texture(aoMap, TexCoords).r, aoMapAlpha);
     gMetalRoughAo.g = texture(roughnessMap, TexCoords).g;
     gMetalRoughAo.b = texture(metallicMap, TexCoords).b;
 }

@@ -595,8 +595,14 @@ public:
             float zMult = 1.0f + 1.0f * a;
             if (maxZ < 0) maxZ /= zMult; else maxZ *= zMult;
         }
-        // float zMult = 0.9f;
-        // if (minZ < 0) minZ *= zMult; else minZ /= zMult;
+
+        float xMult = 1.2f;
+        if (minX < 0) minX *= xMult; else minX /= xMult;
+        if (maxX < 0) maxX /= xMult; else maxX *= xMult;
+
+        float yMult = 1.2f;
+        if (minY < 0) minY *= yMult; else minY /= yMult;
+        if (maxY < 0) maxY /= yMult; else maxY *= yMult;
 
         const glm::mat4 lightProjection = glm::ortho(minX, maxX, minY, maxY, minZ, maxZ);
 

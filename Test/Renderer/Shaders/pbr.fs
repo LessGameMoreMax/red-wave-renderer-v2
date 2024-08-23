@@ -153,19 +153,60 @@ float ShadowCalculation(vec3 fragPosWorldSpace, vec3 normal)
         bias *= 1 / (cascadePlaneDistances[layer] * biasModifier);
     }
 
-    // PCF
-    float shadow = 0.0;
+    // PCSS
     vec2 texelSize = 1.0 / vec2(textureSize(shadowMap, 0));
-    for(int x = -1; x <= 1; ++x)
-    {
-        for(int y = -1; y <= 1; ++y)
-        {
-            float pcfDepth = texture(shadowMap, vec3(projCoords.xy + vec2(x, y) * texelSize, layer)).r;
-            shadow += (currentDepth - bias) > pcfDepth ? 1.0 : 0.0;        
-        }    
+    float blockDepth = 0.0f;
+    int blockCount = 0;
+    for(int x = -1; x <= 1; ++x){
+        for(int y = -1; y <= 1; ++y){
+            float pcssDepth = texture(shadowMap, vec3(projCoords.xy + vec2(x, y) * texelSize, layer)).r;
+            if((currentDepth - bias) > pcssDepth){
+                blockCount += 1;
+                blockDepth += pcssDepth;
+            }
+        }
     }
-    shadow /= 9.0;
-        
+    if(blockCount == 0) return 0.0;
+    blockDepth /= float(blockCount);
+
+    vec3 lightWorldPosition = lightDir * 20.0f;
+    vec3 depthProjCoords = vec3(projCoords.x, projCoords.y, blockDepth);
+    depthProjCoords = depthProjCoords * 2.0f - 1.0f;
+    depthProjCoords.z = -depthProjCoords.z;
+    vec4 depthWorldPosition = inverse(lightSpaceMatrices[layer]) * vec4(depthProjCoords, 1.0f);
+    depthWorldPosition /= depthWorldPosition.w;
+    const float minCount = 2.0f;
+    const float maxCount = 500.0f;
+    float alpha = distance(depthWorldPosition.xyz, fragPosWorldSpace)/distance(lightWorldPosition, fragPosWorldSpace);
+    int count = int(mix(minCount, maxCount, alpha));
+
+    float shadow = 0.0;
+    int ic = -1;
+    if(count == 2){
+        for(int x = -count; x <= count; ++x)
+        {
+            for(int y = -count; y <= count; ++y)
+            {
+                float pcfDepth = texture(shadowMap, vec3(projCoords.xy + vec2(x, y) * texelSize, layer)).r;
+                shadow += (currentDepth - bias) > pcfDepth ? 1.0 : 0.0;        
+            }    
+        }
+        ic = 0;
+    }else{
+        for(int interval = 0; (interval + 1)*2 <= count; interval = int(pow(2.0f, ic))){
+            ic += 1;
+            for(int x = -2 * (interval + 1); x <= 2 * (interval + 1); x += interval + 1)
+            {
+                for(int y = -2 * (interval + 1); y <= 2 * (interval + 1); y += interval + 1)
+                {
+                    float pcfDepth = texture(shadowMap, vec3(projCoords.xy + vec2(x, y) * texelSize, layer)).r;
+                    shadow += (currentDepth - bias) > pcfDepth ? 1.0 : 0.0;        
+                }    
+            }
+        }
+    }
+
+    shadow /= float((ic + 1) * 25);
     return shadow;
 }
 

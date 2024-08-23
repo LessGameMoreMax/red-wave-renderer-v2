@@ -1,0 +1,11 @@
+Model Information:
+* title:	Road Basic Maker
+* source:	https://sketchfab.com/3d-models/road-basic-maker-f79cd94fb9664064bb4414c4ee590875
+* author:	Miguel-Angel (https://sketchfab.com/Miguel-Angel)
+
+Model License:
+* license type:	CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)
+* requirements:	Author must be credited. Commercial use is allowed.
+
+If you use this 3D model in your project be sure to copy paste this credit wherever you share it:
+This work is based on "Road Basic Maker" (https://sketchfab.com/3d-models/road-basic-maker-f79cd94fb9664064bb4414c4ee590875) by Miguel-Angel (https://sketchfab.com/Miguel-Angel) licensed under CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)

@@ -1,4 +1,4 @@
-#version 330 core
+#version 430 core
 out vec4 FragColor;
 
 in vec2 TexCoords;
@@ -14,6 +14,18 @@ uniform samplerCube irradianceMap;
 uniform samplerCube prefilterMap;
 uniform sampler2D brdfLUT;
 
+// Shadow
+uniform mat4 view;
+uniform vec3 lightDir;
+uniform sampler2DArray shadowMap;
+uniform float farPlane;
+uniform int cascadeCount;
+layout (std140, binding = 0) uniform LightSpaceMatrices
+{
+    mat4 lightSpaceMatrices[16];
+};
+uniform float cascadePlaneDistances[16];
+
 // lights
 struct PointLight {
     vec3 Position;
@@ -28,11 +40,11 @@ struct DirLight {
     vec3 Position;
     vec3 Color;
 };
-const int PointLightNum = 4;
-uniform PointLight pointLights[PointLightNum];
+// const int PointLightNum = 4;
+// uniform PointLight pointLights[PointLightNum];
 
-// const int DirLightNum = 1;
-// uniform DirLight dirLights[DirLightNum];
+const int DirLightNum = 1;
+uniform DirLight dirLights[DirLightNum];
 
 uniform vec3 camPos;
 
@@ -91,6 +103,72 @@ vec3 boxCubeMapLookup(vec3 rayOrigin, vec3 rayDir, vec3 boxExtent){
     float t = min(min(tmax.x, tmax.y), tmax.z);
     return normalize(rayOrigin + t * rayDir);
 }
+
+float ShadowCalculation(vec3 fragPosWorldSpace, vec3 normal)
+{
+    // select cascade layer
+    vec4 fragPosViewSpace = view * vec4(fragPosWorldSpace, 1.0);
+    float depthValue = abs(fragPosViewSpace.z);
+
+    int layer = -1;
+    for (int i = 0; i < cascadeCount; ++i)
+    {
+        if (depthValue < cascadePlaneDistances[i])
+        {
+            layer = i;
+            break;
+        }
+    }
+    if (layer == -1)
+    {
+        layer = cascadeCount;
+    }
+
+    vec4 fragPosLightSpace = lightSpaceMatrices[layer] * vec4(fragPosWorldSpace, 1.0);
+    fragPosLightSpace.z = -fragPosLightSpace.z;
+    // perform perspective divide
+    vec3 projCoords = fragPosLightSpace.xyz / fragPosLightSpace.w;
+    // transform to [0,1] range
+    projCoords = projCoords * 0.5 + 0.5;
+
+    // get depth of current fragment from light's perspective
+    float currentDepth = projCoords.z;
+
+    // keep the shadow at 0.0 when outside the far_plane region of the light's frustum.
+    if (currentDepth > 1.0)
+    {
+        return 0.0;
+    }
+
+    // calculate bias (based on depth map resolution and slope)
+    vec3 N = normalize(normal);
+    float bias = max(0.05f * (1.0 - dot(N, lightDir)), 0.005f);
+    const float biasModifier = 2.0f;
+    if (layer == cascadeCount)
+    {
+        bias *= 1 / (farPlane * biasModifier);
+    }
+    else
+    {
+        bias *= 1 / (cascadePlaneDistances[layer] * biasModifier);
+    }
+
+    // PCF
+    float shadow = 0.0;
+    vec2 texelSize = 1.0 / vec2(textureSize(shadowMap, 0));
+    for(int x = -1; x <= 1; ++x)
+    {
+        for(int y = -1; y <= 1; ++y)
+        {
+            float pcfDepth = texture(shadowMap, vec3(projCoords.xy + vec2(x, y) * texelSize, layer)).r;
+            shadow += (currentDepth - bias) > pcfDepth ? 1.0 : 0.0;        
+        }    
+    }
+    shadow /= 9.0;
+        
+    return shadow;
+}
+
 void main()
 {		
     vec3 WorldPos = texture(positionMap, TexCoords).rgb;
@@ -114,66 +192,66 @@ void main()
     // reflectance equation
     vec3 Lo = vec3(0.0);
 
-    for(int i = 0; i < PointLightNum; ++i) 
-    {
-        // calculate per-light radiance
-        vec3 L = normalize(pointLights[i].Position - WorldPos);
-        vec3 H = normalize(V + L);
-        float distance = length(pointLights[i].Position - WorldPos);
-        if(distance < pointLights[i].Radius){
-            float attenuation = 1.0 / (1.0 + pointLights[i].Linear * distance + pointLights[i].Quadratic * distance * distance);
-            vec3 radiance = pointLights[i].Color * attenuation;
-
-            // Cook-Torrance BRDF
-            float NDF = DistributionGGX(N, H, roughness);   
-            float G   = GeometrySmith(N, V, L, roughness);    
-            vec3 F    = fresnelSchlick(max(dot(H, V), 0.0), F0);        
-
-            vec3 numerator    = NDF * G * F;
-            float denominator = 4.0 * max(dot(N, V), 0.0) * max(dot(N, L), 0.0) + 0.0001; // + 0.0001 to prevent divide by zero
-            vec3 specular = numerator / denominator;
-
-             // kS is equal to Fresnel
-            vec3 kS = F;
-            // for energy conservation, the diffuse and specular light can't
-            // be above 1.0 (unless the surface emits light); to preserve this
-            // relationship the diffuse component (kD) should equal 1.0 - kS.
-            vec3 kD = vec3(1.0) - kS;
-            // multiply kD by the inverse metalness such that only non-metals 
-            // have diffuse lighting, or a linear blend if partly metal (pure metals
-            // have no diffuse light).
-            kD *= 1.0 - metallic;	                
-
-            // scale light by NdotL
-            float NdotL = max(dot(N, L), 0.0);        
-
-            // add to outgoing radiance Lo
-            Lo += (kD * albedo / PI + specular) * radiance * NdotL;
-        }
-    }   
-
-    // for(int i = 0; i < DirLightNum; ++i) 
+    // for(int i = 0; i < PointLightNum; ++i) 
     // {
     //     // calculate per-light radiance
-    //     vec3 L = normalize(dirLights[i].Position - WorldPos);
+    //     vec3 L = normalize(pointLights[i].Position - WorldPos);
     //     vec3 H = normalize(V + L);
-    //     float distance = length(dirLights[i].Position - WorldPos);
-    //     float attenuation = 1.0 / (distance * distance);
-    //     vec3 radiance = dirLights[i].Color * attenuation;
+    //     float distance = length(pointLights[i].Position - WorldPos);
+    //     if(distance < pointLights[i].Radius){
+    //         float attenuation = 1.0 / (1.0 + pointLights[i].Linear * distance + pointLights[i].Quadratic * distance * distance);
+    //         vec3 radiance = pointLights[i].Color * attenuation;
     //
-    //     // Cook-Torrance BRDF
-    //     float NDF = DistributionGGX(N, H, roughness);   
-    //     float G   = GeometrySmith(N, V, L, roughness);    
-    //     vec3 F    = fresnelSchlick(max(dot(H, V), 0.0), F0);        
-    //     vec3 numerator    = NDF * G * F;
-    //     float denominator = 4.0 * max(dot(N, V), 0.0) * max(dot(N, L), 0.0) + 0.0001; // + 0.0001 to prevent divide by zero
-    //     vec3 specular = numerator / denominator;
-    //     vec3 kS = F;
-    //     vec3 kD = vec3(1.0) - kS;
-    //     kD *= 1.0 - metallic;	                
-    //     float NdotL = max(dot(N, L), 0.0);        
-    //     Lo += (kD * albedo / PI + specular) * radiance * NdotL;
+    //         // Cook-Torrance BRDF
+    //         float NDF = DistributionGGX(N, H, roughness);   
+    //         float G   = GeometrySmith(N, V, L, roughness);    
+    //         vec3 F    = fresnelSchlick(max(dot(H, V), 0.0), F0);        
+    //
+    //         vec3 numerator    = NDF * G * F;
+    //         float denominator = 4.0 * max(dot(N, V), 0.0) * max(dot(N, L), 0.0) + 0.0001; // + 0.0001 to prevent divide by zero
+    //         vec3 specular = numerator / denominator;
+    //
+    //          // kS is equal to Fresnel
+    //         vec3 kS = F;
+    //         // for energy conservation, the diffuse and specular light can't
+    //         // be above 1.0 (unless the surface emits light); to preserve this
+    //         // relationship the diffuse component (kD) should equal 1.0 - kS.
+    //         vec3 kD = vec3(1.0) - kS;
+    //         // multiply kD by the inverse metalness such that only non-metals 
+    //         // have diffuse lighting, or a linear blend if partly metal (pure metals
+    //         // have no diffuse light).
+    //         kD *= 1.0 - metallic;	                
+    //
+    //         // scale light by NdotL
+    //         float NdotL = max(dot(N, L), 0.0);        
+    //
+    //         // add to outgoing radiance Lo
+    //         Lo += (kD * albedo / PI + specular) * radiance * NdotL;
+    //     }
     // }   
+
+    for(int i = 0; i < DirLightNum; ++i) 
+    {
+        // calculate per-light radiance
+        vec3 L = normalize(dirLights[i].Position - WorldPos);
+        vec3 H = normalize(V + L);
+        float distance = length(dirLights[i].Position - WorldPos);
+        float attenuation = 1.0 / (distance * distance);
+        vec3 radiance = dirLights[i].Color * attenuation;
+
+        // Cook-Torrance BRDF
+        float NDF = DistributionGGX(N, H, roughness);   
+        float G   = GeometrySmith(N, V, L, roughness);    
+        vec3 F    = fresnelSchlick(max(dot(H, V), 0.0), F0);        
+        vec3 numerator    = NDF * G * F;
+        float denominator = 4.0 * max(dot(N, V), 0.0) * max(dot(N, L), 0.0) + 0.0001; // + 0.0001 to prevent divide by zero
+        vec3 specular = numerator / denominator;
+        vec3 kS = F;
+        vec3 kD = vec3(1.0) - kS;
+        kD *= 1.0 - metallic;	                
+        float NdotL = max(dot(N, L), 0.0);        
+        Lo += (kD * albedo / PI + specular) * radiance * NdotL;
+    }   
     
     // ambient lighting (we now use IBL as the ambient term)
     vec3 F = fresnelSchlickRoughness(max(dot(N, V), 0.0), F0, roughness);
@@ -195,7 +273,8 @@ void main()
 
     vec3 ambient = (kD * diffuse + specular) * ao;
     
-    vec3 color = ambient + Lo;
+    float shadow = 1.0f - ShadowCalculation(WorldPos, N);
+    vec3 color = Lo * shadow + ambient * min(shadow + 0.005f, 1.0f);
 
     // HDR tonemapping
     color = color / (color + vec3(1.0));

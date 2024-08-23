@@ -43,6 +43,9 @@ unsigned int TextureFromFile(string filename, const string &directory, bool gamm
 unsigned int TextureHDRFromFile(string filename, const string &directory, bool gamma)
 {
 
+    // 加载图片反转y轴
+    stbi_set_flip_vertically_on_load(true);
+
     int width, height, nrComponents;
     string path = directory + filename;
     float *data = stbi_loadf(path.c_str(), &width, &height, &nrComponents, 0);
@@ -64,6 +67,7 @@ unsigned int TextureHDRFromFile(string filename, const string &directory, bool g
     {
         std::cout << "Failed to load HDR image." << std::endl;
     }
+    stbi_set_flip_vertically_on_load(false);
     return hdrTexture;
 }
 

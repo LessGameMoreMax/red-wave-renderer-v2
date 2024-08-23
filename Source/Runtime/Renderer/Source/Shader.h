@@ -10,6 +10,7 @@
 #include <iostream>
 
 #include "Mesh.h"
+#include "Camera.h"
 
 namespace sablin{
 
@@ -57,7 +58,7 @@ protected:
 public:
     unsigned int ID;
 public:
-    Shader(const std::string vertexPath, const std::string fragmentPath, const char* geometryPath = nullptr)
+    Shader(const std::string vertexPath, const std::string fragmentPath, const std::string geometryPath = "")
     {
         // 1. 将Shader File读入string
         std::string vertexCode;
@@ -80,7 +81,7 @@ public:
             fShaderFile.close();
             vertexCode = vShaderStream.str();
             fragmentCode = fShaderStream.str();			
-            if(geometryPath != nullptr)
+            if(!geometryPath.empty())
             {
                 gShaderFile.open(geometryPath);
                 std::stringstream gShaderStream;
@@ -114,7 +115,7 @@ public:
 
         //4. 编译GS
         unsigned int geometry;
-        if(geometryPath != nullptr)
+        if(!geometryPath.empty())
         {
             const char * gShaderCode = geometryCode.c_str();
             geometry = glCreateShader(GL_GEOMETRY_SHADER);
@@ -127,7 +128,7 @@ public:
         ID = glCreateProgram();
         glAttachShader(ID, vertex);
         glAttachShader(ID, fragment);
-        if(geometryPath != nullptr)
+        if(!geometryPath.empty())
             glAttachShader(ID, geometry);
 
         // 6. 链接Shader程序(将VS,PS确定下来并检查有效性)
@@ -137,7 +138,7 @@ public:
         // 7. 清除VS、FS与GS，其在链接后即可清除
         glDeleteShader(vertex);
         glDeleteShader(fragment);
-        if(geometryPath != nullptr)
+        if(!geometryPath.empty())
             glDeleteShader(geometry);
 
     }
@@ -435,6 +436,215 @@ public:
     }
 };
 
+class ShadowShader: public Shader{
+public:
+    static const unsigned int DepthMapResolution = 4096;
+    std::vector<float> shadowCascadeLevels;
+    glm::vec3 lightDir;
+    Camera& camera;
+    int framebuffer_width;
+    int framebuffer_height;
+    unsigned int shadowFBO;
+    unsigned int shadowDepthMap;
+    unsigned int matricesUBO;
+
+    ShadowShader(const string& dir, Camera& cam, glm::vec3 lightDirection, int width, int height):
+        Shader(dir + "Shaders/shadow_depth.vs", dir + "Shaders/shadow_depth.fs", dir + "Shaders/shadow_depth.gs"),
+        shadowCascadeLevels{cam.far_plane_ / 50.0f, cam.far_plane_ / 25.0f, cam.far_plane_ / 10.0f, cam.far_plane_ / 2.0f},
+        lightDir(glm::normalize(lightDirection)),
+        camera(cam),
+        framebuffer_width(width),
+        framebuffer_height(height)
+    {
+        glGenFramebuffers(1, &shadowFBO);
+
+        glGenTextures(1, &shadowDepthMap);
+        glBindTexture(GL_TEXTURE_2D_ARRAY, shadowDepthMap);
+        glTexImage3D(
+            GL_TEXTURE_2D_ARRAY, 0, GL_DEPTH_COMPONENT32F, DepthMapResolution, DepthMapResolution, int(shadowCascadeLevels.size()) + 1,
+            0, GL_DEPTH_COMPONENT, GL_FLOAT, nullptr);
+
+        glTexParameteri(GL_TEXTURE_2D_ARRAY, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+        glTexParameteri(GL_TEXTURE_2D_ARRAY, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+        glTexParameteri(GL_TEXTURE_2D_ARRAY, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_BORDER);
+        glTexParameteri(GL_TEXTURE_2D_ARRAY, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_BORDER);
+
+        constexpr float bordercolor[] = { 1.0f, 1.0f, 1.0f, 1.0f };
+        glTexParameterfv(GL_TEXTURE_2D_ARRAY, GL_TEXTURE_BORDER_COLOR, bordercolor);
+
+        glBindFramebuffer(GL_FRAMEBUFFER, shadowFBO);
+        glFramebufferTexture(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, shadowDepthMap, 0);
+        glDrawBuffer(GL_NONE);
+        glReadBuffer(GL_NONE);
+
+        int status = glCheckFramebufferStatus(GL_FRAMEBUFFER);
+        if (status != GL_FRAMEBUFFER_COMPLETE)
+        {
+            std::cout << "ERROR::FRAMEBUFFER:: Framebuffer is not complete!";
+            throw 0;
+        }
+
+        glBindFramebuffer(GL_FRAMEBUFFER, 0);
+
+        // 创建UBO容纳16个矩阵
+        glGenBuffers(1, &matricesUBO);
+        glBindBuffer(GL_UNIFORM_BUFFER, matricesUBO);
+        glBufferData(GL_UNIFORM_BUFFER, sizeof(glm::mat4x4) * 16, nullptr, GL_STATIC_DRAW);
+        glBindBufferBase(GL_UNIFORM_BUFFER, 0, matricesUBO);
+        glBindBuffer(GL_UNIFORM_BUFFER, 0);
+    }
+
+    void BeforeDraw(){
+        use();
+        // 以矩阵填充UBO
+        const auto lightMatrices = GetLightSpaceMatrices();
+        glBindBuffer(GL_UNIFORM_BUFFER, matricesUBO);
+        for (size_t i = 0; i < lightMatrices.size(); ++i)
+        {
+            glBufferSubData(GL_UNIFORM_BUFFER, i * sizeof(glm::mat4x4), sizeof(glm::mat4x4), &lightMatrices[i]);
+        }
+
+        glBindBuffer(GL_UNIFORM_BUFFER, 0);
+
+        glBindFramebuffer(GL_FRAMEBUFFER, shadowFBO);
+        glViewport(0, 0, DepthMapResolution, DepthMapResolution);
+        glClear(GL_DEPTH_BUFFER_BIT);
+        glCullFace(GL_FRONT);  // peter panning
+    }
+
+    virtual void Draw(Mesh& mesh) override{
+        use();
+        // 绘制Mesh
+        glBindVertexArray(mesh.VAO);
+        glDrawElements(GL_TRIANGLES, static_cast<unsigned int>(mesh.indices_.size()), GL_UNSIGNED_INT, 0);
+        glBindVertexArray(0);
+    }
+
+    void AfterDraw(){
+        glCullFace(GL_BACK);
+        glBindFramebuffer(GL_FRAMEBUFFER, 0);
+
+        glViewport(0, 0, framebuffer_width, framebuffer_height);
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    }
+
+    std::vector<glm::mat4> GetLightSpaceMatrices()
+    {
+        std::vector<glm::mat4> ret;
+        for (size_t i = 0; i < shadowCascadeLevels.size() + 1; ++i)
+        {
+            if (i == 0)
+            {
+                ret.push_back(GetLightSpaceMatrix(camera.near_plane_, shadowCascadeLevels[i]));
+            }
+            else if (i < shadowCascadeLevels.size())
+            {
+                ret.push_back(GetLightSpaceMatrix(shadowCascadeLevels[i - 1], shadowCascadeLevels[i]));
+            }
+            else
+            {
+                ret.push_back(GetLightSpaceMatrix(shadowCascadeLevels[i - 1], camera.far_plane_));
+            }
+        }
+        return ret;
+    }
+
+
+    glm::mat4 GetLightSpaceMatrix(const float nearPlane, const float farPlane)
+    {
+        const auto proj = glm::perspective(
+            glm::radians(camera.zoom_), (float)framebuffer_width/(float)framebuffer_height, nearPlane,
+            farPlane);
+        const auto corners = GetFrustumCornersWorldSpace(proj, camera.GetViewMatrix());
+
+        glm::vec3 center = glm::vec3(0, 0, 0);
+        for (const auto& v : corners)
+        {
+            center += glm::vec3(v);
+        }
+        center /= corners.size();
+
+        const auto lightView = glm::lookAt(center + lightDir, center, glm::vec3(0.0f, 1.0f, 0.0f));
+        
+        float minX = std::numeric_limits<float>::max();
+        float maxX = std::numeric_limits<float>::lowest();
+        float minY = std::numeric_limits<float>::max();
+        float maxY = std::numeric_limits<float>::lowest();
+        float minZ = std::numeric_limits<float>::max();
+        float maxZ = std::numeric_limits<float>::lowest();
+        for (const auto& v : corners)
+        {
+            const auto trf = lightView * v;
+            minX = std::min(minX, trf.x);
+            maxX = std::max(maxX, trf.x);
+            minY = std::min(minY, trf.y);
+            maxY = std::max(maxY, trf.y);
+            minZ = std::min(minZ, trf.z);
+            maxZ = std::max(maxZ, trf.z);
+        }
+
+
+        minZ = -minZ;
+        maxZ = -maxZ;
+        float a = glm::dot(camera.front_, lightDir);
+        float d = glm::degrees(acosf(a));
+        if(d > 90.0f){
+            float zMult = 1.0f + 0.8f * a;
+            if (maxZ < 0) maxZ /= zMult; else maxZ *= zMult;
+        }else{
+            float zMult = 1.0f + 1.0f * a;
+            if (maxZ < 0) maxZ /= zMult; else maxZ *= zMult;
+        }
+        // float zMult = 0.9f;
+        // if (minZ < 0) minZ *= zMult; else minZ /= zMult;
+
+        const glm::mat4 lightProjection = glm::ortho(minX, maxX, minY, maxY, minZ, maxZ);
+
+        return lightProjection * lightView;
+    }
+
+    std::vector<glm::vec4> GetFrustumCornersWorldSpace(const glm::mat4& proj, const glm::mat4& view)
+    {
+        const auto proinv = glm::inverse(proj);
+        const auto viewinv = glm::inverse(view);
+
+        std::vector<glm::vec4> frustumCorners;
+        for (unsigned int x = 0; x < 2; ++x)
+        {
+            for (unsigned int y = 0; y < 2; ++y)
+            {
+                for (unsigned int z = 0; z < 2; ++z)
+                {
+                    glm::vec4 pt = viewinv * proinv * glm::vec4(2.0f * x - 1.0f, 2.0f * y - 1.0f, 2.0f * z - 1.0f, 1.0f);
+                    frustumCorners.push_back(pt / pt.w);
+                }
+            }
+        }
+
+        return frustumCorners;
+    }
+
+    std::vector<glm::vec4> GetFrustumCornersWorldSpace(const glm::mat4& projview)
+    {
+        const auto inv = glm::inverse(projview);
+
+        std::vector<glm::vec4> frustumCorners;
+        for (unsigned int x = 0; x < 2; ++x)
+        {
+            for (unsigned int y = 0; y < 2; ++y)
+            {
+                for (unsigned int z = 0; z < 2; ++z)
+                {
+                    const glm::vec4 pt = inv * glm::vec4(2.0f * x - 1.0f, 2.0f * y - 1.0f, 2.0f * z - 1.0f, 1.0f);
+                    frustumCorners.push_back(pt / pt.w);
+                }
+            }
+        }
+
+        return frustumCorners;
+    }
+};
+
 class PBRShader{
 private:
     Shader pbrShader;
@@ -449,6 +659,7 @@ public:
         pbrShader.setInt("albedoMap", 4);
         pbrShader.setInt("normalMap", 5);
         pbrShader.setInt("metalRoughAoMap", 6);
+        pbrShader.setInt("shadowMap", 7);
     }
 
     void SetIBLMaps(IBL& ibl){
@@ -499,6 +710,20 @@ public:
             pbrShader.setVec3("dirLights[" + std::to_string(i) + "].Position", lights[i].position_);
             pbrShader.setVec3("dirLights[" + std::to_string(i) + "].Color", lights[i].color_);
         }
+    }
+
+    void SetShadowInfo(ShadowShader& shadowShader){
+        pbrShader.use();
+        pbrShader.setVec3("lightDir", shadowShader.lightDir);
+        pbrShader.setMat4("view", shadowShader.camera.GetViewMatrix());
+        pbrShader.setFloat("farPlane", shadowShader.camera.far_plane_);
+        pbrShader.setInt("cascadeCount", shadowShader.shadowCascadeLevels.size());
+        for (size_t i = 0; i < shadowShader.shadowCascadeLevels.size(); ++i)
+        {
+            pbrShader.setFloat("cascadePlaneDistances[" + std::to_string(i) + "]", shadowShader.shadowCascadeLevels[i]);
+        }
+        glActiveTexture(GL_TEXTURE7);
+        glBindTexture(GL_TEXTURE_2D_ARRAY, shadowShader.shadowDepthMap);
     }
 
     void DeferredRender(const glm::vec3& campos){

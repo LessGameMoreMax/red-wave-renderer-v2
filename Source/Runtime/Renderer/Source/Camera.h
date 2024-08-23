@@ -14,6 +14,8 @@ inline static const float kPitch = 0.0f;
 inline static const float kSpeed = 1.5f;
 inline static const float kSensitivity = 0.1f;
 inline static const float kZoom =  45.0f;
+inline static const float kNear = 0.1f;
+inline static const float kFar = 400.0f;
 
 
 class Camera
@@ -44,6 +46,8 @@ public:
     glm::vec3 up_;
     glm::vec3 right_;
     glm::vec3 world_up_;
+    float near_plane_;
+    float far_plane_;
 
     float yaw_;
     float pitch_;
@@ -55,10 +59,14 @@ public:
     Camera(glm::vec3 position = glm::vec3(0.0f, 0.0f, 0.0f), 
            glm::vec3 up = glm::vec3(0.0f, 1.0f, 0.0f), 
            float yaw = kYaw, 
-           float pitch = kPitch) : 
+           float pitch = kPitch,
+           float near_plane = kNear,
+           float far_plane = kFar) : 
         position_(position),
         front_(0.0f, 0.0f, -1.0f), 
         world_up_(up),
+        near_plane_(near_plane),
+        far_plane_(far_plane),
         yaw_(yaw),
         pitch_(pitch),
         move_speed_(kSpeed), 
@@ -69,10 +77,13 @@ public:
     }
 
     Camera(float pos_x, float pos_y, float pos_z, float up_x, 
-           float up_y, float up_z, float yaw, float pitch) :
+           float up_y, float up_z, float yaw, float pitch,
+           float near = kNear, float far = kFar) :
         position_(pos_x, pos_y, pos_z),
         front_(0.0f, 0.0f, -1.0f),
         world_up_(up_x, up_y, up_z),
+        near_plane_(near),
+        far_plane_(far),
         yaw_(yaw),
         pitch_(pitch),
         move_speed_(kSpeed), 

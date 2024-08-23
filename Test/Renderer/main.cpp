@@ -20,7 +20,7 @@ const int SCR_HEIGHT = 1080;
 const string dir = "/home/sablin/Projects/red-wave-renderer-v2/Test/Renderer/";
 
 // camera
-Camera camera(glm::vec3(0.0f, 0.0f, 3.0f));
+Camera camera(glm::vec3(-5.0f, 3.0f, -3.0f));
 float lastX = SCR_WIDTH / 2.0;
 float lastY = SCR_HEIGHT / 2.0;
 bool firstMouse = true;
@@ -69,36 +69,38 @@ int main()
     // enable seamless cubemap sampling for lower mip levels in the pre-filter map.
     glEnable(GL_TEXTURE_CUBE_MAP_SEAMLESS);
 
-    // 加载图片反转y轴
-    // stbi_set_flip_vertically_on_load(true);
-
     // 创建IBL
-    IBL ibl(dir, "Textures/hdr/newport_loft.hdr");
+    IBL ibl(dir, "Textures/hdr/night.hdr");
 
     // 创建G-buffer
     Gbuffer gBuffer(SCR_WIDTH, SCR_HEIGHT);
 
     // 创建Geo Shader
     Shader geoPassShader(dir + "Shaders/geo_pass.vs", dir + "Shaders/geo_pass.fs");
+
     
     // 加载模型
     Model car(dir + "Models/car/scene.gltf");
+    Model road(dir + "Models/street/scene.gltf");
 
     // 创建dirlights
-    // vector<dirlight> dirlights{
+    vector<DirLight> dirLights{
         // {glm::vec3(-10.0f,  10.0f, 10.0f), glm::vec3(300.0f, 300.0f, 300.0f)},
-        // {glm::vec3( 10.0f,  10.0f, 10.0f), glm::vec3(300.0f, 300.0f, 300.0f)},
-        // {glm::vec3(-10.0f, -10.0f, 10.0f), glm::vec3(300.0f, 300.0f, 300.0f)},
-        // {glm::vec3( 10.0f, -10.0f, 10.0f), glm::vec3(300.0f, 300.0f, 300.0f)}
-    // };
+        {glm::vec3( 10.0f,  10.0f, 10.0f), glm::vec3(100.0f, 100.0f, 100.0f)},
+        // {glm::vec3(-10.0f,  10.0f,-10.0f), glm::vec3(300.0f, 300.0f, 300.0f)},
+        // {glm::vec3( 10.0f,  10.0f,-10.0f), glm::vec3(300.0f, 300.0f, 300.0f)}
+    };
 
     // 创建pointlights
-    vector<PointLight> pointlights{
-        {glm::vec3(-10.0f,  10.0f, 10.0f), glm::vec3(300.0f, 300.0f, 300.0f), 0.7f, 1.8f},
-        {glm::vec3( 10.0f,  10.0f, 10.0f), glm::vec3(300.0f, 300.0f, 300.0f), 0.7f, 1.8f},
-        {glm::vec3(-10.0f,  10.0f,-10.0f), glm::vec3(300.0f, 300.0f, 300.0f), 0.7f, 1.8f},
-        {glm::vec3( 10.0f,  10.0f,-10.0f), glm::vec3(300.0f, 300.0f, 300.0f), 0.7f, 1.8f}
-    };
+    // vector<PointLight> pointlights{
+    //     {glm::vec3(-10.0f,  10.0f, 10.0f), glm::vec3(300.0f, 300.0f, 300.0f), 0.7f, 1.8f},
+    //     {glm::vec3( 10.0f,  10.0f, 10.0f), glm::vec3(300.0f, 300.0f, 300.0f), 0.7f, 1.8f},
+    //     {glm::vec3(-10.0f,  10.0f,-10.0f), glm::vec3(300.0f, 300.0f, 300.0f), 0.7f, 1.8f},
+    //     {glm::vec3( 10.0f,  10.0f,-10.0f), glm::vec3(300.0f, 300.0f, 300.0f), 0.7f, 1.8f}
+    // };
+    
+    // 创建shadow shader
+    ShadowShader shadowShader(dir, camera, dirLights[0].position_, SCR_WIDTH, SCR_HEIGHT);
 
     // 创建PBRShader
     PBRShader pbrShader(dir);
@@ -120,42 +122,64 @@ int main()
         // render
         glViewport(0, 0, SCR_WIDTH, SCR_HEIGHT);
 
-        //1. Geometry Pass: 将场景渲染至G-buffer
+        glm::mat4 view = camera.GetViewMatrix();
+        glm::mat4 projection = glm::perspective(glm::radians(camera.zoom_), (float)SCR_WIDTH / (float)SCR_HEIGHT, camera.near_plane_, camera.far_plane_);
+
+        // car model
+        glm::mat4 car_model = glm::mat4(1.0f);
+        car_model = glm::translate(car_model, glm::vec3(0.0f, 0.0f, 0.0f));
+        car_model = glm::scale(car_model, glm::vec3(1.0f, 1.0f, 1.0f));
+        car_model = glm::rotate(car_model, glm::radians(-90.0f), glm::vec3(1.0f, 0.0f, 0.0f));
+        car_model = glm::rotate(car_model, glm::radians(-90.0f), glm::vec3(0.0f, 0.0f, 1.0f));
+
+        // road model
+        glm::mat4 road_model = glm::mat4(1.0f);
+        road_model = glm::translate(road_model, glm::vec3(-0.1f, 1.1f, -3.0f));
+        road_model = glm::scale(road_model, glm::vec3(1.0f, 1.0f, 1.0f));
+        road_model = glm::rotate(road_model, glm::radians(-90.0f), glm::vec3(1.0f, 0.0f, 0.0f));
+
+        // 1. Shadow Pass: 以光源视角渲染深度
+        shadowShader.BeforeDraw();
+
+        shadowShader.setMat4("model", car_model);
+        car.Draw(shadowShader);
+
+        shadowShader.setMat4("model", road_model);
+        road.Draw(shadowShader);
+
+        shadowShader.AfterDraw();
+
+        // 2. Geometry Pass: 将场景渲染至G-buffer
         glBindFramebuffer(GL_FRAMEBUFFER, gBuffer.gBuffer);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-        glm::mat4 view = camera.GetViewMatrix();
         geoPassShader.use();
-        glm::mat4 projection = glm::perspective(glm::radians(camera.zoom_), (float)SCR_WIDTH / (float)SCR_HEIGHT, 0.1f, 100.0f);
         geoPassShader.setMat4("projection", projection);
         geoPassShader.setMat4("view", view);
 
-        glm::mat4 model = glm::mat4(1.0f);
-        model = glm::translate(model, glm::vec3(0.0f, 0.0f, 0.0f));
-        model = glm::scale(model, glm::vec3(1.0f, 1.0f, 1.0f));
-        // model = glm::scale(model, glm::vec3(0.1f, 0.1f, 0.1f));
-        // model = glm::scale(model, glm::vec3(0.001f, 0.001f, 0.001f));
-        model = glm::rotate(model, glm::radians(-90.0f), glm::vec3(1.0f, 0.0f, 0.0f));
-        geoPassShader.setMat4("model", model);
+        geoPassShader.setMat4("model", car_model);
         car.Draw(geoPassShader);
+
+        geoPassShader.setMat4("model", road_model);
+        road.Draw(geoPassShader);
 
         glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
-        // 2. Light Pass: PBR光照模型
+        // 3. Light Pass: PBR光照模型
         glClearColor(0.0f, 0.0f, 1.0f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         pbrShader.SetIBLMaps(ibl);
-        // pbrShader.SetDirLights(dirLights);
-        pbrShader.SetPointLights(pointlights);
+        pbrShader.SetDirLights(dirLights);
         pbrShader.SetGbufferMaps(gBuffer);
+        pbrShader.SetShadowInfo(shadowShader);
         pbrShader.DeferredRender(camera.position_);
 
-        // 3. 将深度缓冲从Gbuffer中拷贝至默认framebuffer
+        // 4. 将深度缓冲从Gbuffer中拷贝至默认framebuffer
         glBindFramebuffer(GL_READ_FRAMEBUFFER, gBuffer.gBuffer);
         glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);
         glBlitFramebuffer(0, 0, SCR_WIDTH, SCR_HEIGHT, 0, 0, SCR_WIDTH, SCR_HEIGHT, GL_DEPTH_BUFFER_BIT, GL_NEAREST);
         glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
-        // 4. 绘制background
+        // 5. 绘制background
         ibl.SetupBackground(projection);
         ibl.RenderBackground(view);
 

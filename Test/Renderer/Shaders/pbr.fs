@@ -26,6 +26,9 @@ layout (std140, binding = 0) uniform LightSpaceMatrices
 };
 uniform float cascadePlaneDistances[16];
 
+// SSAO
+uniform sampler2D ssao;
+
 // lights
 struct PointLight {
     vec3 Position;
@@ -216,7 +219,7 @@ void main()
     // material properties
     vec3 albedo = pow(texture(albedoMap, TexCoords).rgb, vec3(2.2));
 
-    float ao = texture(metalRoughAoMap, TexCoords).r;
+    float ao = texture(ssao, TexCoords).r;
     float roughness = texture(metalRoughAoMap, TexCoords).g;
     float metallic = texture(metalRoughAoMap, TexCoords).b;
     

@@ -77,7 +77,6 @@ int main()
 
     // 创建Geo Shader
     Shader geoPassShader(dir + "Shaders/geo_pass.vs", dir + "Shaders/geo_pass.fs");
-
     
     // 加载模型
     Model car(dir + "Models/car/scene.gltf");
@@ -104,6 +103,9 @@ int main()
 
     // 创建PBRShader
     PBRShader pbrShader(dir);
+
+    // 创建SSAO Shader
+    SSAOShader ssaoShader(dir, SCR_WIDTH, SCR_HEIGHT);
 
     // render loop
     // -----------
@@ -164,22 +166,26 @@ int main()
 
         glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
-        // 3. Light Pass: PBR光照模型
+        // 3. SSAO Pass: 生成SSAO Texture
+        ssaoShader.DrawSSAO(projection, view, gBuffer);
+
+        // 4. Light Pass: PBR光照模型
         glClearColor(0.0f, 0.0f, 1.0f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         pbrShader.SetIBLMaps(ibl);
         pbrShader.SetDirLights(dirLights);
         pbrShader.SetGbufferMaps(gBuffer);
         pbrShader.SetShadowInfo(shadowShader);
+        pbrShader.SetSSAOInfo(ssaoShader);
         pbrShader.DeferredRender(camera.position_);
 
-        // 4. 将深度缓冲从Gbuffer中拷贝至默认framebuffer
+        // 5. 将深度缓冲从Gbuffer中拷贝至默认framebuffer
         glBindFramebuffer(GL_READ_FRAMEBUFFER, gBuffer.gBuffer);
         glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);
         glBlitFramebuffer(0, 0, SCR_WIDTH, SCR_HEIGHT, 0, 0, SCR_WIDTH, SCR_HEIGHT, GL_DEPTH_BUFFER_BIT, GL_NEAREST);
         glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
-        // 5. 绘制background
+        // 6. 绘制background
         ibl.SetupBackground(projection);
         ibl.RenderBackground(view);
 

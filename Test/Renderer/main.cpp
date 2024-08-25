@@ -197,6 +197,7 @@ int main()
         // 7. 后处理
         glBindFramebuffer(GL_FRAMEBUFFER, 0);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+        postProcessShader.SetSSRInfo(camera.position_, view, projection);
         postProcessShader.Draw(pbrShader, gBuffer);
 
         // glfw: swap buffers and poll IO events (keys pressed/released, mouse moved etc.)

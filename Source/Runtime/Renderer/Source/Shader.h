@@ -890,14 +890,31 @@ public:
 
 class PostProcessShader{
 public:
+    vector<float> traceDistance;
+    float maxDistance;
     Shader postProcessShader;
     PostProcessShader(string dir):
+        traceDistance{0.2f, 1.0f, 3.0f, 6.0f},
+        maxDistance(40.0f),
         postProcessShader(dir + "Shaders/postprocess.vs", dir + "Shaders/postprocess.fs"){
         postProcessShader.use();
         postProcessShader.setInt("colorMap", 0);
         postProcessShader.setInt("normalMap", 1);
         postProcessShader.setInt("positionMap", 2);
         postProcessShader.setInt("depthMap", 3);
+    }
+
+    void SetSSRInfo(glm::vec3 camPos, glm::mat4 view, glm::mat4 projection){
+        postProcessShader.use();
+        postProcessShader.setVec3("camPos", camPos);
+        postProcessShader.setInt("traceCount", traceDistance.size());
+        for (size_t i = 0; i < traceDistance.size(); ++i)
+        {
+            postProcessShader.setFloat("traceDistance[" + std::to_string(i) + "]", traceDistance[i]);
+        }
+        postProcessShader.setFloat("maxDistance", maxDistance);
+        postProcessShader.setMat4("view", view);
+        postProcessShader.setMat4("projection", projection);
     }
 
     void Draw(PBRShader& pbrShader, Gbuffer& gBuffer){

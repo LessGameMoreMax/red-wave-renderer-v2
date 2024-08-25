@@ -85,7 +85,7 @@ int main()
     // 创建dirlights
     vector<DirLight> dirLights{
         // {glm::vec3(-10.0f,  10.0f, 10.0f), glm::vec3(300.0f, 300.0f, 300.0f)},
-        {glm::vec3( 10.0f,  10.0f, 10.0f), glm::vec3(100.0f, 100.0f, 100.0f)},
+        {glm::vec3( 10.0f,  10.0f, 10.0f), glm::vec3(80.0f, 80.0f, 80.0f)},
         // {glm::vec3(-10.0f,  10.0f,-10.0f), glm::vec3(300.0f, 300.0f, 300.0f)},
         // {glm::vec3( 10.0f,  10.0f,-10.0f), glm::vec3(300.0f, 300.0f, 300.0f)}
     };
@@ -102,10 +102,13 @@ int main()
     ShadowShader shadowShader(dir, camera, dirLights[0].position_, SCR_WIDTH, SCR_HEIGHT);
 
     // 创建PBRShader
-    PBRShader pbrShader(dir);
+    PBRShader pbrShader(dir, SCR_WIDTH, SCR_HEIGHT);
 
     // 创建SSAO Shader
     SSAOShader ssaoShader(dir, SCR_WIDTH, SCR_HEIGHT);
+
+    // 创建Post Process Shader
+    PostProcessShader postProcessShader(dir);
 
     // render loop
     // -----------
@@ -170,7 +173,7 @@ int main()
         ssaoShader.DrawSSAO(projection, view, gBuffer);
 
         // 4. Light Pass: PBR光照模型
-        glClearColor(0.0f, 0.0f, 1.0f, 1.0f);
+        glBindFramebuffer(GL_FRAMEBUFFER, pbrShader.pbrBuffer);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         pbrShader.SetIBLMaps(ibl);
         pbrShader.SetDirLights(dirLights);
@@ -179,15 +182,22 @@ int main()
         pbrShader.SetSSAOInfo(ssaoShader);
         pbrShader.DeferredRender(camera.position_);
 
-        // 5. 将深度缓冲从Gbuffer中拷贝至默认framebuffer
+        // 5. 将深度缓冲从Gbuffer中拷贝至pbr framebuffer
         glBindFramebuffer(GL_READ_FRAMEBUFFER, gBuffer.gBuffer);
-        glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);
+        glBindFramebuffer(GL_DRAW_FRAMEBUFFER, pbrShader.pbrBuffer);
         glBlitFramebuffer(0, 0, SCR_WIDTH, SCR_HEIGHT, 0, 0, SCR_WIDTH, SCR_HEIGHT, GL_DEPTH_BUFFER_BIT, GL_NEAREST);
-        glBindFramebuffer(GL_FRAMEBUFFER, 0);
+        glBindFramebuffer(GL_FRAMEBUFFER, pbrShader.pbrBuffer);
+
+        // Other: 必须更新Gbuffer中的几何信息
 
         // 6. 绘制background
         ibl.SetupBackground(projection);
         ibl.RenderBackground(view);
+
+        // 7. 后处理
+        glBindFramebuffer(GL_FRAMEBUFFER, 0);
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+        postProcessShader.Draw(pbrShader, gBuffer);
 
         // glfw: swap buffers and poll IO events (keys pressed/released, mouse moved etc.)
         glfwSwapBuffers(window);

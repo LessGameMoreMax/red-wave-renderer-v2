@@ -763,8 +763,41 @@ class PBRShader{
 private:
     Shader pbrShader;
 public:
-    PBRShader(const string& dir):
+    unsigned int pbrColor;
+    unsigned int pbrDepth;
+    unsigned int pbrBuffer;
+
+    PBRShader(const string& dir, int width, int height):
         pbrShader(dir + "Shaders/pbr.vs", dir + "Shaders/pbr.fs"){
+        glGenFramebuffers(1, &pbrBuffer);
+        glBindFramebuffer(GL_FRAMEBUFFER, pbrBuffer);
+
+        glGenTextures(1, &pbrColor);
+        glBindTexture(GL_TEXTURE_2D, pbrColor);
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA16F, width, height, 0, GL_RGBA, GL_FLOAT, NULL);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+        glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, pbrColor, 0);
+
+        // 创建深度缓冲
+        glGenTextures(1, &pbrDepth);
+        glBindTexture(GL_TEXTURE_2D, pbrDepth);
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT, width, height, 0, GL_DEPTH_COMPONENT, GL_FLOAT, NULL);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_BORDER);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_BORDER);
+        float borderColor[] = { 1.0, 1.0, 1.0, 1.0 };
+        glTexParameterfv(GL_TEXTURE_2D, GL_TEXTURE_BORDER_COLOR, borderColor);
+        // attach depth texture as FBO's depth buffer
+        glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, pbrDepth, 0);
+        glBindFramebuffer(GL_FRAMEBUFFER, 0);
+
+        // 检查是否成功
+        if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
+            std::cout << "Framebuffer not complete!" << std::endl;
+        glBindFramebuffer(GL_FRAMEBUFFER, 0);
+
         pbrShader.use();
         pbrShader.setInt("irradianceMap", 0);
         pbrShader.setInt("prefilterMap", 1);
@@ -850,6 +883,33 @@ public:
     void DeferredRender(const glm::vec3& campos){
         pbrShader.use();
         pbrShader.setVec3("camPos", campos);
+        Mesh::RenderQuad();
+    }
+
+};
+
+class PostProcessShader{
+public:
+    Shader postProcessShader;
+    PostProcessShader(string dir):
+        postProcessShader(dir + "Shaders/postprocess.vs", dir + "Shaders/postprocess.fs"){
+        postProcessShader.use();
+        postProcessShader.setInt("colorMap", 0);
+        postProcessShader.setInt("normalMap", 1);
+        postProcessShader.setInt("positionMap", 2);
+        postProcessShader.setInt("depthMap", 3);
+    }
+
+    void Draw(PBRShader& pbrShader, Gbuffer& gBuffer){
+        postProcessShader.use();
+        glActiveTexture(GL_TEXTURE0);
+        glBindTexture(GL_TEXTURE_2D, pbrShader.pbrColor); 
+        glActiveTexture(GL_TEXTURE1);
+        glBindTexture(GL_TEXTURE_2D, gBuffer.gNormal);
+        glActiveTexture(GL_TEXTURE2);
+        glBindTexture(GL_TEXTURE_2D, gBuffer.gPosition);
+        glActiveTexture(GL_TEXTURE3);
+        glBindTexture(GL_TEXTURE_2D, pbrShader.pbrDepth);
         Mesh::RenderQuad();
     }
 

@@ -24,6 +24,8 @@ namespace sablin{
 
 unsigned int TextureFromFile(string filename, const string &directory, bool gamma = false);
 unsigned int TextureHDRFromFile(string filename, const string &directory, bool gamma = false);
+unsigned int TextureFromFBXEmbeddedTexture(const aiTexture* aiTex, bool gamma = false);
+unsigned int GenerateTex(unsigned char* data, int width, int height, int nrComponents, bool gamma = false);
 
 class Model 
 {
@@ -128,27 +130,27 @@ private:
         float normal_map_alpha = 0.0f;
         float ao_map_alpha = 0.0f;
         // 1. albedo map
-        vector<Texture> albedoMaps = LoadMaterialTextures(material, aiTextureType_BASE_COLOR, "albedoMap");
+        vector<Texture> albedoMaps = LoadMaterialTextures(material, aiTextureType_BASE_COLOR, "albedoMap", scene);
         textures.insert(textures.end(), albedoMaps.begin(), albedoMaps.end());
         // 2. normal map
-        vector<Texture> normalMaps = LoadMaterialTextures(material, aiTextureType_NORMALS, "normalMap");
+        vector<Texture> normalMaps = LoadMaterialTextures(material, aiTextureType_NORMALS, "normalMap", scene);
         if(!normalMaps.empty()) normal_map_alpha = 1.0f;
         textures.insert(textures.end(), normalMaps.begin(), normalMaps.end());
         // 3. metallic map
-        std::vector<Texture> metallicMaps = LoadMaterialTextures(material, aiTextureType_METALNESS, "metallicMap");
-        textures.insert(textures.end(), normalMaps.begin(), normalMaps.end());
+        std::vector<Texture> metallicMaps = LoadMaterialTextures(material, aiTextureType_UNKNOWN, "metallicMap", scene);
+        textures.insert(textures.end(), metallicMaps.begin(), metallicMaps.end());
         // 4. roughness map
-        std::vector<Texture> roughnessMaps = LoadMaterialTextures(material, aiTextureType_DIFFUSE_ROUGHNESS, "roughnessMap");
+        std::vector<Texture> roughnessMaps = LoadMaterialTextures(material, aiTextureType_UNKNOWN, "roughnessMap", scene);
         textures.insert(textures.end(), roughnessMaps.begin(), roughnessMaps.end());
         // 5. ao map
-        std::vector<Texture> aoMaps = LoadMaterialTextures(material, aiTextureType_AMBIENT_OCCLUSION, "aoMap");
+        std::vector<Texture> aoMaps = LoadMaterialTextures(material, aiTextureType_AMBIENT_OCCLUSION, "aoMap", scene);
         if(!aoMaps.empty()) ao_map_alpha = 1.0f;
         textures.insert(textures.end(), aoMaps.begin(), aoMaps.end());
         
         return Mesh(vertices, indices, textures, normal_map_alpha, ao_map_alpha);
     }
 
-    vector<Texture> LoadMaterialTextures(aiMaterial *mat, aiTextureType type, string type_name)
+    vector<Texture> LoadMaterialTextures(aiMaterial *mat, aiTextureType type, string type_name, const aiScene* scene)
     {
         vector<Texture> textures;
         for(unsigned int i = 0; i < mat->GetTextureCount(type); i++)
@@ -162,7 +164,9 @@ private:
             {
                 if(std::strcmp(loaded_textures_[j].path_.data(), str.C_Str()) == 0)
                 {
-                    textures.push_back(loaded_textures_[j]);
+                    Texture texture = loaded_textures_[j];
+                    texture.type_ = type_name;
+                    textures.push_back(texture);
                     skip = true;
                     break;
                 }
@@ -171,7 +175,12 @@ private:
             // 需要加载texture
             if(!skip){   
                 Texture texture;
-                texture.id_ = TextureFromFile(str.C_Str(), directory_);
+                auto tex = scene->GetEmbeddedTexture(str.C_Str());
+                if(tex != nullptr){
+                    texture.id_ = TextureFromFBXEmbeddedTexture(tex);
+                }else{
+                    texture.id_ = TextureFromFile(str.C_Str(), directory_);
+                }
                 texture.type_ = type_name;
                 texture.path_ = str.C_Str();
                 textures.push_back(texture);

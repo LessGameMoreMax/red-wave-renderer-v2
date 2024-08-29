@@ -80,7 +80,7 @@ int main()
     
     // 加载模型
     Model car(dir + "Models/car/scene.gltf");
-    Model road(dir + "Models/street/scene.gltf");
+    // Model road(dir + "Models/street/scene.gltf");
 
     // 创建dirlights
     vector<DirLight> dirLights{
@@ -138,10 +138,10 @@ int main()
         car_model = glm::rotate(car_model, glm::radians(-90.0f), glm::vec3(0.0f, 0.0f, 1.0f));
 
         // road model
-        glm::mat4 road_model = glm::mat4(1.0f);
-        road_model = glm::translate(road_model, glm::vec3(-0.1f, 1.1f, -3.0f));
-        road_model = glm::scale(road_model, glm::vec3(1.0f, 1.0f, 1.0f));
-        road_model = glm::rotate(road_model, glm::radians(-90.0f), glm::vec3(1.0f, 0.0f, 0.0f));
+        // glm::mat4 road_model = glm::mat4(1.0f);
+        // road_model = glm::translate(road_model, glm::vec3(-0.1f, 1.1f, -3.0f));
+        // road_model = glm::scale(road_model, glm::vec3(1.0f, 1.0f, 1.0f));
+        // road_model = glm::rotate(road_model, glm::radians(-90.0f), glm::vec3(1.0f, 0.0f, 0.0f));
 
         // 1. Shadow Pass: 以光源视角渲染深度
         shadowShader.BeforeDraw();
@@ -149,8 +149,8 @@ int main()
         shadowShader.setMat4("model", car_model);
         car.Draw(shadowShader);
 
-        shadowShader.setMat4("model", road_model);
-        road.Draw(shadowShader);
+        // shadowShader.setMat4("model", road_model);
+        // road.Draw(shadowShader);
 
         shadowShader.AfterDraw();
 
@@ -164,8 +164,8 @@ int main()
         geoPassShader.setMat4("model", car_model);
         car.Draw(geoPassShader);
 
-        geoPassShader.setMat4("model", road_model);
-        road.Draw(geoPassShader);
+        // geoPassShader.setMat4("model", road_model);
+        // road.Draw(geoPassShader);
 
         glBindFramebuffer(GL_FRAMEBUFFER, 0);
 

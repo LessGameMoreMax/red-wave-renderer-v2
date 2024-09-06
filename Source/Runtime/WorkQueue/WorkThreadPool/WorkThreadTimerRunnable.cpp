@@ -14,8 +14,10 @@ RStatus WorkThreadTimerRunnable::Run(){
     while(!has_stop_){
         while(!priority_queue_.IsEmpty() && 
                 priority_queue_.Top().second <= std::chrono::steady_clock::now()){
-            work_thread_pool_->PushBack(priority_queue_.Top().first);
+            lenin::WorkTimerRunnable* runnable = priority_queue_.Top().first;
             priority_queue_.Pop();
+            if(runnable->work_timer_info_->HasStop()) delete runnable;
+            else work_thread_pool_->PushBack(runnable);
         }
         lenin::WorkTimerRunnable* runnable = nullptr;
         if(priority_queue_.IsEmpty()) 

@@ -163,7 +163,7 @@ void WorkThreadPool::PushBack(lenin::_WorkRunnable* runnable){
 }
 
 void WorkThreadPool::PushTimerBack(lenin::WorkTimerRunnable* runnable){
-    if(has_stop_){
+    if(has_stop_ || runnable->work_timer_info_->HasStop()){
         delete runnable;
         return;
     }

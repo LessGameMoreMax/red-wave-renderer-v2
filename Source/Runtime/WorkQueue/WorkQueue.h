@@ -42,7 +42,7 @@ public:
 
     template<typename W, typename... Args>
     requires std::is_base_of_v<WorkRunnable<typename W::ReturnType, std::remove_cv_t<Args>...>, W>
-    static WorkSharedFuture<typename W::ReturnType> CommitTimerWork(long times, long ttl, Args&&... args){
+    static std::pair<WorkSharedFuture<typename W::ReturnType>, std::shared_ptr<WorkTimerInfo>> CommitTimerWork(long times, long ttl, Args&&... args){
         WorkRunnable<typename W::ReturnType, std::remove_cv_t<Args>...>* work_runnable =
                 new W(std::forward<Args>(args)...);
         ASSERT_NO_STRING(work_runnable != nullptr)
@@ -50,19 +50,19 @@ public:
         lenin::WorkTimerRunnable* work_timer_runnable = new lenin::WorkTimerRunnable(work_runnable, times, ttl);
         ASSERT_NO_STRING(work_timer_runnable != nullptr)
         work_thread_pool_->PushTimerBack(work_timer_runnable);
-        return work_shared_future;
+        return {work_shared_future, work_timer_runnable->work_timer_info_};
     }
 
     template<typename F, typename... Args,
         typename R = typename std::result_of<F(Args...)>::type>
-    static WorkSharedFuture<R> CommitTimerWork(long times, long ttl, F&& fn, Args&&... args){
+    static std::pair<WorkSharedFuture<R>, std::shared_ptr<WorkTimerInfo>> CommitTimerWork(long times, long ttl, F&& fn, Args&&... args){
         auto work_runnable = lenin::MakeWorkFunctionRunnable(std::forward<F>(fn), std::forward<Args>(args)...);
         ASSERT_NO_STRING(work_runnable != nullptr)
         auto work_shared_future = work_runnable->promise_.GetSharedFuture();
         lenin::WorkTimerRunnable* work_timer_runnable = new lenin::WorkTimerRunnable(work_runnable, times, ttl);
         ASSERT_NO_STRING(work_timer_runnable != nullptr)
         work_thread_pool_->PushTimerBack(work_timer_runnable);
-        return work_shared_future;
+        return {work_shared_future, work_timer_runnable->work_timer_info_};
     }
 
 };
